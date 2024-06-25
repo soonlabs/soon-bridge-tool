@@ -1,0 +1,20 @@
+{
+  "name": "soon-birdge-tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "happypass": "npx ts-node --project tsconfig.json src/happy_pass.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.93.1",
+    "dotenv": "^16.4.5",
+    "ethers": "^5.7.2"
+  }
+}
