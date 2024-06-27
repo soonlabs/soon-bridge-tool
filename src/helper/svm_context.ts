@@ -1,4 +1,5 @@
-import {Connection, Keypair} from "@solana/web3.js";
+import {clusterApiUrl, Connection, Keypair} from "@solana/web3.js";
+import 'dotenv/config'
 
 export interface SVM_CONTEXT {
     SVM_Connection: Connection,
@@ -19,6 +20,9 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
     console.log('user public key:', SVM_USER.publicKey.toBase58());
 
     const SVM_Connection = new Connection(SVM_CONNECTION_URL);
+
+    const balance = await SVM_Connection.getBalance(SVM_USER.publicKey);
+    console.log("svm user balance: ", balance);
 
     return {
         SVM_Connection,

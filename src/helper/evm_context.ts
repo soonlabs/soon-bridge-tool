@@ -26,6 +26,9 @@ export const createEVMContext = async (isHappyPass: boolean): Promise<EVM_CONTEX
     let EMV_USER = new ethers.Wallet(EVM_USER_KEY, EVM_PROVIDER);
     let EMV_PROPOSER = new ethers.Wallet(EVM_PROPOSER_KEY, EVM_PROVIDER);
 
+    const balance = await EMV_USER.getBalance();
+    console.log("evm user balance: ", balance);
+
     return {
         EVM_PROVIDER,
         EMV_USER,

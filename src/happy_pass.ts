@@ -71,6 +71,7 @@ async function main() {
 
     //4. user finalize withdraw
     console.log('step4: user finalized withdraw...')
+    //should wait a moment after deploy l1 contract if tx failed with "OptimismPortal: output proposal finalization period has not elapsed"
     await (await OptimismPortal.connect(EVMContext.EMV_USER).finalizePDAWithdrawalTransaction(withdrawTx, {
         gasLimit
     })).wait(1)

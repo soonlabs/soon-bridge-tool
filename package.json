@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "happypass": "npx ts-node --project tsconfig.json src/happy_pass.ts"
+    "index": "npx ts-node --project tsconfig.json src/index.ts",
+    "happypass": "npx ts-node --project tsconfig.json src/happy_pass.ts",
+    "init_withdraw": "npx ts-node --project tsconfig.json src/init_withdraw.ts",
+    "deposit_eth": "npx ts-node --project tsconfig.json src/deposit_eth.ts"
   },
   "keywords": [],
   "author": "",
