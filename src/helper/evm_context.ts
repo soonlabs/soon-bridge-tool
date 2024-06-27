@@ -24,10 +24,14 @@ export const createEVMContext = async (isHappyPass: boolean): Promise<EVM_CONTEX
 
     let EVM_PROVIDER = new ethers.providers.StaticJsonRpcProvider(EVM_PROVIDER_URL)
     let EMV_USER = new ethers.Wallet(EVM_USER_KEY, EVM_PROVIDER);
-    let EMV_PROPOSER = new ethers.Wallet(EVM_PROPOSER_KEY, EVM_PROVIDER);
-
-    const balance = await EMV_USER.getBalance();
+    let balance = await EMV_USER.getBalance();
+    console.log('evm user address:', await EMV_USER.getAddress());
     console.log("evm user balance: ", balance);
+
+    let EMV_PROPOSER = new ethers.Wallet(EVM_PROPOSER_KEY, EVM_PROVIDER);
+    balance = await EMV_USER.getBalance();
+    console.log('evm proposer address:', await EMV_USER.getAddress());
+    console.log("evm proposer balance: ", balance);
 
     return {
         EVM_PROVIDER,
