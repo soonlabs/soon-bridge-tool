@@ -17,7 +17,7 @@ export class Numberu8 extends BN {
         return zeroPad;
     }
 
-    static fromBuffer(buffer) {
+    static fromBuffer(buffer:Buffer) {
         if (buffer.length !== 1) {
             throw new Error(`Invalid buffer length: ${buffer.length}`);
         }
@@ -49,7 +49,7 @@ export class Numberu16 extends BN {
     /**
      * Construct a Numberu64 from Buffer representation
      */
-    static fromBuffer(buffer) {
+    static fromBuffer(buffer: Buffer) {
         if (buffer.length !== 2) {
             throw new Error(`Invalid buffer length: ${buffer.length}`);
         }
@@ -81,7 +81,7 @@ export class Numberu32 extends BN {
     /**
      * Construct a Numberu32 from Buffer representation
      */
-    static fromBuffer(buffer) {
+    static fromBuffer(buffer: Buffer) {
         if (buffer.length !== 4) {
             throw new Error(`Invalid buffer length: ${buffer.length}`);
         }
@@ -113,7 +113,7 @@ export class Numberu64 extends BN {
     /**
      * Construct a Numberu64 from Buffer representation
      */
-    static fromBuffer(buffer) {
+    static fromBuffer(buffer: Buffer) {
         if (buffer.length !== 8) {
             throw new Error(`Invalid buffer length: ${buffer.length}`);
         }
@@ -144,6 +144,32 @@ export class Numberu128 extends BN {
     static fromBuffer(buffer: Buffer): Numberu128 {
         assert(buffer.length === 16, `Invalid buffer length: ${buffer.length}`);
         return new Numberu128(
+            [...buffer]
+                .reverse()
+                .map((i) => `00${i.toString(16)}`.slice(-2))
+                .join(''),
+            16,
+        );
+    }
+}
+
+export class Numberu256 extends BN {
+    toBuffer(): Buffer {
+        const a = super.toArray().reverse();
+        const b = Buffer.from(a);
+        if (b.length === 32) {
+            return b;
+        }
+        assert(b.length < 32, 'Numberu256 too large');
+
+        const zeroPad = Buffer.alloc(32, 0);
+        b.copy(zeroPad);
+        return zeroPad;
+    }
+
+    static fromBuffer(buffer: Buffer): Numberu256 {
+        assert(buffer.length === 32, `Invalid buffer length: ${buffer.length}`);
+        return new Numberu256(
             [...buffer]
                 .reverse()
                 .map((i) => `00${i.toString(16)}`.slice(-2))

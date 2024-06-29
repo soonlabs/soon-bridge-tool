@@ -47,9 +47,26 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
     }
 }
 
+export interface WithdrawalTransaction{
+    nonce: string,
+    sender: string,
+    l1Target: string,
+    value: string,
+    gasLimit: string,
+    data: string,
+}
+
+export interface OutputProof {
+    version: string,
+    stateRoot: string,
+    messagePasserStorageRoot: string,
+    latestBlockhash: string,
+}
+
 export function genWithdrawCounterAccountKey(programId: PublicKey): PublicKey {
     const counterSeed = Buffer.from('svm-withdraw-counter');
     const [counterKey, ] = PublicKey.findProgramAddressSync([counterSeed], programId);
+    console.log(`counterKey: ${counterKey}`);
     return counterKey;
 }
 
@@ -61,6 +78,8 @@ export async function sendTransaction(svmContext: SVM_CONTEXT, instructions: Tra
         console.error(e);
         throw e;
     });
-    console.log(`Signature: ${signature}`);
+    console.log(`send transaction success. signature: ${signature}`);
+
+    return signature;
 }
 

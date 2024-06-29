@@ -10,9 +10,9 @@ async function main() {
 
     const gasLimit = "1000000";
     let EVMContext = await createEVMContext(true);
-    const OpPortalAddress = '0xAC79ce90e2654B64045351b08EE027C1E0C2df97';
-    const L2OutputOracle = L2OutputOracle__factory.connect("0xA615D8f82c3489eb2D4584a1De306Ac19aD239CC", EVMContext.EMV_PROPOSER)
-    const OptimismPortal = OptimismPortal__factory.connect(OpPortalAddress, EVMContext.EMV_USER)
+    const OptimismPortal = OptimismPortal__factory.connect(EVMContext.EVM_OP_PORTAL, EVMContext.EVM_USER)
+    const l2OutputOracleAddress = await OptimismPortal.l2Oracle();
+    const L2OutputOracle = L2OutputOracle__factory.connect(l2OutputOracleAddress, EVMContext.EVM_PROPOSER)
 
     //1. transfer eth to OptimismPortal
     console.log('step1: sending fund to OptimismPortal...')
@@ -22,7 +22,7 @@ async function main() {
         value: ethers.utils.parseEther('1'),
         gasLimit
     })).wait(1)
-    let OpPortalBalance = formatEther(await EVMContext.EVM_PROVIDER.getBalance(OpPortalAddress));
+    let OpPortalBalance = formatEther(await EVMContext.EVM_PROVIDER.getBalance(EVMContext.EVM_OP_PORTAL));
     console.log('step1 done, OptimismPortal balance is:', OpPortalBalance)
 
     //2. proposer submit output proof
@@ -58,11 +58,10 @@ async function main() {
         '0xf843a1209eba1222e4646bf92cee3582270b4b38128365258a22528fa43b670d230d6dfca0146b3930f9bac5eeb262de65c2f68ff2023f0a1e99fb92adf5f73c9fa79d46b4',
     ]
     const pdaPubkey = "0xF4CDF255635FC9ECC6EE79CF4DEA310B6488969D563BE0207C879D25AC979E31"
-    await (await OptimismPortal.connect(EVMContext.EMV_USER).provePDAWithdrawalTransaction(withdrawTx, l2OutputIndex, pdaPubkey, outputRootProof, withdrawalProof, {
+    await (await OptimismPortal.connect(EVMContext.EVM_USER).provePDAWithdrawalTransaction(withdrawTx, l2OutputIndex, pdaPubkey, outputRootProof, withdrawalProof, {
         gasLimit
     })).wait(1)
     console.log('step3 done')
-
 
     //4. waiting withdrawal finalized
     console.log('waiting withdrawal finalized')
@@ -72,12 +71,12 @@ async function main() {
     //4. user finalize withdraw
     console.log('step4: user finalized withdraw...')
     //should wait a moment after deploy l1 contract if tx failed with "OptimismPortal: output proposal finalization period has not elapsed"
-    await (await OptimismPortal.connect(EVMContext.EMV_USER).finalizePDAWithdrawalTransaction(withdrawTx, {
+    await (await OptimismPortal.connect(EVMContext.EVM_USER).finalizePDAWithdrawalTransaction(withdrawTx, {
         gasLimit
     })).wait(1)
     console.log('step4 done')
 
-    OpPortalBalance = formatEther(await EVMContext.EVM_PROVIDER.getBalance(OpPortalAddress));
+    OpPortalBalance = formatEther(await EVMContext.EVM_PROVIDER.getBalance(EVMContext.EVM_OP_PORTAL));
     console.log('OptimismPortal balance is:', OpPortalBalance)
 }
 

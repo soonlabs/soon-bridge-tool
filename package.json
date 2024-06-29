@@ -14,13 +14,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/minimist": "^1.2.5",
     "typescript": "^5.5.2"
   },
   "dependencies": {
     "@solana/web3.js": "^1.93.1",
     "@types/bn.js": "^5.1.5",
+    "axios": "^1.7.2",
+    "bs58": "^6.0.0",
     "decimal.js": "^10.4.3",
     "dotenv": "^16.4.5",
-    "ethers": "^5.7.2"
+    "ethers": "^5.7.2",
+    "minimist": "^1.2.8"
   }
 }

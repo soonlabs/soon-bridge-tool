@@ -1,18 +1,28 @@
-import {createSVMContext, genWithdrawCounterAccountKey, sendTransaction, SYSTEM_PROGRAM} from "./helper/svm_context";
-import {Numberu64} from "./helper/tool";
-import {PublicKey, TransactionInstruction} from "@solana/web3.js";
+import {
+    createSVMContext,
+    genWithdrawCounterAccountKey,
+    sendTransaction,
+    SYSTEM_PROGRAM,
+} from "./helper/svm_context";
+import {PublicKey, SYSVAR_RENT_PUBKEY, TransactionInstruction} from "@solana/web3.js";
 import {ethers} from "ethers";
-import {Numberu128} from "./helper/number.utils";
+import {Numberu128, Numberu64} from "./helper/number.utils";
+import minimist from 'minimist';
+import {isValidEthereumAddress} from "./helper/tool";
+
+interface Args {
+    l1Target: string;
+    value: string;
+    gasLimit: string;
+}
 
 async function main() {
+    const args = minimist<Args>(process.argv.slice(2));
+    if (!isValidEthereumAddress(args.l1Target)) {
+        throw new Error("invalid ethereum address format.");
+    }
+
     let svmContext = await createSVMContext();
-
-    const l1Target = "0xC65E3B6dFE6c9D6fd6B12c802671eda3cD0A398f";
-    const value = 1000;
-    const gasLimit = 100000;
-    //onchain program not support data yet
-    const data = "0x";
-
     //get counter key
     const counterKey = genWithdrawCounterAccountKey(svmContext.SVM_WITHDRAW_PROGRAM_ID);
     console.log(`Counter key: ${counterKey.toString()}`);
@@ -25,7 +35,6 @@ async function main() {
 
     //get withdraw tx key
     const [withdrawTxKey, ] = PublicKey.findProgramAddressSync([withdrawTxSeed], svmContext.SVM_WITHDRAW_PROGRAM_ID)
-    console.log(`WithdrawTx key: ${withdrawTxKey.toString()}`);
 
     const instructionIndex = Buffer.alloc(4);
     instructionIndex.writeUInt32LE(1);
@@ -33,22 +42,22 @@ async function main() {
         data: Buffer.concat([
             instructionIndex,
             svmContext.SVM_USER.publicKey.toBuffer(),
-            Buffer.concat([ethers.utils.arrayify(l1Target)]),
-            new Numberu128(value.toString()).toBuffer(),
-            new Numberu128(gasLimit.toString()).toBuffer(),
+            Buffer.concat([ethers.utils.arrayify(args.l1Target)]),
+            new Numberu128(args.value).toBuffer(),
+            new Numberu128(args.gasLimit).toBuffer(),
         ]),
         keys: [
+            { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
+            { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
             { pubkey: counterKey, isSigner: false, isWritable: true },
             { pubkey: withdrawTxKey, isSigner: false, isWritable: true },
             { pubkey: svmContext.SVM_USER.publicKey, isSigner: true, isWritable: false },
-            { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
         ],
         programId: svmContext.SVM_WITHDRAW_PROGRAM_ID,
     });
 
     await sendTransaction(svmContext, [instruction])
-
-
+    console.log(`Withdraw ID: ${withdrawTxKey.toString()}`);
 }
 
 main().catch((error) => {

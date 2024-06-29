@@ -4,14 +4,16 @@ import 'dotenv/config'
 
 export interface EVM_CONTEXT {
     EVM_PROVIDER: StaticJsonRpcProvider,
-    EMV_USER: Wallet,
-    EMV_PROPOSER: Wallet,
+    EVM_USER: Wallet,
+    EVM_PROPOSER: Wallet,
+    EVM_OP_PORTAL: string,
 }
 
 export const createEVMContext = async (isHappyPass: boolean): Promise<EVM_CONTEXT> => {
     const EVM_PROPOSER_KEY = isHappyPass ? "0x103d65b622f9532a22aa59e70f54c4300ecdd778927477591f4fc459e6f8c093": process.env.EVM_PROPOSER_KEY
     const EVM_USER_KEY = isHappyPass ? "0x103d65b622f9532a22aa59e70f54c4300ecdd778927477591f4fc459e6f8c093": process.env.EVM_USER_KEY
     const EVM_PROVIDER_URL = isHappyPass ? "http://localhost:8545": process.env.EVM_PROVIDER_URL
+    const EVM_OP_PORTAL = isHappyPass ? "0xAC79ce90e2654B64045351b08EE027C1E0C2df97": process.env.EVM_OP_PORTAL
 
     if (!EVM_PROPOSER_KEY)
         throw `missing required env EVM_PROPOSER_KEY for EVM`;
@@ -22,21 +24,25 @@ export const createEVMContext = async (isHappyPass: boolean): Promise<EVM_CONTEX
     if (!EVM_PROVIDER_URL)
         throw `missing required env EVM_PROVIDER_URL for EVM`;
 
+    if (!EVM_OP_PORTAL)
+        throw `missing required env EVM_PROVIDER_URL for EVM`;
+
     let EVM_PROVIDER = new ethers.providers.StaticJsonRpcProvider(EVM_PROVIDER_URL)
-    let EMV_USER = new ethers.Wallet(EVM_USER_KEY, EVM_PROVIDER);
-    let balance = await EMV_USER.getBalance();
-    console.log('evm user address:', await EMV_USER.getAddress());
+    let EVM_USER = new ethers.Wallet(EVM_USER_KEY, EVM_PROVIDER);
+    let balance = await EVM_USER.getBalance();
+    console.log('evm user address:', await EVM_USER.getAddress());
     console.log("evm user balance: ", balance);
 
-    let EMV_PROPOSER = new ethers.Wallet(EVM_PROPOSER_KEY, EVM_PROVIDER);
-    balance = await EMV_USER.getBalance();
-    console.log('evm proposer address:', await EMV_USER.getAddress());
+    let EVM_PROPOSER = new ethers.Wallet(EVM_PROPOSER_KEY, EVM_PROVIDER);
+    balance = await EVM_USER.getBalance();
+    console.log('evm proposer address:', await EVM_USER.getAddress());
     console.log("evm proposer balance: ", balance);
 
     return {
         EVM_PROVIDER,
-        EMV_USER,
-        EMV_PROPOSER
+        EVM_USER,
+        EVM_PROPOSER,
+        EVM_OP_PORTAL
     }
 }
 
