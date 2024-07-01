@@ -1,5 +1,5 @@
 import minimist from "minimist";
-import {isValidSolanaPublicKey, isValidSolanaSignature, parseWithdrawTxInfo} from "./helper/tool";
+import {isValidSolanaPublicKey, parseWithdrawTxInfo} from "./helper/tool";
 import {createSVMContext} from "./helper/svm_context";
 import {PublicKey} from "@solana/web3.js";
 import {createEVMContext} from "./helper/evm_context";
@@ -9,6 +9,7 @@ import {Types} from "../typechain-types/OptimismPortal";
 
 interface Args {
     withdrawId: string;
+    withdrawHeight: number;
 }
 
 async function main() {
@@ -26,7 +27,6 @@ async function main() {
     //get withdraw tx
     const withdrawTx = parseWithdrawTxInfo(withdrawInfo.data);
 
-    let l2Height = 1;
     //get output root proof
     let outputRootProof: Types.OutputRootProofStruct;
     try {
@@ -35,7 +35,7 @@ async function main() {
             id: 1,
             method: "outputAtBlock",
             params: {
-                block_number: l2Height
+                block_number: args.withdrawHeight
             }
         });
         outputRootProof = response.data;
@@ -52,7 +52,7 @@ async function main() {
             method: "getSoonWithdrawalProof",
             params: {
                 pda_address: args.withdrawId,
-                block_number: l2Height
+                block_number: args.withdrawHeight
             }
         });
         withdrawalProof = response.data.withdrawal_proof;
@@ -62,7 +62,7 @@ async function main() {
 
     let EVMContext = await createEVMContext(false);
     const OptimismPortal = OptimismPortal__factory.connect(EVMContext.EVM_OP_PORTAL, EVMContext.EVM_USER)
-    const receipt = await (await OptimismPortal.connect(EVMContext.EVM_USER).provePDAWithdrawalTransaction(withdrawTx, l2Height, args.withdrawId, outputRootProof, withdrawalProof)).wait(1)
+    const receipt = await (await OptimismPortal.connect(EVMContext.EVM_USER).provePDAWithdrawalTransaction(withdrawTx, args.withdrawHeight, args.withdrawId, outputRootProof, withdrawalProof)).wait(1)
 
     console.log(`Withdraw tx prove success. txHash: ${receipt.transactionHash}`);
 }

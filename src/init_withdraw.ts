@@ -56,8 +56,10 @@ async function main() {
         programId: svmContext.SVM_WITHDRAW_PROGRAM_ID,
     });
 
-    await sendTransaction(svmContext, [instruction])
+    const signature = await sendTransaction(svmContext, [instruction])
+    const status = await svmContext.SVM_Connection.getSignatureStatus(signature)
     console.log(`Withdraw ID: ${withdrawTxKey.toString()}`);
+    console.log(`Withdraw Height: ${status!.value?.slot}`);
 }
 
 main().catch((error) => {
