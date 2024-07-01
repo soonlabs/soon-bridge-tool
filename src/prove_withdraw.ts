@@ -45,7 +45,7 @@ async function main() {
         params: [args.withdrawId, Number(args.withdrawHeight)]
     });
     console.log("response.data:", response1.data);
-    const withdrawalProof: string[] = response1.data.withdrawal_proof;
+    const withdrawalProof: string[] = response1.data.withdrawalProof;
     console.log("withdrawalProof:", withdrawalProof);
 
     let EVMContext = await createEVMContext(false);

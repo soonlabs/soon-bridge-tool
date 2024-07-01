@@ -8,9 +8,10 @@
     "happypass": "npx ts-node --project tsconfig.json src/happy_pass.ts",
     "init_soon": "npx ts-node --project tsconfig.json src/init_soon.ts",
     "expend_deposit": "npx ts-node --project tsconfig.json src/expend_deposit_account.ts",
-    "create_withdraw_counter": "npx ts-node --project tsconfig.json src/create_withdraw_counter.ts",
     "issue_withdraw": "npx ts-node --project tsconfig.json src/issue_withdraw.ts",
+    "propose_withdraw": "npx ts-node --project tsconfig.json src/propose_withdraw.ts",
     "prove_withdraw": "npx ts-node --project tsconfig.json src/prove_withdraw.ts",
+    "finalize_withdraw": "npx ts-node --project tsconfig.json src/finalize_withdraw.ts",
     "deposit_eth": "npx ts-node --project tsconfig.json src/deposit_eth.ts"
   },
   "keywords": [],

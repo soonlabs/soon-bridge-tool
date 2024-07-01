@@ -5,12 +5,13 @@ import {createSVMContext} from "./helper/svm_context";
 import {PublicKey} from "@solana/web3.js";
 import {OptimismPortal__factory} from "../typechain-types";
 
-interface Args {
-    withdrawId: string;
-}
+const options = {
+    string: ['withdrawId']
+};
 
 async function main() {
-    const args = minimist<Args>(process.argv.slice(2));
+    const args = minimist(process.argv.slice(2), options);
+    console.log("args:", args);
 
     if (isValidSolanaPublicKey(args.withdrawId)) {
         throw new Error("invalid solana pubkey format.");
