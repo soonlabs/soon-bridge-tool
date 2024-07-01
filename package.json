@@ -6,6 +6,8 @@
   "scripts": {
     "index": "npx ts-node --project tsconfig.json src/index.ts",
     "happypass": "npx ts-node --project tsconfig.json src/happy_pass.ts",
+    "init_soon": "npx ts-node --project tsconfig.json src/init_soon.ts",
+    "expend_deposit": "npx ts-node --project tsconfig.json src/expend_deposit_account.ts",
     "create_withdraw_counter": "npx ts-node --project tsconfig.json src/create_withdraw_counter.ts",
     "init_withdraw": "npx ts-node --project tsconfig.json src/init_withdraw.ts",
     "deposit_eth": "npx ts-node --project tsconfig.json src/deposit_eth.ts"

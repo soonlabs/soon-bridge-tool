@@ -1,20 +1,18 @@
 import {
     createSVMContext, genDepositInfoAccount,
-    genWithdrawCounterAccountKey,
     sendTransaction,
     SYSTEM_PROGRAM,
 } from "./helper/svm_context";
-import {PublicKey, SYSVAR_RENT_PUBKEY, TransactionInstruction} from "@solana/web3.js";
-import {ethers} from "ethers";
-import {Numberu128, Numberu16, Numberu64} from "./helper/number.utils";
+import {TransactionInstruction} from "@solana/web3.js";
+import {Numberu16} from "./helper/number.utils";
 import minimist from 'minimist';
-import {isValidEthereumAddress} from "./helper/tool";
 
 interface Args {
     expandNum: number;
 }
 
 async function main() {
+    console.log("start expend deposit account");
     const args = minimist<Args>(process.argv.slice(2));
 
     let svmContext = await createSVMContext();
@@ -36,7 +34,9 @@ async function main() {
         programId: svmContext.SVM_DEPOSIT_PROGRAM_ID,
     });
 
-    const signature = await sendTransaction(svmContext, [instruction])
+    await sendTransaction(svmContext, [instruction])
+
+    console.log("done..")
 }
 
 main().catch((error) => {
