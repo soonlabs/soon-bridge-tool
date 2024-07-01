@@ -1,6 +1,6 @@
 import {
     createSVMContext,
-    genWithdrawCounterAccountKey,
+    genProgramDataAccountKey,
     sendTransaction,
     SYSTEM_PROGRAM,
 } from "./helper/svm_context";
@@ -10,6 +10,10 @@ import {Numberu128, Numberu64} from "./helper/number.utils";
 import minimist from 'minimist';
 import {isValidEthereumAddress} from "./helper/tool";
 
+const options = {
+    string: ['l1Target', 'value', 'gasLimit']
+};
+
 interface Args {
     l1Target: string;
     value: string;
@@ -17,14 +21,15 @@ interface Args {
 }
 
 async function main() {
-    const args = minimist<Args>(process.argv.slice(2));
+    const args = minimist(process.argv.slice(2), options);
     if (!isValidEthereumAddress(args.l1Target)) {
+        console.log("args:", args);
         throw new Error("invalid ethereum address format.");
     }
 
     let svmContext = await createSVMContext();
     //get counter key
-    const counterKey = genWithdrawCounterAccountKey(svmContext.SVM_WITHDRAW_PROGRAM_ID);
+    const counterKey = genProgramDataAccountKey("svm-withdraw-counter", svmContext.SVM_WITHDRAW_PROGRAM_ID);
     console.log(`Counter key: ${counterKey.toString()}`);
 
     //get counter
@@ -47,11 +52,10 @@ async function main() {
             new Numberu128(args.gasLimit).toBuffer(),
         ]),
         keys: [
-            { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
-            { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
             { pubkey: counterKey, isSigner: false, isWritable: true },
             { pubkey: withdrawTxKey, isSigner: false, isWritable: true },
             { pubkey: svmContext.SVM_USER.publicKey, isSigner: true, isWritable: false },
+            { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
         ],
         programId: svmContext.SVM_WITHDRAW_PROGRAM_ID,
     });

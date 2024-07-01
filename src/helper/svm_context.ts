@@ -78,7 +78,7 @@ export function genDepositInfoAccount(depositorKey: PublicKey, programId: Public
     return depositKey;
 }
 
-function genProgramDataAccountKey(seed: string,  programId: PublicKey): PublicKey {
+export function genProgramDataAccountKey(seed: string,  programId: PublicKey): PublicKey {
     const seedBuffer = Buffer.from(seed);
     const [key, ] = PublicKey.findProgramAddressSync([seedBuffer], programId);
     return key;
