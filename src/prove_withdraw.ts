@@ -14,7 +14,7 @@ const options = {
 async function main() {
     const args = minimist(process.argv.slice(2), options);
     console.log("args:", args);
-    if (isValidSolanaPublicKey(args.withdrawId)) {
+    if (!isValidSolanaPublicKey(args.withdrawId)) {
         throw new Error("invalid solana pubkey format.");
     }
 
@@ -27,41 +27,26 @@ async function main() {
     const withdrawTx = parseWithdrawTxInfo(withdrawInfo.data);
 
     //get output root proof
-    let outputRootProof: Types.OutputRootProofStruct;
-    try {
-        const response = await axios.post<Types.OutputRootProofStruct>(svmContext.SVM_Connection.rpcEndpoint, {
-            jsonrpc: '2.0',
-            id: 1,
-            method: "outputAtBlock",
-            params: {
-                block_number: args.withdrawHeight
-            }
-        });
-        outputRootProof = response.data;
-        console.log("response.data:", response.data);
-    } catch (error) {
-        console.error('fetch outputAtBlock error:', error);
-    }
+    const response0 = await axios.post<Types.OutputRootProofStruct>(svmContext.SVM_Connection.rpcEndpoint, {
+        jsonrpc: '2.0',
+        id: 1,
+        method: "outputAtBlock",
+        params: [Number(args.withdrawHeight)]
+    });
+    let outputRootProof: Types.OutputRootProofStruct = response0.data;
+    console.log("response.data:", response0.data);
     console.log("outputRootProof:", outputRootProof);
 
     //get withdraw proof
-    let withdrawalProof: string[];
-    try {
-        const response = await axios.post(svmContext.SVM_Connection.rpcEndpoint, {
-            jsonrpc: '2.0',
-            id: 1,
-            method: "getSoonWithdrawalProof",
-            params: {
-                pda_address: args.withdrawId,
-                block_number: args.withdrawHeight
-            }
-        });
-        console.log("response.data:", response.data);
-        withdrawalProof = response.data.withdrawal_proof;
-    } catch (error) {
-        console.error('fetch output_at_block error:', error);
-    }
-    console.log("outputRootProof:", outputRootProof);
+    const response1 = await axios.post(svmContext.SVM_Connection.rpcEndpoint, {
+        jsonrpc: '2.0',
+        id: 1,
+        method: "getSoonWithdrawalProof",
+        params: [args.withdrawId, Number(args.withdrawHeight)]
+    });
+    console.log("response.data:", response1.data);
+    const withdrawalProof: string[] = response1.data.withdrawal_proof;
+    console.log("withdrawalProof:", withdrawalProof);
 
     let EVMContext = await createEVMContext(false);
     const OptimismPortal = OptimismPortal__factory.connect(EVMContext.EVM_OP_PORTAL, EVMContext.EVM_USER)
