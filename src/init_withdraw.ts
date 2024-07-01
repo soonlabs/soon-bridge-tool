@@ -14,16 +14,10 @@ const options = {
     string: ['l1Target', 'value', 'gasLimit']
 };
 
-interface Args {
-    l1Target: string;
-    value: string;
-    gasLimit: string;
-}
-
 async function main() {
     const args = minimist(process.argv.slice(2), options);
+    console.log("args:", args);
     if (!isValidEthereumAddress(args.l1Target)) {
-        console.log("args:", args);
         throw new Error("invalid ethereum address format.");
     }
 

@@ -7,14 +7,13 @@ import {OptimismPortal__factory} from "../typechain-types";
 import axios from "axios";
 import {Types} from "../typechain-types/OptimismPortal";
 
-interface Args {
-    withdrawId: string;
-    withdrawHeight: number;
-}
+const options = {
+    string: ['withdrawId', 'withdrawHeight']
+};
 
 async function main() {
-    const args = minimist<Args>(process.argv.slice(2));
-
+    const args = minimist(process.argv.slice(2), options);
+    console.log("args:", args);
     if (isValidSolanaPublicKey(args.withdrawId)) {
         throw new Error("invalid solana pubkey format.");
     }
@@ -39,9 +38,11 @@ async function main() {
             }
         });
         outputRootProof = response.data;
+        console.log("response.data:", response.data);
     } catch (error) {
         console.error('fetch outputAtBlock error:', error);
     }
+    console.log("outputRootProof:", outputRootProof);
 
     //get withdraw proof
     let withdrawalProof: string[];
@@ -55,10 +56,12 @@ async function main() {
                 block_number: args.withdrawHeight
             }
         });
+        console.log("response.data:", response.data);
         withdrawalProof = response.data.withdrawal_proof;
     } catch (error) {
         console.error('fetch output_at_block error:', error);
     }
+    console.log("outputRootProof:", outputRootProof);
 
     let EVMContext = await createEVMContext(false);
     const OptimismPortal = OptimismPortal__factory.connect(EVMContext.EVM_OP_PORTAL, EVMContext.EVM_USER)
