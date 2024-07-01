@@ -15,7 +15,7 @@ async function main() {
     let svmContext = await createSVMContext();
 
     //get output root proof
-    const response = await axios.post(svmContext.SVM_Connection.rpcEndpoint, {
+    const response = await axios.post(svmContext.SVM_SOON_RPC_URL, {
         jsonrpc: '2.0',
         id: 1,
         method: "outputAtBlock",

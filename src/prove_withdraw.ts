@@ -27,7 +27,7 @@ async function main() {
     const withdrawTx = parseWithdrawTxInfo(withdrawInfo.data);
 
     //get output root proof
-    const response0 = await axios.post<Types.OutputRootProofStruct>(svmContext.SVM_Connection.rpcEndpoint, {
+    const response0 = await axios.post<Types.OutputRootProofStruct>(svmContext.SVM_SOON_RPC_URL, {
         jsonrpc: '2.0',
         id: 1,
         method: "outputAtBlock",

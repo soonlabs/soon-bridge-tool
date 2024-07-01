@@ -12,6 +12,7 @@ export const SYSTEM_PROGRAM = new PublicKey('11111111111111111111111111111111');
 
 export interface SVM_CONTEXT {
     SVM_Connection: Connection,
+    SVM_SOON_RPC_URL: string,
     SVM_USER: Keypair,
     SVM_DEPOSITOR: Keypair,
     SVM_WITHDRAW_PROGRAM_ID: PublicKey,
@@ -31,6 +32,10 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
     const SVM_CONNECTION_URL = process.env.SVM_CONNECTION_URL
     if (!SVM_CONNECTION_URL)
         throw `missing required env SVM_CONNECTION_URL for SVM`;
+
+    const SVM_SOON_RPC_URL = process.env.SVM_SOON_RPC_URL
+    if (!SVM_SOON_RPC_URL)
+        throw `missing required env SVM_SOON_RPC_URL for SVM`;
 
     let SVM_WITHDRAW_PROGRAM_KEY = process.env.SVM_WITHDRAW_PROGRAM_KEY
     if (!SVM_WITHDRAW_PROGRAM_KEY)
@@ -67,7 +72,8 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
         SVM_DEPOSITOR,
         SVM_WITHDRAW_PROGRAM_ID,
         SVM_L1_BLOCK_INFO_PROGRAM_ID,
-        SVM_DEPOSIT_PROGRAM_ID
+        SVM_DEPOSIT_PROGRAM_ID,
+        SVM_SOON_RPC_URL
     }
 }
 
