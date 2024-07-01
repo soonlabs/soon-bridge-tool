@@ -1,11 +1,10 @@
 import minimist from "minimist";
-import {isValidSolanaPublicKey, parseWithdrawTxInfo} from "./helper/tool";
+import {base58PublicKeyToHex, isValidSolanaPublicKey, parseWithdrawTxInfo} from "./helper/tool";
 import {createSVMContext} from "./helper/svm_context";
 import {PublicKey} from "@solana/web3.js";
 import {createEVMContext} from "./helper/evm_context";
 import {OptimismPortal__factory} from "../typechain-types";
 import axios from "axios";
-import {Types} from "../typechain-types/OptimismPortal";
 
 const options = {
     string: ['withdrawId', 'withdrawHeight']
@@ -24,33 +23,36 @@ async function main() {
         throw new Error("invalid withdraw Id.");
     }
     //get withdraw tx
+    console.log("withdrawInfo.data:", withdrawInfo.data.toString("hex"));
     const withdrawTx = parseWithdrawTxInfo(withdrawInfo.data);
+    console.log("withdrawTx:", withdrawTx);
 
     //get output root proof
-    const response0 = await axios.post<Types.OutputRootProofStruct>(svmContext.SVM_SOON_RPC_URL, {
+    const response0 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
         jsonrpc: '2.0',
         id: 1,
         method: "outputAtBlock",
         params: [Number(args.withdrawHeight)]
     });
-    let outputRootProof: Types.OutputRootProofStruct = response0.data;
     console.log("response.data:", response0.data);
-    console.log("outputRootProof:", outputRootProof);
 
     //get withdraw proof
-    const response1 = await axios.post(svmContext.SVM_Connection.rpcEndpoint, {
+    const response1 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
         jsonrpc: '2.0',
         id: 1,
         method: "getSoonWithdrawalProof",
         params: [args.withdrawId, Number(args.withdrawHeight)]
     });
     console.log("response.data:", response1.data);
-    const withdrawalProof: string[] = response1.data.withdrawalProof;
-    console.log("withdrawalProof:", withdrawalProof);
 
     let EVMContext = await createEVMContext(false);
     const OptimismPortal = OptimismPortal__factory.connect(EVMContext.EVM_OP_PORTAL, EVMContext.EVM_USER)
-    const receipt = await (await OptimismPortal.connect(EVMContext.EVM_USER).provePDAWithdrawalTransaction(withdrawTx, args.withdrawHeight, args.withdrawId, outputRootProof, withdrawalProof)).wait(1)
+    const receipt = await (await OptimismPortal.connect(EVMContext.EVM_USER).provePDAWithdrawalTransaction(withdrawTx, args.withdrawHeight, base58PublicKeyToHex(args.withdrawId), {
+        version: response0.data.result.version,
+        stateRoot: response0.data.result.stateRoot,
+        messagePasserStorageRoot: response0.data.result.withdrawalRoot,
+        latestBlockhash: response0.data.result.blockHash
+    }, response1.data.result.withdrawalProof)).wait(1)
 
     console.log(`Withdraw tx prove success. txHash: ${receipt.transactionHash}`);
 }

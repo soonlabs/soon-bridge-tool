@@ -1,6 +1,7 @@
 import {ethers, Wallet} from 'ethers';
 import {StaticJsonRpcProvider} from "@ethersproject/providers/src.ts/url-json-rpc-provider";
 import 'dotenv/config'
+import {formatEther} from "ethers/lib/utils";
 
 export interface EVM_CONTEXT {
     EVM_PROVIDER: StaticJsonRpcProvider,
@@ -31,12 +32,12 @@ export const createEVMContext = async (isHappyPass: boolean): Promise<EVM_CONTEX
     let EVM_USER = new ethers.Wallet(EVM_USER_KEY, EVM_PROVIDER);
     let balance = await EVM_USER.getBalance();
     console.log('evm user address:', await EVM_USER.getAddress());
-    console.log("evm user balance: ", balance);
+    console.log("evm user balance: ", formatEther(balance));
 
     let EVM_PROPOSER = new ethers.Wallet(EVM_PROPOSER_KEY, EVM_PROVIDER);
     balance = await EVM_USER.getBalance();
     console.log('evm proposer address:', await EVM_USER.getAddress());
-    console.log("evm proposer balance: ", balance);
+    console.log("evm proposer balance: ", formatEther(balance));
 
     return {
         EVM_PROVIDER,

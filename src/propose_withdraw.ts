@@ -26,8 +26,11 @@ async function main() {
     let EVMContext = await createEVMContext(false);
     const OptimismPortal = OptimismPortal__factory.connect(EVMContext.EVM_OP_PORTAL, EVMContext.EVM_USER)
     const l2OutputOracleAddress = await OptimismPortal.l2Oracle();
+    console.log(`l2OutputOracleAddress: ${l2OutputOracleAddress}`);
     const L2OutputOracle = L2OutputOracle__factory.connect(l2OutputOracleAddress, EVMContext.EVM_PROPOSER)
-    const receipt =await (await L2OutputOracle.proposeL2Output(response.data.outputRoot, args.withdrawHeight, "0x0000000000000000000000000000000000000000000000000000000000000000", 0)).wait(1)
+    console.log(`response.data.outputRoot: ${response.data.result.outputRoot}`);
+    console.log(`args.withdrawHeight: ${args.withdrawHeight}`);
+    const receipt =await (await L2OutputOracle.proposeL2Output(response.data.result.outputRoot, args.withdrawHeight, "0x0000000000000000000000000000000000000000000000000000000000000000", 0)).wait(1)
 
     console.log(`Propose withdraw success. txHash: ${receipt.transactionHash}`);
 }

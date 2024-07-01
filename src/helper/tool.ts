@@ -1,7 +1,7 @@
 import {ethers} from "ethers";
 import bs58 from 'bs58';
 import {Types} from "../../typechain-types/OptimismPortal";
-import {Numberu256} from "./number.utils";
+import BN from "bn.js";
 
 export function isValidEthereumAddress(address: string): boolean {
     return ethers.utils.isAddress(address);
@@ -33,13 +33,21 @@ export function isValidSolanaPublicKey(publicKey: string): boolean {
     }
 }
 
+export function base58PublicKeyToHex(publicKey: string): string {
+    const decoded = bs58.decode(publicKey);
+    if (decoded.length !== 32) {
+        throw "invalid public key"
+    }
+    return decoded.toString()
+}
+
 export function parseWithdrawTxInfo(withdrawInfoData: Buffer): Types.PdaWithdrawalTransactionStruct {
-    const nonce = Numberu256.fromBuffer(withdrawInfoData.slice(0, 32)).toString();
-    const sender = withdrawInfoData.slice(32, 64).toString("hex");
-    const target = withdrawInfoData.slice(64, 84).toString("hex")
-    const value = Numberu256.fromBuffer(withdrawInfoData.slice(84, 116)).toString();
-    const gasLimit = Numberu256.fromBuffer(withdrawInfoData.slice(116, 148)).toString();
-    const data = withdrawInfoData.slice(148).toString("hex")
+    const nonce = "0x" + withdrawInfoData.slice(0, 32).toString("hex")
+    const sender = "0x" + withdrawInfoData.slice(32, 64).toString("hex");
+    const target = "0x" + withdrawInfoData.slice(64, 84).toString("hex")
+    const value = "0x" + withdrawInfoData.slice(84, 116).toString("hex")
+    const gasLimit = "0x" + withdrawInfoData.slice(116, 148).toString("hex")
+    const data = "0x" + withdrawInfoData.slice(148).toString("hex")
 
     return {
         nonce,
