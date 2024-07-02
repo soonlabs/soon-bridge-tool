@@ -115,7 +115,7 @@ export async function sendTransaction(svmContext: SVM_CONTEXT, instructions: Tra
     const tx = new Transaction({ feePayer: svmContext.SVM_USER.publicKey });
     tx.add(...instructions);
 
-    const signature = await sendAndConfirmTransaction(svmContext.SVM_Connection, tx, [svmContext.SVM_USER], { skipPreflight, commitment: "confirmed" });
+    const signature = await sendAndConfirmTransaction(svmContext.SVM_Connection, tx, [svmContext.SVM_USER], { skipPreflight, commitment: "finalized" });
     console.log(`send transaction success. signature: ${signature}`);
 
     return signature;
