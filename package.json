@@ -29,6 +29,7 @@
     "decimal.js": "^10.4.3",
     "dotenv": "^16.4.5",
     "ethers": "^5.7.2",
-    "minimist": "^1.2.8"
+    "minimist": "^1.2.8",
+    "prettier": "^3.3.2"
   }
 }

@@ -2,9 +2,9 @@
 import { ethers } from 'ethers';
 
 async function main() {
-    console.log("nothing yet..");
+  console.log('nothing yet..');
 }
 
 main().catch((error) => {
-    console.error(error);
+  console.error(error);
 });
