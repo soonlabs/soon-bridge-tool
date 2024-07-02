@@ -1,7 +1,7 @@
 import {createEVMContext} from "./helper/evm_context";
 import minimist from "minimist";
-import {isValidSolanaPublicKey} from "./helper/tool";
-import {OptimismPortal__factory} from "../typechain-types";
+import {base58PublicKeyToHex, isValidSolanaPublicKey} from "./helper/tool";
+import {L1StandardBridge__factory, OptimismPortal__factory} from "../typechain-types";
 
 const options = {
     string: ['l2Target', 'value', 'gasLimit']
@@ -15,8 +15,10 @@ async function main() {
     }
 
     let EVMContext = await createEVMContext(false);
-    const OptimismPortal = OptimismPortal__factory.connect(EVMContext.EVM_OP_PORTAL, EVMContext.EVM_USER)
-    const receipt = await (await OptimismPortal.connect(EVMContext.EVM_USER).depositTransaction(args.l2Target, args.value, args.gasLimit, false, "0x")).wait(1)
+    const L1Bridge = L1StandardBridge__factory.connect(EVMContext.EVM_STANDARD_BRIDGE, EVMContext.EVM_USER)
+    const receipt = await (await L1Bridge.bridgeETHTo(base58PublicKeyToHex(args.l2Target), args.gasLimit, "0x", {
+        value: args.value
+    })).wait(1)
 
     console.log(`Deposit ETH success. txHash: ${receipt.transactionHash}`);
 }

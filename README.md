@@ -19,3 +19,6 @@
 
 ### finalize withdraw transaction
 `yarn finalize_withdraw --withdrawId=5y4cigJregZVg7QzjXHPJCZwq1nGzjzqWkG7JjXiRHo7`
+
+### deposit eth transaction
+`yarn deposit_eth --l2Target=442GBBJoU23a92aA3bs9hVkQRxB3SsF3hzbgnjbYetFL --vaule=200000 --gasLimit=100000`
