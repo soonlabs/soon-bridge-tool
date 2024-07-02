@@ -1,7 +1,6 @@
 import {ethers} from "ethers";
 import bs58 from 'bs58';
 import {Types} from "../../typechain-types/OptimismPortal";
-import BN from "bn.js";
 
 export function isValidEthereumAddress(address: string): boolean {
     return ethers.utils.isAddress(address);
@@ -38,7 +37,7 @@ export function base58PublicKeyToHex(publicKey: string): string {
     if (decoded.length !== 32) {
         throw "invalid public key"
     }
-    return decoded.toString()
+    return ethers.utils.hexlify(decoded)
 }
 
 export function parseWithdrawTxInfo(withdrawInfoData: Buffer): Types.PdaWithdrawalTransactionStruct {

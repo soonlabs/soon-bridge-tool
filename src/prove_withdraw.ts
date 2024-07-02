@@ -3,8 +3,10 @@ import {base58PublicKeyToHex, isValidSolanaPublicKey, parseWithdrawTxInfo} from 
 import {createSVMContext} from "./helper/svm_context";
 import {PublicKey} from "@solana/web3.js";
 import {createEVMContext} from "./helper/evm_context";
-import {OptimismPortal__factory} from "../typechain-types";
+import {L2OutputOracle__factory, OptimismPortal__factory} from "../typechain-types";
 import axios from "axios";
+import {ethers} from "ethers";
+import bs58 from "bs58";
 
 const options = {
     string: ['withdrawId', 'withdrawHeight']
@@ -23,7 +25,6 @@ async function main() {
         throw new Error("invalid withdraw Id.");
     }
     //get withdraw tx
-    console.log("withdrawInfo.data:", withdrawInfo.data.toString("hex"));
     const withdrawTx = parseWithdrawTxInfo(withdrawInfo.data);
     console.log("withdrawTx:", withdrawTx);
 
@@ -34,7 +35,7 @@ async function main() {
         method: "outputAtBlock",
         params: [Number(args.withdrawHeight)]
     });
-    console.log("response.data:", response0.data);
+    console.log("outputAtBlock response data:", response0.data);
 
     //get withdraw proof
     const response1 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
@@ -43,15 +44,19 @@ async function main() {
         method: "getSoonWithdrawalProof",
         params: [args.withdrawId, Number(args.withdrawHeight)]
     });
-    console.log("response.data:", response1.data);
+    console.log("getSoonWithdrawalProof response data:", response1.data);
 
     let EVMContext = await createEVMContext(false);
     const OptimismPortal = OptimismPortal__factory.connect(EVMContext.EVM_OP_PORTAL, EVMContext.EVM_USER)
-    const receipt = await (await OptimismPortal.connect(EVMContext.EVM_USER).provePDAWithdrawalTransaction(withdrawTx, args.withdrawHeight, base58PublicKeyToHex(args.withdrawId), {
-        version: response0.data.result.version,
+    const l2OutputOracleAddress = await OptimismPortal.l2Oracle();
+    const L2OutputOracle = L2OutputOracle__factory.connect(l2OutputOracleAddress, EVMContext.EVM_PROPOSER)
+    const l2OutputIndex = await L2OutputOracle.getL2OutputIndexAfter(args.withdrawHeight)
+    const hexPubkey = ethers.utils.hexlify(bs58.decode(args.withdrawId));
+    const receipt = await (await OptimismPortal.connect(EVMContext.EVM_USER).provePDAWithdrawalTransaction(withdrawTx, l2OutputIndex, hexPubkey, {
+        version: '0x0000000000000000000000000000000000000000000000000000000000000000',
         stateRoot: response0.data.result.stateRoot,
         messagePasserStorageRoot: response0.data.result.withdrawalRoot,
-        latestBlockhash: response0.data.result.blockHash
+        latestBlockhash: ethers.utils.hexlify(bs58.decode(response0.data.result.blockHash))
     }, response1.data.result.withdrawalProof)).wait(1)
 
     console.log(`Withdraw tx prove success. txHash: ${receipt.transactionHash}`);
