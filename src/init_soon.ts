@@ -1,10 +1,10 @@
 import {
-    createSVMContext, genDepositInfoAccount, initProgramDataAccount,
+    createSVMContext, genDepositInfoAccount, genProgramDataAccountKey, initProgramDataAccount,
     sendTransaction,
     SVM_CONTEXT,
-    SYSTEM_PROGRAM
+    SYSTEM_PROGRAM, transferSOL
 } from "./helper/svm_context";
-import {LAMPORTS_PER_SOL, TransactionInstruction} from "@solana/web3.js";
+import {LAMPORTS_PER_SOL, PublicKey, SystemProgram, TransactionInstruction} from "@solana/web3.js";
 
 async function createL1BlockInfo(svmContext: SVM_CONTEXT) {
     console.log("start createL1BlockInfo");
@@ -42,20 +42,14 @@ async function createWithdrawCounter(svmContext: SVM_CONTEXT) {
     return initProgramDataAccount(svmContext, "svm-withdraw-counter", svmContext.SVM_WITHDRAW_PROGRAM_ID)
 }
 
-async function airdropForUser(svmContext: SVM_CONTEXT) {
-    console.log("start airdropForUser");
-    await svmContext.SVM_Connection.requestAirdrop(svmContext.SVM_USER.publicKey, LAMPORTS_PER_SOL)
-}
-
-async function airdropForVault(svmContext: SVM_CONTEXT) {
-    console.log("start airdropForVault");
-    await svmContext.SVM_Connection.requestAirdrop(svmContext.SVM_USER.publicKey, LAMPORTS_PER_SOL)
+async function transferForVault(svmContext: SVM_CONTEXT) {
+    console.log("transfer 10000 sol for vault");
+    const vault  = genProgramDataAccountKey("vault", svmContext.SVM_DEPOSIT_PROGRAM_ID)
+    await transferSOL(svmContext, vault, LAMPORTS_PER_SOL * 10000)
 }
 
 async function main() {
     let svmContext = await createSVMContext();
-
-    await airdropForUser(svmContext)
 
     await createL1BlockInfo(svmContext)
 
@@ -65,8 +59,7 @@ async function main() {
 
     await createWithdrawCounter(svmContext)
 
-    await airdropForVault(svmContext)
-
+    await transferForVault(svmContext)
 }
 
 main().catch((error) => {

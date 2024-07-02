@@ -1,8 +1,8 @@
 import {
     Connection,
-    Keypair,
+    Keypair, LAMPORTS_PER_SOL,
     PublicKey,
-    sendAndConfirmTransaction,
+    sendAndConfirmTransaction, SystemProgram,
     Transaction,
     TransactionInstruction
 } from "@solana/web3.js";
@@ -119,5 +119,14 @@ export async function sendTransaction(svmContext: SVM_CONTEXT, instructions: Tra
     console.log(`send transaction success. signature: ${signature}`);
 
     return signature;
+}
+
+export async function transferSOL(svmContext: SVM_CONTEXT, to: PublicKey, amount: number): Promise<string> {
+    const instruction = SystemProgram.transfer({
+        fromPubkey: svmContext.SVM_USER.publicKey,
+        toPubkey: to,
+        lamports: amount
+    })
+    return await sendTransaction(svmContext, [instruction])
 }
 
