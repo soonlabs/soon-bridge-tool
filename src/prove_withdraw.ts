@@ -33,12 +33,27 @@ async function main() {
   const withdrawTx = parseWithdrawTxInfo(withdrawInfo.data);
   console.log('withdrawTx:', withdrawTx);
 
+  let EVMContext = await createEVMContext(false);
+  const OptimismPortal = OptimismPortal__factory.connect(
+      EVMContext.EVM_OP_PORTAL,
+      EVMContext.EVM_USER,
+  );
+  const l2OutputOracleAddress = await OptimismPortal.l2Oracle();
+  const L2OutputOracle = L2OutputOracle__factory.connect(
+      l2OutputOracleAddress,
+      EVMContext.EVM_PROPOSER,
+  );
+  const l2OutputIndex = await L2OutputOracle.getL2OutputIndexAfter(
+      args.withdrawHeight,
+  );
+  const proposeL2Height = (await L2OutputOracle.getL2Output(l2OutputIndex)).l2BlockNumber;
+
   //get output root proof
   const response0 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
     jsonrpc: '2.0',
     id: 1,
     method: 'outputAtBlock',
-    params: [Number(args.withdrawHeight)],
+    params: [proposeL2Height.toNumber()],
   });
   console.log('outputAtBlock response data:', response0.data);
 
@@ -47,23 +62,10 @@ async function main() {
     jsonrpc: '2.0',
     id: 1,
     method: 'getSoonWithdrawalProof',
-    params: [args.withdrawId, Number(args.withdrawHeight)],
+    params: [args.withdrawId, proposeL2Height.toNumber()],
   });
   console.log('getSoonWithdrawalProof response data:', response1.data);
 
-  let EVMContext = await createEVMContext(false);
-  const OptimismPortal = OptimismPortal__factory.connect(
-    EVMContext.EVM_OP_PORTAL,
-    EVMContext.EVM_USER,
-  );
-  const l2OutputOracleAddress = await OptimismPortal.l2Oracle();
-  const L2OutputOracle = L2OutputOracle__factory.connect(
-    l2OutputOracleAddress,
-    EVMContext.EVM_PROPOSER,
-  );
-  const l2OutputIndex = await L2OutputOracle.getL2OutputIndexAfter(
-    args.withdrawHeight,
-  );
   const hexPubkey = ethers.utils.hexlify(bs58.decode(args.withdrawId));
   const receipt = await (
     await OptimismPortal.connect(
