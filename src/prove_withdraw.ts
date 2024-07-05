@@ -35,18 +35,19 @@ async function main() {
 
   let EVMContext = await createEVMContext(false);
   const OptimismPortal = OptimismPortal__factory.connect(
-      EVMContext.EVM_OP_PORTAL,
-      EVMContext.EVM_USER,
+    EVMContext.EVM_OP_PORTAL,
+    EVMContext.EVM_USER,
   );
   const l2OutputOracleAddress = await OptimismPortal.l2Oracle();
   const L2OutputOracle = L2OutputOracle__factory.connect(
-      l2OutputOracleAddress,
-      EVMContext.EVM_PROPOSER,
+    l2OutputOracleAddress,
+    EVMContext.EVM_PROPOSER,
   );
   const l2OutputIndex = await L2OutputOracle.getL2OutputIndexAfter(
-      args.withdrawHeight,
+    args.withdrawHeight,
   );
-  const proposeL2Height = (await L2OutputOracle.getL2Output(l2OutputIndex)).l2BlockNumber;
+  const proposeL2Height = (await L2OutputOracle.getL2Output(l2OutputIndex))
+    .l2BlockNumber;
 
   //get output root proof
   const response0 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
