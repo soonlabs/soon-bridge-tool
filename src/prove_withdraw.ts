@@ -1,8 +1,5 @@
 import minimist from 'minimist';
-import {
-  isValidSolanaPublicKey,
-  parseWithdrawTxInfo,
-} from './helper/tool';
+import { isValidSolanaPublicKey, parseWithdrawTxInfo } from './helper/tool';
 import { createSVMContext } from './helper/svm_context';
 import { PublicKey } from '@solana/web3.js';
 import { createEVMContext } from './helper/evm_context';
@@ -85,6 +82,9 @@ async function main() {
         ),
       },
       response1.data.result.withdrawalProof,
+      {
+        gasLimit: 500000,
+      },
     )
   ).wait(1);
 

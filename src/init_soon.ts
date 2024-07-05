@@ -8,10 +8,7 @@ import {
   SYSTEM_PROGRAM,
   transferSOL,
 } from './helper/svm_context';
-import {
-  LAMPORTS_PER_SOL,
-  TransactionInstruction,
-} from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, TransactionInstruction } from '@solana/web3.js';
 
 async function createL1BlockInfo(svmContext: SVM_CONTEXT) {
   console.log('start createL1BlockInfo');

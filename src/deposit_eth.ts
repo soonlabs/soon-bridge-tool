@@ -1,9 +1,7 @@
 import { createEVMContext } from './helper/evm_context';
 import minimist from 'minimist';
 import { base58PublicKeyToHex, isValidSolanaPublicKey } from './helper/tool';
-import {
-  L1StandardBridge__factory,
-} from '../typechain-types';
+import { L1StandardBridge__factory } from '../typechain-types';
 
 const options = {
   string: ['l2Target', 'value', 'gasLimit'],
@@ -28,6 +26,7 @@ async function main() {
       '0x',
       {
         value: args.value,
+        gasLimit: 300000,
       },
     )
   ).wait(1);

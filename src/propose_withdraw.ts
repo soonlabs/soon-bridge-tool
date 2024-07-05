@@ -45,6 +45,9 @@ async function main() {
       args.withdrawHeight,
       '0x0000000000000000000000000000000000000000000000000000000000000000',
       0,
+      {
+        gasLimit: 500000,
+      },
     )
   ).wait(1);
 

@@ -4,10 +4,7 @@ import {
   sendTransaction,
   SYSTEM_PROGRAM,
 } from './helper/svm_context';
-import {
-  PublicKey,
-  TransactionInstruction,
-} from '@solana/web3.js';
+import { PublicKey, TransactionInstruction } from '@solana/web3.js';
 import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
