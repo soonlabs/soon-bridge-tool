@@ -1,5 +1,5 @@
 import minimist from 'minimist';
-import { isValidSolanaPublicKey } from './helper/tool';
+import { isValidSolanaPublicKey, parseWithdrawTxInfo } from './helper/tool';
 import { createSVMContext } from './helper/svm_context';
 import { PublicKey } from '@solana/web3.js';
 import { createEVMContext } from './helper/evm_context';
@@ -27,9 +27,21 @@ async function main() {
   if (!withdrawInfo || withdrawInfo.data.length < 148) {
     throw new Error('invalid withdraw Id.');
   }
-  const withdrawHash = ethers.utils.keccak256(
-    withdrawInfo.data.toString('hex'),
+  const withdrawTx = parseWithdrawTxInfo(withdrawInfo.data);
+  const encodeInfo = ethers.utils.defaultAbiCoder.encode(
+    ['uint', 'bytes32', 'address', 'uint', 'uint', 'bytes'],
+    [
+      withdrawTx.nonce,
+      withdrawTx.sender,
+      withdrawTx.target,
+      withdrawTx.value,
+      withdrawTx.gasLimit,
+      withdrawTx.data,
+    ],
   );
+  const withdrawHash = ethers.utils.keccak256(encodeInfo);
+
+  //console.log("withdrawHash:", withdrawHash);
 
   let EVMContext = await createEVMContext(false);
   const OptimismPortal = OptimismPortal__factory.connect(
@@ -45,8 +57,7 @@ async function main() {
     EVMContext.EVM_PROPOSER,
   );
   const finalizedPeriod = await L2OutputOracle.FINALIZATION_PERIOD_SECONDS();
-  const finalizedTimestamp = provenWithdrawals.timestamp.and(finalizedPeriod);
-
+  const finalizedTimestamp = provenWithdrawals.timestamp.add(finalizedPeriod);
   const latestBlock = await EVMContext.EVM_PROVIDER.getBlock('latest');
 
   if (finalizedTimestamp.gt(latestBlock.timestamp)) {
