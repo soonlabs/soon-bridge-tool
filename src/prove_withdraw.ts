@@ -48,6 +48,7 @@ async function main() {
   );
   const proposeL2Height = (await L2OutputOracle.getL2Output(l2OutputIndex))
     .l2BlockNumber;
+  console.log(`proposeL2Height: ${proposeL2Height}`);
 
   //get output root proof
   const response0 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
