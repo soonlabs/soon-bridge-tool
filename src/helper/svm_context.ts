@@ -5,6 +5,7 @@ import {
   PublicKey,
   sendAndConfirmTransaction,
   SystemProgram,
+  SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js';
@@ -20,6 +21,60 @@ export interface SVM_CONTEXT {
   SVM_WITHDRAW_PROGRAM_ID: PublicKey;
   SVM_L1_BLOCK_INFO_PROGRAM_ID: PublicKey;
   SVM_DEPOSIT_PROGRAM_ID: PublicKey;
+}
+
+export enum InstructionIndex {
+  CreateBot = 0,
+  RedeemAllAssetsFromBot = 1,
+  StartBot = 2,
+  StopBot = 3,
+  DepositToMango = 5,
+  WithdrawFromMango = 6,
+  PlaceMangoPerpOrder = 7,
+  CancelMangoPerpOrder = 8,
+  CancelAllMangoPerpOrders = 9,
+  CloseMangoPerpMarket = 10,
+  RedeemMNGOReward = 11,
+  CreateCellConfigAccount = 12,
+  SetCellFee = 13,
+  SetCellConfigDelegate = 14,
+  UpdateBotInfo = 15,
+  InitZetaMarginAccount = 16,
+  DepositToZeta = 17,
+  WithdrawFromZeta = 18,
+  InitZetaOpenOrders = 19,
+  PlaceZetaOrder = 20,
+  CancelZetaOrder = 21,
+  CreateMangoAccount = 22,
+  Deposit = 26,
+  Withdraw = 27,
+  SetCellConfigReserveInfo = 28,
+  SetBotGridInfo = 29,
+  CreateMangoSpotOpenOrders = 30,
+  PlaceMangoSpotOrder = 31,
+  MangoSettleFunds = 32,
+  CancelMangoSpotOrder = 33,
+  CancelAllMangoSpotOrders = 34,
+  RemoveMangoSpotAsset = 35,
+  CloseMangoSpotOpenOrders = 36,
+  ModifyMangoPerpOrder = 37,
+  ModifyMangoSpotOrder = 38,
+  CloseZetaOpenOrders = 39,
+  SetPoolWithdrawOnly = 40,
+  ResolveMangoDust = 41,
+  CloseMangoAccount = 42,
+  CellConfigRealloc = 46,
+  AdjustReserveRatio = 47,
+  SetCellConfig = 48,
+  UpgradeBotInfo = 49,
+  UpgradeBotInfo2 = 50,
+  SetBotReferrerKey = 51,
+  MangoReimbursement = 52,
+  CreateReimbursementAccount = 53,
+  ZetaPoolDeposit = 54,
+  ZetaPoolWithdraw = 55,
+  ZetaPoolAdjustReserve = 56,
+  PlaceZetaPerpOrder = 57,
 }
 
 export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
@@ -114,18 +169,20 @@ export async function initProgramDataAccount(
   const accountKey = genProgramDataAccountKey(seed, programId);
   console.log(`accountKey: ${accountKey}`);
 
-  const instructionIndex = Buffer.alloc(4);
-  instructionIndex.writeUInt32LE(0);
+  const instructionIndex = Buffer.from(
+    Int8Array.from([InstructionIndex.CreateBot]),
+  );
   const instruction = new TransactionInstruction({
     data: Buffer.concat([instructionIndex]),
     keys: [
+      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: accountKey, isSigner: false, isWritable: true },
       {
         pubkey: svmContext.SVM_USER.publicKey,
         isSigner: true,
         isWritable: true,
       },
-      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
     ],
     programId: programId,
   });

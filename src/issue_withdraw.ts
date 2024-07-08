@@ -1,10 +1,15 @@
 import {
   createSVMContext,
   genProgramDataAccountKey,
+  InstructionIndex,
   sendTransaction,
   SYSTEM_PROGRAM,
 } from './helper/svm_context';
-import { PublicKey, TransactionInstruction } from '@solana/web3.js';
+import {
+  PublicKey,
+  SYSVAR_RENT_PUBKEY,
+  TransactionInstruction,
+} from '@solana/web3.js';
 import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
@@ -42,8 +47,9 @@ async function main() {
     svmContext.SVM_WITHDRAW_PROGRAM_ID,
   );
 
-  const instructionIndex = Buffer.alloc(4);
-  instructionIndex.writeUInt32LE(1);
+  const instructionIndex = Buffer.from(
+    Int8Array.from([InstructionIndex.RedeemAllAssetsFromBot]),
+  );
   const instruction = new TransactionInstruction({
     data: Buffer.concat([
       instructionIndex,
@@ -53,6 +59,8 @@ async function main() {
       new Numberu128(args.gasLimit).toBuffer(),
     ]),
     keys: [
+      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: counterKey, isSigner: false, isWritable: true },
       { pubkey: withdrawTxKey, isSigner: false, isWritable: true },
       {
@@ -60,7 +68,6 @@ async function main() {
         isSigner: true,
         isWritable: false,
       },
-      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
     ],
     programId: svmContext.SVM_WITHDRAW_PROGRAM_ID,
   });
