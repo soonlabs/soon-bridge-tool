@@ -42,6 +42,12 @@ async function main() {
     svmContext.SVM_WITHDRAW_PROGRAM_ID,
   );
 
+  //get vault key
+  const vaultKey = genProgramDataAccountKey(
+    'vault',
+    svmContext.SVM_DEPOSIT_PROGRAM_ID,
+  );
+
   const instructionIndex = Buffer.alloc(4);
   instructionIndex.writeUInt32LE(1);
   const instruction = new TransactionInstruction({
@@ -55,6 +61,7 @@ async function main() {
     keys: [
       { pubkey: counterKey, isSigner: false, isWritable: true },
       { pubkey: withdrawTxKey, isSigner: false, isWritable: true },
+      { pubkey: vaultKey, isSigner: false, isWritable: true },
       {
         pubkey: svmContext.SVM_USER.publicKey,
         isSigner: true,
