@@ -45,7 +45,7 @@ async function main() {
   //get vault key
   const vaultKey = genProgramDataAccountKey(
     'vault',
-    svmContext.SVM_DEPOSIT_PROGRAM_ID,
+    svmContext.SVM_WITHDRAW_PROGRAM_ID,
   );
 
   const instructionIndex = Buffer.alloc(4);
