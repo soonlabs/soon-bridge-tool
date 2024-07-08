@@ -47,6 +47,12 @@ async function main() {
     svmContext.SVM_WITHDRAW_PROGRAM_ID,
   );
 
+  //get vault key
+  const vaultKey = genProgramDataAccountKey(
+      'vault',
+      svmContext.SVM_WITHDRAW_PROGRAM_ID,
+  );
+
   const instructionIndex = Buffer.from(
     Int8Array.from([InstructionIndex.RedeemAllAssetsFromBot]),
   );
@@ -63,6 +69,7 @@ async function main() {
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: counterKey, isSigner: false, isWritable: true },
       { pubkey: withdrawTxKey, isSigner: false, isWritable: true },
+      { pubkey: vaultKey, isSigner: false, isWritable: true },
       {
         pubkey: svmContext.SVM_USER.publicKey,
         isSigner: true,
