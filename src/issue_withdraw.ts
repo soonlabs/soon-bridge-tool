@@ -52,6 +52,7 @@ async function main() {
       'vault',
       svmContext.SVM_WITHDRAW_PROGRAM_ID,
   );
+  console.log(`vaultKey key: ${vaultKey.toString()}`);
 
   const instructionIndex = Buffer.from(
     Int8Array.from([InstructionIndex.RedeemAllAssetsFromBot]),
