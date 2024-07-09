@@ -1,5 +1,6 @@
 import {
   createSVMContext,
+  DEFAULT_DEPOSIT_PROGRAM,
   genProgramDataAccountKey,
   InstructionIndex,
   sendTransaction,
@@ -48,10 +49,7 @@ async function main() {
   );
 
   //get vault key
-  const vaultKey = genProgramDataAccountKey(
-      'vault',
-      svmContext.SVM_WITHDRAW_PROGRAM_ID,
-  );
+  const vaultKey = genProgramDataAccountKey('vault', DEFAULT_DEPOSIT_PROGRAM);
   console.log(`vaultKey key: ${vaultKey.toString()}`);
 
   const instructionIndex = Buffer.from(

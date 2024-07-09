@@ -12,6 +12,15 @@ import {
 import 'dotenv/config';
 
 export const SYSTEM_PROGRAM = new PublicKey('11111111111111111111111111111111');
+export const DEFAULT_DEPOSIT_PROGRAM = new PublicKey(
+  'Deposit111111111111111111111111111111111111',
+);
+export const DEFAULT_L1_BLOCK_INFO_PROGRAM = new PublicKey(
+  'L1BLockinfo11111111111111111111111111111111',
+);
+export const DEFAULT_WITHDRAW_PROGRAM = new PublicKey(
+  'SvmWithdrawBridge11111111111111111111111111',
+);
 
 export interface SVM_CONTEXT {
   SVM_Connection: Connection;
@@ -27,54 +36,6 @@ export enum InstructionIndex {
   CreateBot = 0,
   RedeemAllAssetsFromBot = 1,
   StartBot = 2,
-  StopBot = 3,
-  DepositToMango = 5,
-  WithdrawFromMango = 6,
-  PlaceMangoPerpOrder = 7,
-  CancelMangoPerpOrder = 8,
-  CancelAllMangoPerpOrders = 9,
-  CloseMangoPerpMarket = 10,
-  RedeemMNGOReward = 11,
-  CreateCellConfigAccount = 12,
-  SetCellFee = 13,
-  SetCellConfigDelegate = 14,
-  UpdateBotInfo = 15,
-  InitZetaMarginAccount = 16,
-  DepositToZeta = 17,
-  WithdrawFromZeta = 18,
-  InitZetaOpenOrders = 19,
-  PlaceZetaOrder = 20,
-  CancelZetaOrder = 21,
-  CreateMangoAccount = 22,
-  Deposit = 26,
-  Withdraw = 27,
-  SetCellConfigReserveInfo = 28,
-  SetBotGridInfo = 29,
-  CreateMangoSpotOpenOrders = 30,
-  PlaceMangoSpotOrder = 31,
-  MangoSettleFunds = 32,
-  CancelMangoSpotOrder = 33,
-  CancelAllMangoSpotOrders = 34,
-  RemoveMangoSpotAsset = 35,
-  CloseMangoSpotOpenOrders = 36,
-  ModifyMangoPerpOrder = 37,
-  ModifyMangoSpotOrder = 38,
-  CloseZetaOpenOrders = 39,
-  SetPoolWithdrawOnly = 40,
-  ResolveMangoDust = 41,
-  CloseMangoAccount = 42,
-  CellConfigRealloc = 46,
-  AdjustReserveRatio = 47,
-  SetCellConfig = 48,
-  UpgradeBotInfo = 49,
-  UpgradeBotInfo2 = 50,
-  SetBotReferrerKey = 51,
-  MangoReimbursement = 52,
-  CreateReimbursementAccount = 53,
-  ZetaPoolDeposit = 54,
-  ZetaPoolWithdraw = 55,
-  ZetaPoolAdjustReserve = 56,
-  PlaceZetaPerpOrder = 57,
 }
 
 export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
@@ -92,18 +53,29 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
   const SVM_SOON_RPC_URL = process.env.SVM_SOON_RPC_URL;
   if (!SVM_SOON_RPC_URL) throw `missing required env SVM_SOON_RPC_URL for SVM`;
 
-  let SVM_WITHDRAW_PROGRAM_KEY = process.env.SVM_WITHDRAW_PROGRAM_KEY;
-  if (!SVM_WITHDRAW_PROGRAM_KEY)
-    SVM_WITHDRAW_PROGRAM_KEY = 'SvmWithdrawBridge11111111111111111111111111';
-
-  let SVM_L1_BLOCK_INFO_PROGRAM_KEY = process.env.SVM_L1_BLOCK_INFO_PROGRAM_KEY;
-  if (!SVM_L1_BLOCK_INFO_PROGRAM_KEY)
-    SVM_L1_BLOCK_INFO_PROGRAM_KEY =
-      'L1BLockinfo11111111111111111111111111111111';
-
+  let SVM_DEPOSIT_PROGRAM_ID;
   let SVM_DEPOSIT_PROGRAM_KEY = process.env.SVM_DEPOSIT_PROGRAM_KEY;
-  if (!SVM_DEPOSIT_PROGRAM_KEY)
-    SVM_DEPOSIT_PROGRAM_KEY = 'Deposit111111111111111111111111111111111111';
+  if (SVM_DEPOSIT_PROGRAM_KEY) {
+    SVM_DEPOSIT_PROGRAM_ID = new PublicKey(SVM_DEPOSIT_PROGRAM_KEY);
+  } else {
+    SVM_DEPOSIT_PROGRAM_ID = DEFAULT_DEPOSIT_PROGRAM;
+  }
+
+  let SVM_WITHDRAW_PROGRAM_ID;
+  let SVM_WITHDRAW_PROGRAM_KEY = process.env.SVM_WITHDRAW_PROGRAM_KEY;
+  if (SVM_WITHDRAW_PROGRAM_KEY) {
+    SVM_WITHDRAW_PROGRAM_ID = new PublicKey(SVM_WITHDRAW_PROGRAM_KEY);
+  } else {
+    SVM_WITHDRAW_PROGRAM_ID = DEFAULT_WITHDRAW_PROGRAM;
+  }
+
+  let SVM_L1_BLOCK_INFO_PROGRAM_ID;
+  let SVM_L1_BLOCK_INFO_PROGRAM_KEY = process.env.SVM_L1_BLOCK_INFO_PROGRAM_KEY;
+  if (SVM_L1_BLOCK_INFO_PROGRAM_KEY) {
+    SVM_L1_BLOCK_INFO_PROGRAM_ID = new PublicKey(SVM_L1_BLOCK_INFO_PROGRAM_KEY);
+  } else {
+    SVM_L1_BLOCK_INFO_PROGRAM_ID = DEFAULT_L1_BLOCK_INFO_PROGRAM;
+  }
 
   const privateKeyArray = Uint8Array.from(
     SVM_USER_KEY.slice(1, -1).split(',').map(Number),
@@ -121,12 +93,6 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
 
   const balance = await SVM_Connection.getBalance(SVM_USER.publicKey);
   console.log('svm user balance: ', balance);
-
-  const SVM_WITHDRAW_PROGRAM_ID = new PublicKey(SVM_WITHDRAW_PROGRAM_KEY);
-  const SVM_L1_BLOCK_INFO_PROGRAM_ID = new PublicKey(
-    SVM_L1_BLOCK_INFO_PROGRAM_KEY,
-  );
-  const SVM_DEPOSIT_PROGRAM_ID = new PublicKey(SVM_DEPOSIT_PROGRAM_KEY);
 
   return {
     SVM_Connection,
