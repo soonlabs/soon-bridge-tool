@@ -11,6 +11,15 @@ import {
 import 'dotenv/config';
 
 export const SYSTEM_PROGRAM = new PublicKey('11111111111111111111111111111111');
+export const DEFAULT_DEPOSIT_PROGRAM = new PublicKey(
+  'Deposit111111111111111111111111111111111111',
+);
+export const DEFAULT_L1_BLOCK_INFO_PROGRAM = new PublicKey(
+  'L1BLockinfo11111111111111111111111111111111',
+);
+export const DEFAULT_WITHDRAW_PROGRAM = new PublicKey(
+  'SvmWithdrawBridge11111111111111111111111111',
+);
 
 export interface SVM_CONTEXT {
   SVM_Connection: Connection;
@@ -37,18 +46,29 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
   const SVM_SOON_RPC_URL = process.env.SVM_SOON_RPC_URL;
   if (!SVM_SOON_RPC_URL) throw `missing required env SVM_SOON_RPC_URL for SVM`;
 
-  let SVM_WITHDRAW_PROGRAM_KEY = process.env.SVM_WITHDRAW_PROGRAM_KEY;
-  if (!SVM_WITHDRAW_PROGRAM_KEY)
-    SVM_WITHDRAW_PROGRAM_KEY = 'SvmWithdrawBridge11111111111111111111111111';
-
-  let SVM_L1_BLOCK_INFO_PROGRAM_KEY = process.env.SVM_L1_BLOCK_INFO_PROGRAM_KEY;
-  if (!SVM_L1_BLOCK_INFO_PROGRAM_KEY)
-    SVM_L1_BLOCK_INFO_PROGRAM_KEY =
-      'L1BLockinfo11111111111111111111111111111111';
-
+  let SVM_DEPOSIT_PROGRAM_ID;
   let SVM_DEPOSIT_PROGRAM_KEY = process.env.SVM_DEPOSIT_PROGRAM_KEY;
-  if (!SVM_DEPOSIT_PROGRAM_KEY)
-    SVM_DEPOSIT_PROGRAM_KEY = 'Deposit111111111111111111111111111111111111';
+  if (SVM_DEPOSIT_PROGRAM_KEY) {
+    SVM_DEPOSIT_PROGRAM_ID = new PublicKey(SVM_DEPOSIT_PROGRAM_KEY);
+  } else {
+    SVM_DEPOSIT_PROGRAM_ID = DEFAULT_DEPOSIT_PROGRAM;
+  }
+
+  let SVM_WITHDRAW_PROGRAM_ID;
+  let SVM_WITHDRAW_PROGRAM_KEY = process.env.SVM_WITHDRAW_PROGRAM_KEY;
+  if (SVM_WITHDRAW_PROGRAM_KEY) {
+    SVM_WITHDRAW_PROGRAM_ID = new PublicKey(SVM_WITHDRAW_PROGRAM_KEY);
+  } else {
+    SVM_WITHDRAW_PROGRAM_ID = DEFAULT_WITHDRAW_PROGRAM;
+  }
+
+  let SVM_L1_BLOCK_INFO_PROGRAM_ID;
+  let SVM_L1_BLOCK_INFO_PROGRAM_KEY = process.env.SVM_L1_BLOCK_INFO_PROGRAM_KEY;
+  if (SVM_L1_BLOCK_INFO_PROGRAM_KEY) {
+    SVM_L1_BLOCK_INFO_PROGRAM_ID = new PublicKey(SVM_L1_BLOCK_INFO_PROGRAM_KEY);
+  } else {
+    SVM_L1_BLOCK_INFO_PROGRAM_ID = DEFAULT_L1_BLOCK_INFO_PROGRAM;
+  }
 
   const privateKeyArray = Uint8Array.from(
     SVM_USER_KEY.slice(1, -1).split(',').map(Number),
@@ -66,12 +86,6 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
 
   const balance = await SVM_Connection.getBalance(SVM_USER.publicKey);
   console.log('svm user balance: ', balance);
-
-  const SVM_WITHDRAW_PROGRAM_ID = new PublicKey(SVM_WITHDRAW_PROGRAM_KEY);
-  const SVM_L1_BLOCK_INFO_PROGRAM_ID = new PublicKey(
-    SVM_L1_BLOCK_INFO_PROGRAM_KEY,
-  );
-  const SVM_DEPOSIT_PROGRAM_ID = new PublicKey(SVM_DEPOSIT_PROGRAM_KEY);
 
   return {
     SVM_Connection,
