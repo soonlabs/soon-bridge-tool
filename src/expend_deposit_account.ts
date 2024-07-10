@@ -1,6 +1,7 @@
 import {
   createSVMContext,
   genDepositInfoAccount,
+  InstructionIndex,
   sendTransaction,
   SYSTEM_PROGRAM,
 } from './helper/svm_context';
@@ -23,21 +24,27 @@ async function main() {
     svmContext.SVM_DEPOSIT_PROGRAM_ID,
   );
 
-  const instructionIndex = Buffer.alloc(4);
-  instructionIndex.writeUInt32LE(2);
+  const instructionIndex = Buffer.from(
+    Int8Array.from([InstructionIndex.StartBot]),
+  );
   const instruction = new TransactionInstruction({
     data: Buffer.concat([
       instructionIndex,
       new Numberu16(args.expandNum.toString()).toBuffer(),
     ]),
     keys: [
+      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
       { pubkey: depositAccount, isSigner: false, isWritable: true },
+      {
+        pubkey: svmContext.SVM_DEPOSITOR.publicKey,
+        isSigner: false,
+        isWritable: true,
+      },
       {
         pubkey: svmContext.SVM_USER.publicKey,
         isSigner: true,
         isWritable: true,
       },
-      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
     ],
     programId: svmContext.SVM_DEPOSIT_PROGRAM_ID,
   });

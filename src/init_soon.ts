@@ -3,12 +3,17 @@ import {
   genDepositInfoAccount,
   genProgramDataAccountKey,
   initProgramDataAccount,
+  InstructionIndex,
   sendTransaction,
   SVM_CONTEXT,
   SYSTEM_PROGRAM,
   transferSOL,
 } from './helper/svm_context';
-import { LAMPORTS_PER_SOL, TransactionInstruction } from '@solana/web3.js';
+import {
+  LAMPORTS_PER_SOL,
+  SYSVAR_RENT_PUBKEY,
+  TransactionInstruction,
+} from '@solana/web3.js';
 
 async function createL1BlockInfo(svmContext: SVM_CONTEXT) {
   console.log('start createL1BlockInfo');
@@ -25,11 +30,14 @@ async function createDeposit(svmContext: SVM_CONTEXT) {
     svmContext.SVM_DEPOSITOR.publicKey,
     svmContext.SVM_DEPOSIT_PROGRAM_ID,
   );
-  const instructionIndex = Buffer.alloc(4);
-  instructionIndex.writeUInt32LE(1);
+  const instructionIndex = Buffer.from(
+    Int8Array.from([InstructionIndex.RedeemAllAssetsFromBot]),
+  );
   const instruction = new TransactionInstruction({
     data: Buffer.concat([instructionIndex]),
     keys: [
+      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: depositAccount, isSigner: false, isWritable: true },
       {
         pubkey: svmContext.SVM_DEPOSITOR.publicKey,
@@ -41,7 +49,6 @@ async function createDeposit(svmContext: SVM_CONTEXT) {
         isSigner: true,
         isWritable: true,
       },
-      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
     ],
     programId: svmContext.SVM_DEPOSIT_PROGRAM_ID,
   });
