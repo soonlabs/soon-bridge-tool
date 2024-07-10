@@ -36,7 +36,7 @@ async function main() {
     await OptimismPortal.connect(
       EVMContext.EVM_USER,
     ).finalizePDAWithdrawalTransaction(withdrawTx, {
-      gasLimit: 500000,
+      gasLimit: 1000000,
     })
   ).wait(1);
   console.log(`Finalize withdraw success. txHash: ${receipt.transactionHash}`);

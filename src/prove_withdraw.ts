@@ -87,7 +87,7 @@ async function main() {
       },
       response1.data.result.withdrawalProof,
       {
-        gasLimit: 500000,
+        gasLimit: 1000000,
       },
     )
   ).wait(1);

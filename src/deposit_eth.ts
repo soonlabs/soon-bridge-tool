@@ -26,7 +26,7 @@ async function main() {
       '0x',
       {
         value: args.value,
-        gasLimit: 300000,
+        gasLimit: 1000000,
       },
     )
   ).wait(1);
