@@ -164,15 +164,19 @@ export async function sendTransaction(
   const tx = new Transaction({ feePayer: svmContext.SVM_USER.publicKey });
   tx.add(...instructions);
 
-  const signature = await sendAndConfirmTransaction(
-    svmContext.SVM_Connection,
-    tx,
-    [svmContext.SVM_USER],
-    { skipPreflight, commitment: 'finalized' },
-  );
-  console.log(`send transaction success. signature: ${signature}`);
-
-  return signature;
+  try {
+    const signature = await sendAndConfirmTransaction(
+      svmContext.SVM_Connection,
+      tx,
+      [svmContext.SVM_USER],
+      { skipPreflight, commitment: 'finalized' },
+    );
+    console.log(`send transaction success. signature: ${signature}`);
+    return signature;
+  } catch (e) {
+    console.log(`send transaction failed. error: ${e}`);
+    return '';
+  }
 }
 
 export async function transferSOL(
