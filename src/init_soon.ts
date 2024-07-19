@@ -11,9 +11,11 @@ import {
 } from './helper/svm_context';
 import {
   LAMPORTS_PER_SOL,
+  PublicKey,
   SYSVAR_RENT_PUBKEY,
   TransactionInstruction,
 } from '@solana/web3.js';
+import { sleep } from './helper/tool';
 
 async function createL1BlockInfo(svmContext: SVM_CONTEXT) {
   console.log('start createL1BlockInfo');
@@ -74,13 +76,30 @@ async function createWithdrawCounter(svmContext: SVM_CONTEXT) {
   );
 }
 
+async function waitVaultAccountInfo(svmContext: SVM_CONTEXT, vault: PublicKey) {
+  console.log('check vault account created');
+  while (true) {
+    const accountInfo = await svmContext.SVM_Connection.getAccountInfo(vault);
+
+    if (accountInfo && accountInfo.data.length > 0) {
+      console.log('yeah. vault account created.');
+      return;
+    }
+    console.log('nop. wait 10s...');
+    await sleep(10000);
+  }
+}
+
 async function transferForVault(svmContext: SVM_CONTEXT) {
-  console.log('transfer 10000 sol for vault');
   const vault = genProgramDataAccountKey(
     'vault',
     svmContext.SVM_DEPOSIT_PROGRAM_ID,
   );
-  await transferSOL(svmContext, vault, LAMPORTS_PER_SOL * 10000);
+
+  await waitVaultAccountInfo(svmContext, vault);
+
+  console.log('transfer 1000000 sol for vault');
+  await transferSOL(svmContext, vault, LAMPORTS_PER_SOL * 1000000);
 }
 
 async function main() {
