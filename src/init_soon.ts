@@ -81,7 +81,7 @@ async function waitVaultAccountInfo(svmContext: SVM_CONTEXT, vault: PublicKey) {
   while (true) {
     const accountInfo = await svmContext.SVM_Connection.getAccountInfo(vault);
 
-    if (accountInfo && accountInfo.data.length > 0) {
+    if (accountInfo) {
       console.log('yeah. vault account created.');
       return;
     }
