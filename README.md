@@ -1,5 +1,5 @@
 # Install
-`yarn install`
+`yarn`
 
 # Usage
 ### init soon
@@ -19,6 +19,9 @@
 
 ### prove withdraw transaction
 `yarn prove_withdraw --withdrawId=5y4cigJregZVg7QzjXHPJCZwq1nGzjzqWkG7JjXiRHo7 --withdrawHeight=15020`
+
+### fetch withdraw finalized status
+`yarn fetch_withdraw_finalized --withdrawId=5y4cigJregZVg7QzjXHPJCZwq1nGzjzqWkG7JjXiRHo7`
 
 ### finalize withdraw transaction
 `yarn finalize_withdraw --withdrawId=5y4cigJregZVg7QzjXHPJCZwq1nGzjzqWkG7JjXiRHo7`
