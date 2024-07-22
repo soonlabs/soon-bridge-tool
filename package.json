@@ -15,6 +15,7 @@
     "fetch_withdraw_finalized": "npx ts-node --project tsconfig.json src/fetch_withdraw_finalized.ts",
     "finalize_withdraw": "npx ts-node --project tsconfig.json src/finalize_withdraw.ts",
     "deposit_eth": "npx ts-node --project tsconfig.json src/deposit_eth.ts",
+    "fetch_all_withdrawal_tx_by_user": "npx ts-node --project tsconfig.json src/fetch_all_withdrawal_tx_by_user.ts",
     "format": "prettier --write 'src/**/*.{ts,tsx}'"
   },
   "keywords": [],

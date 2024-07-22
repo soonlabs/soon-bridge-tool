@@ -28,3 +28,6 @@
 
 ### deposit eth transaction
 `yarn deposit_eth --l2Target=442GBBJoU23a92aA3bs9hVkQRxB3SsF3hzbgnjbYetFL --value=200000 --gasLimit=100000`
+
+### fetch all withdrawal transactions by user pubkey
+`yarn fetch_all_withdrawal_tx_by_user --sender=9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU`
