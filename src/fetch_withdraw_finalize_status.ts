@@ -48,25 +48,36 @@ async function main() {
     EVMContext.EVM_OP_PORTAL,
     EVMContext.EVM_USER,
   );
-  const provenWithdrawals =
-    await OptimismPortal.provenWithdrawals(withdrawHash);
 
-  const l2OutputOracleAddress = await OptimismPortal.l2Oracle();
-  const L2OutputOracle = L2OutputOracle__factory.connect(
-    l2OutputOracleAddress,
-    EVMContext.EVM_PROPOSER,
-  );
-  const finalizedPeriod = await L2OutputOracle.FINALIZATION_PERIOD_SECONDS();
-  const finalizedTimestamp = provenWithdrawals.timestamp.add(finalizedPeriod);
-  const latestBlock = await EVMContext.EVM_PROVIDER.getBlock('latest');
-
-  if (finalizedTimestamp.gt(latestBlock.timestamp)) {
-    const diff = finalizedTimestamp.sub(latestBlock.timestamp);
-    console.log(
-      `Not Finalised Yet. still need to wait: ${diff.toString()} seconds`,
-    );
+  const isFinalized = await OptimismPortal.finalizedWithdrawals(withdrawHash);
+  if (isFinalized) {
+    console.log('Withdraw is already Finalised.');
   } else {
-    console.log('Congratulation! withdraw Finalised.');
+    const provenWithdrawals =
+      await OptimismPortal.provenWithdrawals(withdrawHash);
+    if (provenWithdrawals.timestamp.toNumber() === 0) {
+      console.log('Withdraw need prove first.');
+    } else {
+      const l2OutputOracleAddress = await OptimismPortal.l2Oracle();
+      const L2OutputOracle = L2OutputOracle__factory.connect(
+        l2OutputOracleAddress,
+        EVMContext.EVM_PROPOSER,
+      );
+      const finalizedPeriod =
+        await L2OutputOracle.FINALIZATION_PERIOD_SECONDS();
+      const finalizedTimestamp =
+        provenWithdrawals.timestamp.add(finalizedPeriod);
+      const latestBlock = await EVMContext.EVM_PROVIDER.getBlock('latest');
+
+      if (finalizedTimestamp.gt(latestBlock.timestamp)) {
+        const diff = finalizedTimestamp.sub(latestBlock.timestamp);
+        console.log(
+          `Withdraw can't be finalised Yet. still need to wait: ${diff.toString()} seconds`,
+        );
+      } else {
+        console.log('Congratulation! withdraw can be finalised now.');
+      }
+    }
   }
 }
 

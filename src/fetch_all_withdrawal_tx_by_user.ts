@@ -28,17 +28,15 @@ async function main() {
           },
         },
       ],
-    }
+    },
   );
 
   console.log(
-    `Found ${accounts.length} withdrawal tx(s) for wallet ${sender}: `
+    `Found ${accounts.length} withdrawal tx(s) for wallet ${sender}: `,
   );
   // @ts-ignore
   accounts.forEach((account, i) => {
-    console.log(
-        `Withdraw tx PDA address ${i}: ${account.pubkey}`
-    );
+    console.log(`Withdraw tx PDA address ${i}: ${account.pubkey}`);
   });
 }
 
