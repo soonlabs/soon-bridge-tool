@@ -17,7 +17,7 @@
     "deposit_eth": "npx ts-node --project tsconfig.json src/deposit_eth.ts",
     "fetch_all_withdrawal_tx_by_user": "npx ts-node --project tsconfig.json src/fetch_all_withdrawal_tx_by_user.ts",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
-    "pkg": "pkg -t node18-linux-x64 src/init_soon.js"
+    "pkg": "tsc src/init_soon.ts || pkg -t node18-linux-x64 src/init_soon.js"
   },
   "keywords": [],
   "author": "",
