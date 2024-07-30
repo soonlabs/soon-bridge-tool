@@ -7,6 +7,7 @@
     "index": "npx ts-node --project tsconfig.json src/index.ts",
     "happypass": "npx ts-node --project tsconfig.json src/happy_pass.ts",
     "init_soon": "npx ts-node --project tsconfig.json src/init_soon.ts",
+    "reset_output_oracle": "npx ts-node --project tsconfig.json src/reset_output_oracle.ts",
     "expend_deposit": "npx ts-node --project tsconfig.json src/expend_deposit_account.ts",
     "issue_withdraw": "npx ts-node --project tsconfig.json src/issue_withdraw.ts",
     "propose_withdraw": "npx ts-node --project tsconfig.json src/propose_withdraw.ts",
@@ -17,7 +18,9 @@
     "deposit_eth": "npx ts-node --project tsconfig.json src/deposit_eth.ts",
     "fetch_all_withdrawal_tx_by_user": "npx ts-node --project tsconfig.json src/fetch_all_withdrawal_tx_by_user.ts",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
-    "pkg": "tsc src/init_soon.ts || pkg -t node18-linux-x64 src/init_soon.js --out-path bin"
+    "pkg": "yarn pkg_init_soon && yarn pkg_reset_output_oracle",
+    "pkg_init_soon": "tsc src/init_soon.ts || pkg -t node18-linux-x64 src/init_soon.js --out-path bin",
+    "pkg_reset_output_oracle": "tsc src/reset_output_oracle.ts || pkg -t node18-linux-x64 src/reset_output_oracle.js --out-path bin"
   },
   "keywords": [],
   "author": "",
