@@ -8,8 +8,14 @@
 ### expend deposit account info
 `yarn expend_deposit --expandNum=10`
 
-### issue withdraw transaction
-`yarn issue_withdraw --l1Target='0x018281853eCC543Aa251732e8FDaa7323247eBeB' --value=200000000 --gasLimit=100000`
+### create SPL token on L2
+`yarn create_spl_token --l1Token='0x018281853eCC543Aa251732e8FDaa7323247eBeB' --name='USD Coin' --symbol='USDC' --decimals=6`
+
+### issue withdraw eth transaction
+`yarn issue_withdraw_eth --l1Target='0x018281853eCC543Aa251732e8FDaa7323247eBeB' --value=200000000 --gasLimit=100000`
+
+### issue withdraw spl transaction
+`yarn issue_withdraw_spl --l1Target='0x018281853eCC543Aa251732e8FDaa7323247eBeB' --amount=200000000 --gasLimit=100000`
 
 ### propose withdraw transaction
 `yarn propose_withdraw --withdrawHeight=15020`

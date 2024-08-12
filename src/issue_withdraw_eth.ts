@@ -1,10 +1,10 @@
 import {
+  BridgeInstructionIndex,
   createSVMContext,
-  DEFAULT_DEPOSIT_PROGRAM,
+  DEFAULT_BRIDGE_PROGRAM,
   genProgramDataAccountKey,
-  InstructionIndex,
   sendTransaction,
-  SYSTEM_PROGRAM,
+  SYSTEM_PROGRAM
 } from './helper/svm_context';
 import {
   PublicKey,
@@ -31,7 +31,7 @@ async function main() {
   //get counter key
   const counterKey = genProgramDataAccountKey(
     'svm-withdraw-counter',
-    svmContext.SVM_WITHDRAW_PROGRAM_ID,
+    svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
   console.log(`Counter key: ${counterKey.toString()}`);
 
@@ -45,20 +45,19 @@ async function main() {
   //get withdraw tx key
   const [withdrawTxKey] = PublicKey.findProgramAddressSync(
     [withdrawTxSeed],
-    svmContext.SVM_WITHDRAW_PROGRAM_ID,
+    svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
 
   //get vault key
-  const vaultKey = genProgramDataAccountKey('vault', DEFAULT_DEPOSIT_PROGRAM);
+  const vaultKey = genProgramDataAccountKey('vault', DEFAULT_BRIDGE_PROGRAM);
   console.log(`vaultKey key: ${vaultKey.toString()}`);
 
   const instructionIndex = Buffer.from(
-    Int8Array.from([InstructionIndex.RedeemAllAssetsFromBot]),
+    Int8Array.from([BridgeInstructionIndex.WithdrawETH]),
   );
   const instruction = new TransactionInstruction({
     data: Buffer.concat([
       instructionIndex,
-      svmContext.SVM_USER.publicKey.toBuffer(),
       Buffer.concat([ethers.utils.arrayify(args.l1Target)]),
       new Numberu128(args.value).toBuffer(),
       new Numberu128(args.gasLimit).toBuffer(),
@@ -75,7 +74,7 @@ async function main() {
         isWritable: false,
       },
     ],
-    programId: svmContext.SVM_WITHDRAW_PROGRAM_ID,
+    programId: svmContext.SVM_BRIDGE_PROGRAM_ID,
   });
 
   const signature = await sendTransaction(svmContext, [instruction]);
