@@ -1,11 +1,13 @@
 // src/index.ts
 import { ethers } from 'ethers';
 import {base58PublicKeyToHex} from "./helper/tool";
+import {createSVMContext} from "./helper/svm_context";
 
 async function main() {
-  console.log('nothing yet..');
-  const hex = base58PublicKeyToHex("7jz49FaN6iDVYUrXs9EVP9kdQo8ZLTH411h8w8DVsdLs");
-  console.log("hex:", hex);
+  let svmContext = await createSVMContext();
+  const signature = "MqJydEqMWeDChKGh6VSN8JoAZhNAApKjNzRCshk2B9czZGoVPoT5Y8MJivxWH4uZWEA4dN3GG167GYq3ycAzuZg";
+  const status = await svmContext.SVM_Connection.getSignatureStatus(signature);
+  console.log(`Tx Signature Height: ${status!.value?.slot}`);
 }
 
 main().catch((error) => {

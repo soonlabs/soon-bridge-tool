@@ -51,6 +51,7 @@ async function main() {
   //get vault key
   const vaultKey = genProgramDataAccountKey('vault', DEFAULT_DEPOSIT_PROGRAM);
   console.log(`vaultKey key: ${vaultKey.toString()}`);
+  console.log(`Withdraw ID: ${withdrawTxKey.toString()}`);
 
   const instructionIndex = Buffer.from(
     Int8Array.from([InstructionIndex.RedeemAllAssetsFromBot]),
@@ -80,7 +81,6 @@ async function main() {
 
   const signature = await sendTransaction(svmContext, [instruction]);
   const status = await svmContext.SVM_Connection.getSignatureStatus(signature);
-  console.log(`Withdraw ID: ${withdrawTxKey.toString()}`);
   console.log(`Withdraw Height: ${status!.value?.slot}`);
 }
 
