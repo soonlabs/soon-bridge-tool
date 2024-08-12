@@ -24,7 +24,6 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "./common";
 
 export interface ProtocolVersionsInterface extends utils.Interface {
@@ -70,11 +69,7 @@ export interface ProtocolVersionsInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "VERSION", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -88,15 +83,15 @@ export interface ProtocolVersionsInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "required", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setRecommended",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setRequired",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
@@ -225,10 +220,10 @@ export interface ProtocolVersions extends BaseContract {
      * @param _required Required protocol version to operate on this chain.
      */
     initialize(
-      _owner: PromiseOrValue<string>,
-      _required: PromiseOrValue<BigNumberish>,
-      _recommended: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _owner: string,
+      _required: BigNumberish,
+      _recommended: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -247,7 +242,7 @@ export interface ProtocolVersions extends BaseContract {
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
      */
     renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -262,8 +257,8 @@ export interface ProtocolVersions extends BaseContract {
      * @param _recommended New recommended protocol version.
      */
     setRecommended(
-      _recommended: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _recommended: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -271,16 +266,16 @@ export interface ProtocolVersions extends BaseContract {
      * @param _required New required protocol version.
      */
     setRequired(
-      _required: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _required: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -311,10 +306,10 @@ export interface ProtocolVersions extends BaseContract {
    * @param _required Required protocol version to operate on this chain.
    */
   initialize(
-    _owner: PromiseOrValue<string>,
-    _required: PromiseOrValue<BigNumberish>,
-    _recommended: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _owner: string,
+    _required: BigNumberish,
+    _recommended: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -331,7 +326,7 @@ export interface ProtocolVersions extends BaseContract {
    * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
    */
   renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -344,8 +339,8 @@ export interface ProtocolVersions extends BaseContract {
    * @param _recommended New recommended protocol version.
    */
   setRecommended(
-    _recommended: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _recommended: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -353,16 +348,16 @@ export interface ProtocolVersions extends BaseContract {
    * @param _required New required protocol version.
    */
   setRequired(
-    _required: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _required: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
    */
   transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    newOwner: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -393,9 +388,9 @@ export interface ProtocolVersions extends BaseContract {
      * @param _required Required protocol version to operate on this chain.
      */
     initialize(
-      _owner: PromiseOrValue<string>,
-      _required: PromiseOrValue<BigNumberish>,
-      _recommended: PromiseOrValue<BigNumberish>,
+      _owner: string,
+      _required: BigNumberish,
+      _recommended: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -424,7 +419,7 @@ export interface ProtocolVersions extends BaseContract {
      * @param _recommended New recommended protocol version.
      */
     setRecommended(
-      _recommended: PromiseOrValue<BigNumberish>,
+      _recommended: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -433,7 +428,7 @@ export interface ProtocolVersions extends BaseContract {
      * @param _required New required protocol version.
      */
     setRequired(
-      _required: PromiseOrValue<BigNumberish>,
+      _required: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -441,7 +436,7 @@ export interface ProtocolVersions extends BaseContract {
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
+      newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -453,13 +448,13 @@ export interface ProtocolVersions extends BaseContract {
 
   filters: {
     "ConfigUpdate(uint256,uint8,bytes)"(
-      version?: PromiseOrValue<BigNumberish> | null,
-      updateType?: PromiseOrValue<BigNumberish> | null,
+      version?: BigNumberish | null,
+      updateType?: BigNumberish | null,
       data?: null
     ): ConfigUpdateEventFilter;
     ConfigUpdate(
-      version?: PromiseOrValue<BigNumberish> | null,
-      updateType?: PromiseOrValue<BigNumberish> | null,
+      version?: BigNumberish | null,
+      updateType?: BigNumberish | null,
       data?: null
     ): ConfigUpdateEventFilter;
 
@@ -467,12 +462,12 @@ export interface ProtocolVersions extends BaseContract {
     Initialized(version?: null): InitializedEventFilter;
 
     "OwnershipTransferred(address,address)"(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): OwnershipTransferredEventFilter;
     OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): OwnershipTransferredEventFilter;
   };
 
@@ -499,10 +494,10 @@ export interface ProtocolVersions extends BaseContract {
      * @param _required Required protocol version to operate on this chain.
      */
     initialize(
-      _owner: PromiseOrValue<string>,
-      _required: PromiseOrValue<BigNumberish>,
-      _recommended: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _owner: string,
+      _required: BigNumberish,
+      _recommended: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -519,7 +514,7 @@ export interface ProtocolVersions extends BaseContract {
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
      */
     renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -532,8 +527,8 @@ export interface ProtocolVersions extends BaseContract {
      * @param _recommended New recommended protocol version.
      */
     setRecommended(
-      _recommended: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _recommended: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -541,16 +536,16 @@ export interface ProtocolVersions extends BaseContract {
      * @param _required New required protocol version.
      */
     setRequired(
-      _required: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _required: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -582,10 +577,10 @@ export interface ProtocolVersions extends BaseContract {
      * @param _required Required protocol version to operate on this chain.
      */
     initialize(
-      _owner: PromiseOrValue<string>,
-      _required: PromiseOrValue<BigNumberish>,
-      _recommended: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _owner: string,
+      _required: BigNumberish,
+      _recommended: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -602,7 +597,7 @@ export interface ProtocolVersions extends BaseContract {
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
      */
     renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -615,8 +610,8 @@ export interface ProtocolVersions extends BaseContract {
      * @param _recommended New recommended protocol version.
      */
     setRecommended(
-      _recommended: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _recommended: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -624,16 +619,16 @@ export interface ProtocolVersions extends BaseContract {
      * @param _required New required protocol version.
      */
     setRequired(
-      _required: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _required: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**

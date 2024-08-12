@@ -68,25 +68,35 @@ export declare namespace Types {
   };
 }
 
-export interface OptimismPortalInterface extends utils.Interface {
+export interface OptimismPortal2Interface extends utils.Interface {
   functions: {
     "MIN_BRIDGE_VALUE()": FunctionFragment;
     "balance()": FunctionFragment;
+    "blacklistDisputeGame(address)": FunctionFragment;
+    "checkWithdrawal(bytes32,address)": FunctionFragment;
     "depositERC20Transaction(bytes32,uint256,uint256,uint64,bool,bytes)": FunctionFragment;
     "depositTransaction(bytes32,uint256,uint64,bool,bytes)": FunctionFragment;
+    "disputeGameBlacklist(address)": FunctionFragment;
+    "disputeGameFactory()": FunctionFragment;
+    "disputeGameFinalityDelaySeconds()": FunctionFragment;
     "donateETH()": FunctionFragment;
     "finalizeWithdrawalTransaction((uint256,bytes32,address,uint256,uint256,bytes))": FunctionFragment;
+    "finalizeWithdrawalTransactionExternalProof((uint256,bytes32,address,uint256,uint256,bytes),address)": FunctionFragment;
     "finalizedWithdrawals(bytes32)": FunctionFragment;
     "guardian()": FunctionFragment;
-    "initialize(address,address,address)": FunctionFragment;
-    "isOutputFinalized(uint256)": FunctionFragment;
-    "l2Oracle()": FunctionFragment;
+    "initialize(address,address,address,uint32)": FunctionFragment;
     "l2Sender()": FunctionFragment;
     "minimumGasLimit(uint64)": FunctionFragment;
+    "numProofSubmitters(bytes32)": FunctionFragment;
     "params()": FunctionFragment;
     "paused()": FunctionFragment;
+    "proofMaturityDelaySeconds()": FunctionFragment;
+    "proofSubmitters(bytes32,uint256)": FunctionFragment;
     "proveWithdrawalTransaction((uint256,bytes32,address,uint256,uint256,bytes),uint256,bytes32,(bytes32,bytes32,bytes32,bytes32),bytes[])": FunctionFragment;
-    "provenWithdrawals(bytes32)": FunctionFragment;
+    "provenWithdrawals(bytes32,address)": FunctionFragment;
+    "respectedGameType()": FunctionFragment;
+    "respectedGameTypeUpdatedAt()": FunctionFragment;
+    "setRespectedGameType(uint32)": FunctionFragment;
     "superchainConfig()": FunctionFragment;
     "systemConfig()": FunctionFragment;
     "version()": FunctionFragment;
@@ -96,21 +106,31 @@ export interface OptimismPortalInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "MIN_BRIDGE_VALUE"
       | "balance"
+      | "blacklistDisputeGame"
+      | "checkWithdrawal"
       | "depositERC20Transaction"
       | "depositTransaction"
+      | "disputeGameBlacklist"
+      | "disputeGameFactory"
+      | "disputeGameFinalityDelaySeconds"
       | "donateETH"
       | "finalizeWithdrawalTransaction"
+      | "finalizeWithdrawalTransactionExternalProof"
       | "finalizedWithdrawals"
       | "guardian"
       | "initialize"
-      | "isOutputFinalized"
-      | "l2Oracle"
       | "l2Sender"
       | "minimumGasLimit"
+      | "numProofSubmitters"
       | "params"
       | "paused"
+      | "proofMaturityDelaySeconds"
+      | "proofSubmitters"
       | "proveWithdrawalTransaction"
       | "provenWithdrawals"
+      | "respectedGameType"
+      | "respectedGameTypeUpdatedAt"
+      | "setRespectedGameType"
       | "superchainConfig"
       | "systemConfig"
       | "version"
@@ -121,6 +141,14 @@ export interface OptimismPortalInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "balance", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "blacklistDisputeGame",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkWithdrawal",
+    values: [BytesLike, string]
+  ): string;
   encodeFunctionData(
     functionFragment: "depositERC20Transaction",
     values: [
@@ -136,10 +164,26 @@ export interface OptimismPortalInterface extends utils.Interface {
     functionFragment: "depositTransaction",
     values: [BytesLike, BigNumberish, BigNumberish, boolean, BytesLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "disputeGameBlacklist",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "disputeGameFactory",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "disputeGameFinalityDelaySeconds",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "donateETH", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "finalizeWithdrawalTransaction",
     values: [Types.WithdrawalTransactionStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "finalizeWithdrawalTransactionExternalProof",
+    values: [Types.WithdrawalTransactionStruct, string]
   ): string;
   encodeFunctionData(
     functionFragment: "finalizedWithdrawals",
@@ -148,20 +192,27 @@ export interface OptimismPortalInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "guardian", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string, string]
+    values: [string, string, string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "isOutputFinalized",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "l2Oracle", values?: undefined): string;
   encodeFunctionData(functionFragment: "l2Sender", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "minimumGasLimit",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "numProofSubmitters",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "params", values?: undefined): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "proofMaturityDelaySeconds",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "proofSubmitters",
+    values: [BytesLike, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "proveWithdrawalTransaction",
     values: [
@@ -174,7 +225,19 @@ export interface OptimismPortalInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "provenWithdrawals",
-    values: [BytesLike]
+    values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "respectedGameType",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "respectedGameTypeUpdatedAt",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setRespectedGameType",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "superchainConfig",
@@ -192,11 +255,31 @@ export interface OptimismPortalInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "balance", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "blacklistDisputeGame",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "checkWithdrawal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "depositERC20Transaction",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "depositTransaction",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "disputeGameBlacklist",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "disputeGameFactory",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "disputeGameFinalityDelaySeconds",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "donateETH", data: BytesLike): Result;
@@ -205,29 +288,52 @@ export interface OptimismPortalInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "finalizeWithdrawalTransactionExternalProof",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "finalizedWithdrawals",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "guardian", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "isOutputFinalized",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "l2Oracle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "l2Sender", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "minimumGasLimit",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "numProofSubmitters",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "params", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "proofMaturityDelaySeconds",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "proofSubmitters",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "proveWithdrawalTransaction",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "provenWithdrawals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "respectedGameType",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "respectedGameTypeUpdatedAt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setRespectedGameType",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -241,17 +347,34 @@ export interface OptimismPortalInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
+    "DisputeGameBlacklisted(address)": EventFragment;
     "Initialized(uint8)": EventFragment;
+    "RespectedGameTypeSet(uint32,uint64)": EventFragment;
     "TransactionDeposited(address,bytes32,uint256,bytes)": EventFragment;
     "WithdrawalFinalized(bytes32,bool)": EventFragment;
     "WithdrawalProven(bytes32,bytes32,address)": EventFragment;
+    "WithdrawalProvenExtension1(bytes32,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "DisputeGameBlacklisted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RespectedGameTypeSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransactionDeposited"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawalFinalized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawalProven"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WithdrawalProvenExtension1"): EventFragment;
 }
+
+export interface DisputeGameBlacklistedEventObject {
+  disputeGame: string;
+}
+export type DisputeGameBlacklistedEvent = TypedEvent<
+  [string],
+  DisputeGameBlacklistedEventObject
+>;
+
+export type DisputeGameBlacklistedEventFilter =
+  TypedEventFilter<DisputeGameBlacklistedEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -259,6 +382,18 @@ export interface InitializedEventObject {
 export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
 export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
+export interface RespectedGameTypeSetEventObject {
+  newGameType: number;
+  updatedAt: BigNumber;
+}
+export type RespectedGameTypeSetEvent = TypedEvent<
+  [number, BigNumber],
+  RespectedGameTypeSetEventObject
+>;
+
+export type RespectedGameTypeSetEventFilter =
+  TypedEventFilter<RespectedGameTypeSetEvent>;
 
 export interface TransactionDepositedEventObject {
   from: string;
@@ -299,12 +434,24 @@ export type WithdrawalProvenEvent = TypedEvent<
 export type WithdrawalProvenEventFilter =
   TypedEventFilter<WithdrawalProvenEvent>;
 
-export interface OptimismPortal extends BaseContract {
+export interface WithdrawalProvenExtension1EventObject {
+  withdrawalHash: string;
+  proofSubmitter: string;
+}
+export type WithdrawalProvenExtension1Event = TypedEvent<
+  [string, string],
+  WithdrawalProvenExtension1EventObject
+>;
+
+export type WithdrawalProvenExtension1EventFilter =
+  TypedEventFilter<WithdrawalProvenExtension1Event>;
+
+export interface OptimismPortal2 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: OptimismPortalInterface;
+  interface: OptimismPortal2Interface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -337,6 +484,26 @@ export interface OptimismPortal extends BaseContract {
     balance(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
+     * Blacklists a dispute game. Should only be used in the event that a dispute game resolves incorrectly.
+     * @param _disputeGame Dispute game to blacklist.
+     */
+    blacklistDisputeGame(
+      _disputeGame: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Checks if a withdrawal can be finalized. This function will revert if the withdrawal cannot be         finalized, and otherwise has no side-effects.
+     * @param _proofSubmitter The submitter of the proof for the withdrawal hash
+     * @param _withdrawalHash Hash of the withdrawal to check.
+     */
+    checkWithdrawal(
+      _withdrawalHash: BytesLike,
+      _proofSubmitter: string,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    /**
      * Entrypoint to depositing an ERC20 token as a custom gas token.         This function depends on a well formed ERC20 token. There are only         so many checks that can be done on chain for this so it is assumed         that chain operators will deploy chains with well formed ERC20 tokens.
      */
     depositERC20Transaction(
@@ -367,6 +534,26 @@ export interface OptimismPortal extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
+     * A mapping of dispute game addresses to whether or not they are blacklisted.
+     */
+    disputeGameBlacklist(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    /**
+     * Address of the DisputeGameFactory.
+     */
+    disputeGameFactory(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Getter for the dispute game finality delay.
+     */
+    disputeGameFinalityDelaySeconds(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    /**
      * Accepts ETH value without triggering a deposit to L2.         This function mainly exists for the sake of the migration between the legacy         Optimism system and Bedrock.
      */
     donateETH(
@@ -375,6 +562,12 @@ export interface OptimismPortal extends BaseContract {
 
     finalizeWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    finalizeWithdrawalTransactionExternalProof(
+      _tx: Types.WithdrawalTransactionStruct,
+      _proofSubmitter: string,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -393,30 +586,17 @@ export interface OptimismPortal extends BaseContract {
 
     /**
      * Initializer.
-     * @param _l2Oracle Contract of the L2OutputOracle.
+     * @param _disputeGameFactory Contract of the DisputeGameFactory.
      * @param _superchainConfig Contract of the SuperchainConfig.
      * @param _systemConfig Contract of the SystemConfig.
      */
     initialize(
-      _l2Oracle: string,
+      _disputeGameFactory: string,
       _systemConfig: string,
       _superchainConfig: string,
+      _initialRespectedGameType: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
-
-    /**
-     * Determine if a given output is finalized.         Reverts if the call to l2Oracle.getL2Output reverts.         Returns a boolean otherwise.
-     * @param _l2OutputIndex Index of the L2 output to check.
-     */
-    isOutputFinalized(
-      _l2OutputIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
-
-    /**
-     * Contract of the L2OutputOracle.
-     */
-    l2Oracle(overrides?: CallOverrides): Promise<[string]>;
 
     /**
      * Address of the L2 account which initiated a withdrawal in this transaction.         If the of this variable is the default L2 sender address, then we are NOT inside of         a call to finalizeWithdrawalTransaction.
@@ -429,6 +609,15 @@ export interface OptimismPortal extends BaseContract {
      */
     minimumGasLimit(
       _byteCount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    /**
+     * External getter for the number of proof submitters for a withdrawal hash.
+     * @param _withdrawalHash Hash of the withdrawal.
+     */
+    numProofSubmitters(
+      _withdrawalHash: BytesLike,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -448,13 +637,25 @@ export interface OptimismPortal extends BaseContract {
     /**
      * Getter for the current paused status.
      */
-    paused(
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
+
+    /**
+     * Getter for the proof maturity delay.
+     */
+    proofMaturityDelaySeconds(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    /**
+     * Mapping of withdrawal hashes to addresses that have submitted a proof for the withdrawal.
+     */
+    proofSubmitters(
+      arg0: BytesLike,
+      arg1: BigNumberish,
       overrides?: CallOverrides
-    ): Promise<[boolean] & { paused_: boolean }>;
+    ): Promise<[string]>;
 
     proveWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      _l2OutputIndex: BigNumberish,
+      _disputeGameIndex: BigNumberish,
       _pdaPubkey: BytesLike,
       _outputRootProof: Types.OutputRootProofStruct,
       _withdrawalProof: BytesLike[],
@@ -462,18 +663,34 @@ export interface OptimismPortal extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * A mapping of withdrawal hashes to `ProvenWithdrawal` data.
+     * A mapping of withdrawal hashes to proof submitters to `ProvenWithdrawal` data.
      */
     provenWithdrawals(
       arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber] & {
-        outputRoot: string;
-        timestamp: BigNumber;
-        l2OutputIndex: BigNumber;
-      }
+      [string, BigNumber] & { disputeGameProxy: string; timestamp: BigNumber }
     >;
+
+    /**
+     * The game type that the OptimismPortal consults for output proposals.
+     */
+    respectedGameType(overrides?: CallOverrides): Promise<[number]>;
+
+    /**
+     * The timestamp at which the respected game type was last updated.
+     */
+    respectedGameTypeUpdatedAt(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    /**
+     * Sets the respected game type. Changing this value can alter the security properties of the system,         depending on the new game's behavior.
+     * @param _gameType The game type to consult for output proposals.
+     */
+    setRespectedGameType(
+      _gameType: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
 
     /**
      * Contract of the Superchain Config.
@@ -500,6 +717,26 @@ export interface OptimismPortal extends BaseContract {
    * Getter for the balance of the contract.
    */
   balance(overrides?: CallOverrides): Promise<BigNumber>;
+
+  /**
+   * Blacklists a dispute game. Should only be used in the event that a dispute game resolves incorrectly.
+   * @param _disputeGame Dispute game to blacklist.
+   */
+  blacklistDisputeGame(
+    _disputeGame: string,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Checks if a withdrawal can be finalized. This function will revert if the withdrawal cannot be         finalized, and otherwise has no side-effects.
+   * @param _proofSubmitter The submitter of the proof for the withdrawal hash
+   * @param _withdrawalHash Hash of the withdrawal to check.
+   */
+  checkWithdrawal(
+    _withdrawalHash: BytesLike,
+    _proofSubmitter: string,
+    overrides?: CallOverrides
+  ): Promise<void>;
 
   /**
    * Entrypoint to depositing an ERC20 token as a custom gas token.         This function depends on a well formed ERC20 token. There are only         so many checks that can be done on chain for this so it is assumed         that chain operators will deploy chains with well formed ERC20 tokens.
@@ -532,6 +769,26 @@ export interface OptimismPortal extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
+   * A mapping of dispute game addresses to whether or not they are blacklisted.
+   */
+  disputeGameBlacklist(
+    arg0: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  /**
+   * Address of the DisputeGameFactory.
+   */
+  disputeGameFactory(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Getter for the dispute game finality delay.
+   */
+  disputeGameFinalityDelaySeconds(
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  /**
    * Accepts ETH value without triggering a deposit to L2.         This function mainly exists for the sake of the migration between the legacy         Optimism system and Bedrock.
    */
   donateETH(
@@ -540,6 +797,12 @@ export interface OptimismPortal extends BaseContract {
 
   finalizeWithdrawalTransaction(
     _tx: Types.WithdrawalTransactionStruct,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  finalizeWithdrawalTransactionExternalProof(
+    _tx: Types.WithdrawalTransactionStruct,
+    _proofSubmitter: string,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -558,30 +821,17 @@ export interface OptimismPortal extends BaseContract {
 
   /**
    * Initializer.
-   * @param _l2Oracle Contract of the L2OutputOracle.
+   * @param _disputeGameFactory Contract of the DisputeGameFactory.
    * @param _superchainConfig Contract of the SuperchainConfig.
    * @param _systemConfig Contract of the SystemConfig.
    */
   initialize(
-    _l2Oracle: string,
+    _disputeGameFactory: string,
     _systemConfig: string,
     _superchainConfig: string,
+    _initialRespectedGameType: BigNumberish,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
-
-  /**
-   * Determine if a given output is finalized.         Reverts if the call to l2Oracle.getL2Output reverts.         Returns a boolean otherwise.
-   * @param _l2OutputIndex Index of the L2 output to check.
-   */
-  isOutputFinalized(
-    _l2OutputIndex: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  /**
-   * Contract of the L2OutputOracle.
-   */
-  l2Oracle(overrides?: CallOverrides): Promise<string>;
 
   /**
    * Address of the L2 account which initiated a withdrawal in this transaction.         If the of this variable is the default L2 sender address, then we are NOT inside of         a call to finalizeWithdrawalTransaction.
@@ -594,6 +844,15 @@ export interface OptimismPortal extends BaseContract {
    */
   minimumGasLimit(
     _byteCount: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  /**
+   * External getter for the number of proof submitters for a withdrawal hash.
+   * @param _withdrawalHash Hash of the withdrawal.
+   */
+  numProofSubmitters(
+    _withdrawalHash: BytesLike,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -615,9 +874,23 @@ export interface OptimismPortal extends BaseContract {
    */
   paused(overrides?: CallOverrides): Promise<boolean>;
 
+  /**
+   * Getter for the proof maturity delay.
+   */
+  proofMaturityDelaySeconds(overrides?: CallOverrides): Promise<BigNumber>;
+
+  /**
+   * Mapping of withdrawal hashes to addresses that have submitted a proof for the withdrawal.
+   */
+  proofSubmitters(
+    arg0: BytesLike,
+    arg1: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   proveWithdrawalTransaction(
     _tx: Types.WithdrawalTransactionStruct,
-    _l2OutputIndex: BigNumberish,
+    _disputeGameIndex: BigNumberish,
     _pdaPubkey: BytesLike,
     _outputRootProof: Types.OutputRootProofStruct,
     _withdrawalProof: BytesLike[],
@@ -625,18 +898,34 @@ export interface OptimismPortal extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * A mapping of withdrawal hashes to `ProvenWithdrawal` data.
+   * A mapping of withdrawal hashes to proof submitters to `ProvenWithdrawal` data.
    */
   provenWithdrawals(
     arg0: BytesLike,
+    arg1: string,
     overrides?: CallOverrides
   ): Promise<
-    [string, BigNumber, BigNumber] & {
-      outputRoot: string;
-      timestamp: BigNumber;
-      l2OutputIndex: BigNumber;
-    }
+    [string, BigNumber] & { disputeGameProxy: string; timestamp: BigNumber }
   >;
+
+  /**
+   * The game type that the OptimismPortal consults for output proposals.
+   */
+  respectedGameType(overrides?: CallOverrides): Promise<number>;
+
+  /**
+   * The timestamp at which the respected game type was last updated.
+   */
+  respectedGameTypeUpdatedAt(overrides?: CallOverrides): Promise<BigNumber>;
+
+  /**
+   * Sets the respected game type. Changing this value can alter the security properties of the system,         depending on the new game's behavior.
+   * @param _gameType The game type to consult for output proposals.
+   */
+  setRespectedGameType(
+    _gameType: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
 
   /**
    * Contract of the Superchain Config.
@@ -663,6 +952,26 @@ export interface OptimismPortal extends BaseContract {
      * Getter for the balance of the contract.
      */
     balance(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Blacklists a dispute game. Should only be used in the event that a dispute game resolves incorrectly.
+     * @param _disputeGame Dispute game to blacklist.
+     */
+    blacklistDisputeGame(
+      _disputeGame: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Checks if a withdrawal can be finalized. This function will revert if the withdrawal cannot be         finalized, and otherwise has no side-effects.
+     * @param _proofSubmitter The submitter of the proof for the withdrawal hash
+     * @param _withdrawalHash Hash of the withdrawal to check.
+     */
+    checkWithdrawal(
+      _withdrawalHash: BytesLike,
+      _proofSubmitter: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * Entrypoint to depositing an ERC20 token as a custom gas token.         This function depends on a well formed ERC20 token. There are only         so many checks that can be done on chain for this so it is assumed         that chain operators will deploy chains with well formed ERC20 tokens.
@@ -695,12 +1004,38 @@ export interface OptimismPortal extends BaseContract {
     ): Promise<void>;
 
     /**
+     * A mapping of dispute game addresses to whether or not they are blacklisted.
+     */
+    disputeGameBlacklist(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    /**
+     * Address of the DisputeGameFactory.
+     */
+    disputeGameFactory(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Getter for the dispute game finality delay.
+     */
+    disputeGameFinalityDelaySeconds(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Accepts ETH value without triggering a deposit to L2.         This function mainly exists for the sake of the migration between the legacy         Optimism system and Bedrock.
      */
     donateETH(overrides?: CallOverrides): Promise<void>;
 
     finalizeWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    finalizeWithdrawalTransactionExternalProof(
+      _tx: Types.WithdrawalTransactionStruct,
+      _proofSubmitter: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -719,30 +1054,17 @@ export interface OptimismPortal extends BaseContract {
 
     /**
      * Initializer.
-     * @param _l2Oracle Contract of the L2OutputOracle.
+     * @param _disputeGameFactory Contract of the DisputeGameFactory.
      * @param _superchainConfig Contract of the SuperchainConfig.
      * @param _systemConfig Contract of the SystemConfig.
      */
     initialize(
-      _l2Oracle: string,
+      _disputeGameFactory: string,
       _systemConfig: string,
       _superchainConfig: string,
+      _initialRespectedGameType: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    /**
-     * Determine if a given output is finalized.         Reverts if the call to l2Oracle.getL2Output reverts.         Returns a boolean otherwise.
-     * @param _l2OutputIndex Index of the L2 output to check.
-     */
-    isOutputFinalized(
-      _l2OutputIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    /**
-     * Contract of the L2OutputOracle.
-     */
-    l2Oracle(overrides?: CallOverrides): Promise<string>;
 
     /**
      * Address of the L2 account which initiated a withdrawal in this transaction.         If the of this variable is the default L2 sender address, then we are NOT inside of         a call to finalizeWithdrawalTransaction.
@@ -755,6 +1077,15 @@ export interface OptimismPortal extends BaseContract {
      */
     minimumGasLimit(
       _byteCount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * External getter for the number of proof submitters for a withdrawal hash.
+     * @param _withdrawalHash Hash of the withdrawal.
+     */
+    numProofSubmitters(
+      _withdrawalHash: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -776,9 +1107,23 @@ export interface OptimismPortal extends BaseContract {
      */
     paused(overrides?: CallOverrides): Promise<boolean>;
 
+    /**
+     * Getter for the proof maturity delay.
+     */
+    proofMaturityDelaySeconds(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Mapping of withdrawal hashes to addresses that have submitted a proof for the withdrawal.
+     */
+    proofSubmitters(
+      arg0: BytesLike,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     proveWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      _l2OutputIndex: BigNumberish,
+      _disputeGameIndex: BigNumberish,
       _pdaPubkey: BytesLike,
       _outputRootProof: Types.OutputRootProofStruct,
       _withdrawalProof: BytesLike[],
@@ -786,18 +1131,34 @@ export interface OptimismPortal extends BaseContract {
     ): Promise<void>;
 
     /**
-     * A mapping of withdrawal hashes to `ProvenWithdrawal` data.
+     * A mapping of withdrawal hashes to proof submitters to `ProvenWithdrawal` data.
      */
     provenWithdrawals(
       arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber] & {
-        outputRoot: string;
-        timestamp: BigNumber;
-        l2OutputIndex: BigNumber;
-      }
+      [string, BigNumber] & { disputeGameProxy: string; timestamp: BigNumber }
     >;
+
+    /**
+     * The game type that the OptimismPortal consults for output proposals.
+     */
+    respectedGameType(overrides?: CallOverrides): Promise<number>;
+
+    /**
+     * The timestamp at which the respected game type was last updated.
+     */
+    respectedGameTypeUpdatedAt(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Sets the respected game type. Changing this value can alter the security properties of the system,         depending on the new game's behavior.
+     * @param _gameType The game type to consult for output proposals.
+     */
+    setRespectedGameType(
+      _gameType: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * Contract of the Superchain Config.
@@ -816,8 +1177,24 @@ export interface OptimismPortal extends BaseContract {
   };
 
   filters: {
+    "DisputeGameBlacklisted(address)"(
+      disputeGame?: string | null
+    ): DisputeGameBlacklistedEventFilter;
+    DisputeGameBlacklisted(
+      disputeGame?: string | null
+    ): DisputeGameBlacklistedEventFilter;
+
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
+
+    "RespectedGameTypeSet(uint32,uint64)"(
+      newGameType?: BigNumberish | null,
+      updatedAt?: BigNumberish | null
+    ): RespectedGameTypeSetEventFilter;
+    RespectedGameTypeSet(
+      newGameType?: BigNumberish | null,
+      updatedAt?: BigNumberish | null
+    ): RespectedGameTypeSetEventFilter;
 
     "TransactionDeposited(address,bytes32,uint256,bytes)"(
       from?: string | null,
@@ -851,6 +1228,15 @@ export interface OptimismPortal extends BaseContract {
       from?: BytesLike | null,
       to?: string | null
     ): WithdrawalProvenEventFilter;
+
+    "WithdrawalProvenExtension1(bytes32,address)"(
+      withdrawalHash?: BytesLike | null,
+      proofSubmitter?: string | null
+    ): WithdrawalProvenExtension1EventFilter;
+    WithdrawalProvenExtension1(
+      withdrawalHash?: BytesLike | null,
+      proofSubmitter?: string | null
+    ): WithdrawalProvenExtension1EventFilter;
   };
 
   estimateGas: {
@@ -863,6 +1249,26 @@ export interface OptimismPortal extends BaseContract {
      * Getter for the balance of the contract.
      */
     balance(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Blacklists a dispute game. Should only be used in the event that a dispute game resolves incorrectly.
+     * @param _disputeGame Dispute game to blacklist.
+     */
+    blacklistDisputeGame(
+      _disputeGame: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Checks if a withdrawal can be finalized. This function will revert if the withdrawal cannot be         finalized, and otherwise has no side-effects.
+     * @param _proofSubmitter The submitter of the proof for the withdrawal hash
+     * @param _withdrawalHash Hash of the withdrawal to check.
+     */
+    checkWithdrawal(
+      _withdrawalHash: BytesLike,
+      _proofSubmitter: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     /**
      * Entrypoint to depositing an ERC20 token as a custom gas token.         This function depends on a well formed ERC20 token. There are only         so many checks that can be done on chain for this so it is assumed         that chain operators will deploy chains with well formed ERC20 tokens.
@@ -895,6 +1301,26 @@ export interface OptimismPortal extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * A mapping of dispute game addresses to whether or not they are blacklisted.
+     */
+    disputeGameBlacklist(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Address of the DisputeGameFactory.
+     */
+    disputeGameFactory(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Getter for the dispute game finality delay.
+     */
+    disputeGameFinalityDelaySeconds(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Accepts ETH value without triggering a deposit to L2.         This function mainly exists for the sake of the migration between the legacy         Optimism system and Bedrock.
      */
     donateETH(
@@ -903,6 +1329,12 @@ export interface OptimismPortal extends BaseContract {
 
     finalizeWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    finalizeWithdrawalTransactionExternalProof(
+      _tx: Types.WithdrawalTransactionStruct,
+      _proofSubmitter: string,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -921,30 +1353,17 @@ export interface OptimismPortal extends BaseContract {
 
     /**
      * Initializer.
-     * @param _l2Oracle Contract of the L2OutputOracle.
+     * @param _disputeGameFactory Contract of the DisputeGameFactory.
      * @param _superchainConfig Contract of the SuperchainConfig.
      * @param _systemConfig Contract of the SystemConfig.
      */
     initialize(
-      _l2Oracle: string,
+      _disputeGameFactory: string,
       _systemConfig: string,
       _superchainConfig: string,
+      _initialRespectedGameType: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
-
-    /**
-     * Determine if a given output is finalized.         Reverts if the call to l2Oracle.getL2Output reverts.         Returns a boolean otherwise.
-     * @param _l2OutputIndex Index of the L2 output to check.
-     */
-    isOutputFinalized(
-      _l2OutputIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Contract of the L2OutputOracle.
-     */
-    l2Oracle(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Address of the L2 account which initiated a withdrawal in this transaction.         If the of this variable is the default L2 sender address, then we are NOT inside of         a call to finalizeWithdrawalTransaction.
@@ -961,6 +1380,15 @@ export interface OptimismPortal extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * External getter for the number of proof submitters for a withdrawal hash.
+     * @param _withdrawalHash Hash of the withdrawal.
+     */
+    numProofSubmitters(
+      _withdrawalHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * EIP-1559 style gas parameters.
      */
     params(overrides?: CallOverrides): Promise<BigNumber>;
@@ -970,9 +1398,23 @@ export interface OptimismPortal extends BaseContract {
      */
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Getter for the proof maturity delay.
+     */
+    proofMaturityDelaySeconds(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Mapping of withdrawal hashes to addresses that have submitted a proof for the withdrawal.
+     */
+    proofSubmitters(
+      arg0: BytesLike,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     proveWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      _l2OutputIndex: BigNumberish,
+      _disputeGameIndex: BigNumberish,
       _pdaPubkey: BytesLike,
       _outputRootProof: Types.OutputRootProofStruct,
       _withdrawalProof: BytesLike[],
@@ -980,11 +1422,31 @@ export interface OptimismPortal extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * A mapping of withdrawal hashes to `ProvenWithdrawal` data.
+     * A mapping of withdrawal hashes to proof submitters to `ProvenWithdrawal` data.
      */
     provenWithdrawals(
       arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * The game type that the OptimismPortal consults for output proposals.
+     */
+    respectedGameType(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * The timestamp at which the respected game type was last updated.
+     */
+    respectedGameTypeUpdatedAt(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Sets the respected game type. Changing this value can alter the security properties of the system,         depending on the new game's behavior.
+     * @param _gameType The game type to consult for output proposals.
+     */
+    setRespectedGameType(
+      _gameType: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1015,6 +1477,26 @@ export interface OptimismPortal extends BaseContract {
     balance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
+     * Blacklists a dispute game. Should only be used in the event that a dispute game resolves incorrectly.
+     * @param _disputeGame Dispute game to blacklist.
+     */
+    blacklistDisputeGame(
+      _disputeGame: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Checks if a withdrawal can be finalized. This function will revert if the withdrawal cannot be         finalized, and otherwise has no side-effects.
+     * @param _proofSubmitter The submitter of the proof for the withdrawal hash
+     * @param _withdrawalHash Hash of the withdrawal to check.
+     */
+    checkWithdrawal(
+      _withdrawalHash: BytesLike,
+      _proofSubmitter: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * Entrypoint to depositing an ERC20 token as a custom gas token.         This function depends on a well formed ERC20 token. There are only         so many checks that can be done on chain for this so it is assumed         that chain operators will deploy chains with well formed ERC20 tokens.
      */
     depositERC20Transaction(
@@ -1045,6 +1527,28 @@ export interface OptimismPortal extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * A mapping of dispute game addresses to whether or not they are blacklisted.
+     */
+    disputeGameBlacklist(
+      arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Address of the DisputeGameFactory.
+     */
+    disputeGameFactory(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for the dispute game finality delay.
+     */
+    disputeGameFinalityDelaySeconds(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * Accepts ETH value without triggering a deposit to L2.         This function mainly exists for the sake of the migration between the legacy         Optimism system and Bedrock.
      */
     donateETH(
@@ -1053,6 +1557,12 @@ export interface OptimismPortal extends BaseContract {
 
     finalizeWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    finalizeWithdrawalTransactionExternalProof(
+      _tx: Types.WithdrawalTransactionStruct,
+      _proofSubmitter: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
@@ -1071,30 +1581,17 @@ export interface OptimismPortal extends BaseContract {
 
     /**
      * Initializer.
-     * @param _l2Oracle Contract of the L2OutputOracle.
+     * @param _disputeGameFactory Contract of the DisputeGameFactory.
      * @param _superchainConfig Contract of the SuperchainConfig.
      * @param _systemConfig Contract of the SystemConfig.
      */
     initialize(
-      _l2Oracle: string,
+      _disputeGameFactory: string,
       _systemConfig: string,
       _superchainConfig: string,
+      _initialRespectedGameType: BigNumberish,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
-
-    /**
-     * Determine if a given output is finalized.         Reverts if the call to l2Oracle.getL2Output reverts.         Returns a boolean otherwise.
-     * @param _l2OutputIndex Index of the L2 output to check.
-     */
-    isOutputFinalized(
-      _l2OutputIndex: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Contract of the L2OutputOracle.
-     */
-    l2Oracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Address of the L2 account which initiated a withdrawal in this transaction.         If the of this variable is the default L2 sender address, then we are NOT inside of         a call to finalizeWithdrawalTransaction.
@@ -1111,6 +1608,15 @@ export interface OptimismPortal extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * External getter for the number of proof submitters for a withdrawal hash.
+     * @param _withdrawalHash Hash of the withdrawal.
+     */
+    numProofSubmitters(
+      _withdrawalHash: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
      * EIP-1559 style gas parameters.
      */
     params(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1120,9 +1626,25 @@ export interface OptimismPortal extends BaseContract {
      */
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    /**
+     * Getter for the proof maturity delay.
+     */
+    proofMaturityDelaySeconds(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Mapping of withdrawal hashes to addresses that have submitted a proof for the withdrawal.
+     */
+    proofSubmitters(
+      arg0: BytesLike,
+      arg1: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     proveWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      _l2OutputIndex: BigNumberish,
+      _disputeGameIndex: BigNumberish,
       _pdaPubkey: BytesLike,
       _outputRootProof: Types.OutputRootProofStruct,
       _withdrawalProof: BytesLike[],
@@ -1130,11 +1652,33 @@ export interface OptimismPortal extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * A mapping of withdrawal hashes to `ProvenWithdrawal` data.
+     * A mapping of withdrawal hashes to proof submitters to `ProvenWithdrawal` data.
      */
     provenWithdrawals(
       arg0: BytesLike,
+      arg1: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * The game type that the OptimismPortal consults for output proposals.
+     */
+    respectedGameType(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * The timestamp at which the respected game type was last updated.
+     */
+    respectedGameTypeUpdatedAt(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Sets the respected game type. Changing this value can alter the security properties of the system,         depending on the new game's behavior.
+     * @param _gameType The game type to consult for output proposals.
+     */
+    setRespectedGameType(
+      _gameType: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**

@@ -23,7 +23,6 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "./common";
 
 export interface DelayedVetoableInterface extends utils.Interface {
@@ -48,10 +47,7 @@ export interface DelayedVetoableInterface extends utils.Interface {
 
   encodeFunctionData(functionFragment: "delay", values?: undefined): string;
   encodeFunctionData(functionFragment: "initiator", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "queuedAt",
-    values: [PromiseOrValue<BytesLike>]
-  ): string;
+  encodeFunctionData(functionFragment: "queuedAt", values: [BytesLike]): string;
   encodeFunctionData(functionFragment: "target", values?: undefined): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
   encodeFunctionData(functionFragment: "vetoer", values?: undefined): string;
@@ -141,14 +137,14 @@ export interface DelayedVetoable extends BaseContract {
      * Gets the delay
      */
     delay(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Gets the initiator
      */
     initiator(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -156,14 +152,14 @@ export interface DelayedVetoable extends BaseContract {
      * @param callHash The hash of the call data.
      */
     queuedAt(
-      callHash: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      callHash: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      */
     target(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -174,7 +170,7 @@ export interface DelayedVetoable extends BaseContract {
     /**
      */
     vetoer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
   };
 
@@ -182,14 +178,14 @@ export interface DelayedVetoable extends BaseContract {
    * Gets the delay
    */
   delay(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Gets the initiator
    */
   initiator(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -197,14 +193,14 @@ export interface DelayedVetoable extends BaseContract {
    * @param callHash The hash of the call data.
    */
   queuedAt(
-    callHash: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    callHash: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    */
   target(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -215,7 +211,7 @@ export interface DelayedVetoable extends BaseContract {
   /**
    */
   vetoer(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -234,7 +230,7 @@ export interface DelayedVetoable extends BaseContract {
      * @param callHash The hash of the call data.
      */
     queuedAt(
-      callHash: PromiseOrValue<BytesLike>,
+      callHash: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -257,62 +253,47 @@ export interface DelayedVetoable extends BaseContract {
     DelayActivated(delay?: null): DelayActivatedEventFilter;
 
     "Forwarded(bytes32,bytes)"(
-      callHash?: PromiseOrValue<BytesLike> | null,
+      callHash?: BytesLike | null,
       data?: null
     ): ForwardedEventFilter;
-    Forwarded(
-      callHash?: PromiseOrValue<BytesLike> | null,
-      data?: null
-    ): ForwardedEventFilter;
+    Forwarded(callHash?: BytesLike | null, data?: null): ForwardedEventFilter;
 
     "Initiated(bytes32,bytes)"(
-      callHash?: PromiseOrValue<BytesLike> | null,
+      callHash?: BytesLike | null,
       data?: null
     ): InitiatedEventFilter;
-    Initiated(
-      callHash?: PromiseOrValue<BytesLike> | null,
-      data?: null
-    ): InitiatedEventFilter;
+    Initiated(callHash?: BytesLike | null, data?: null): InitiatedEventFilter;
 
     "Vetoed(bytes32,bytes)"(
-      callHash?: PromiseOrValue<BytesLike> | null,
+      callHash?: BytesLike | null,
       data?: null
     ): VetoedEventFilter;
-    Vetoed(
-      callHash?: PromiseOrValue<BytesLike> | null,
-      data?: null
-    ): VetoedEventFilter;
+    Vetoed(callHash?: BytesLike | null, data?: null): VetoedEventFilter;
   };
 
   estimateGas: {
     /**
      * Gets the delay
      */
-    delay(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    delay(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     /**
      * Gets the initiator
      */
-    initiator(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    initiator(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     /**
      * Gets entries in the _queuedAt mapping.
      * @param callHash The hash of the call data.
      */
     queuedAt(
-      callHash: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      callHash: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      */
-    target(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    target(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     /**
      * Semantic version.
@@ -321,9 +302,7 @@ export interface DelayedVetoable extends BaseContract {
 
     /**
      */
-    vetoer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    vetoer(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -331,14 +310,14 @@ export interface DelayedVetoable extends BaseContract {
      * Gets the delay
      */
     delay(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Gets the initiator
      */
     initiator(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -346,14 +325,14 @@ export interface DelayedVetoable extends BaseContract {
      * @param callHash The hash of the call data.
      */
     queuedAt(
-      callHash: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      callHash: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      */
     target(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -364,7 +343,7 @@ export interface DelayedVetoable extends BaseContract {
     /**
      */
     vetoer(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
   };
 }

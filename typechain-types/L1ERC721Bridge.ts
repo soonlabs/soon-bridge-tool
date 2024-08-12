@@ -24,18 +24,18 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "./common";
 
 export interface L1ERC721BridgeInterface extends utils.Interface {
   functions: {
     "MESSENGER()": FunctionFragment;
     "OTHER_BRIDGE()": FunctionFragment;
-    "bridgeERC721(address,address,uint256,uint32,bytes)": FunctionFragment;
-    "bridgeERC721To(address,address,address,uint256,uint32,bytes)": FunctionFragment;
-    "deposits(address,address,uint256)": FunctionFragment;
-    "finalizeBridgeERC721(address,address,address,address,uint256,bytes)": FunctionFragment;
-    "initialize(address)": FunctionFragment;
+    "bridgeERC721(address,bytes32,uint256,uint32,bytes)": FunctionFragment;
+    "bridgeERC721To(address,bytes32,bytes32,uint256,uint32,bytes)": FunctionFragment;
+    "deposits(address,bytes32,uint256)": FunctionFragment;
+    "encodeBridgeERC721L2Message(address,bytes32,address,bytes32,uint256,bytes)": FunctionFragment;
+    "finalizeBridgeERC721(address,bytes32,bytes32,address,uint256,bytes)": FunctionFragment;
+    "initialize(address,address)": FunctionFragment;
     "messenger()": FunctionFragment;
     "otherBridge()": FunctionFragment;
     "paused()": FunctionFragment;
@@ -50,6 +50,7 @@ export interface L1ERC721BridgeInterface extends utils.Interface {
       | "bridgeERC721"
       | "bridgeERC721To"
       | "deposits"
+      | "encodeBridgeERC721L2Message"
       | "finalizeBridgeERC721"
       | "initialize"
       | "messenger"
@@ -66,47 +67,34 @@ export interface L1ERC721BridgeInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "bridgeERC721",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BytesLike, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "bridgeERC721To",
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
+      string,
+      BytesLike,
+      BytesLike,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "deposits",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [string, BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "encodeBridgeERC721L2Message",
+    values: [string, BytesLike, string, BytesLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "finalizeBridgeERC721",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BytesLike, BytesLike, string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [PromiseOrValue<string>]
+    values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "messenger", values?: undefined): string;
   encodeFunctionData(
@@ -135,6 +123,10 @@ export interface L1ERC721BridgeInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "deposits", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "encodeBridgeERC721L2Message",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "finalizeBridgeERC721",
     data: BytesLike
   ): Result;
@@ -152,8 +144,8 @@ export interface L1ERC721BridgeInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
-    "ERC721BridgeFinalized(address,address,address,address,uint256,bytes)": EventFragment;
-    "ERC721BridgeInitiated(address,address,address,address,uint256,bytes)": EventFragment;
+    "ERC721BridgeFinalized(address,bytes32,bytes32,address,uint256,bytes)": EventFragment;
+    "ERC721BridgeInitiated(address,bytes32,address,bytes32,uint256,bytes)": EventFragment;
     "Initialized(uint8)": EventFragment;
   };
 
@@ -229,31 +221,26 @@ export interface L1ERC721Bridge extends BaseContract {
 
   functions: {
     /**
-     * Messenger contract on this domain. This will be removed in the         future, use `messenger` instead.
+     * Legacy getter for messenger contract.         Public getter is legacy and will be removed in the future. Use `messenger` instead.
      */
     MESSENGER(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Address of the bridge on the other network. This will be removed in the         future, use `otherBridge` instead.
+     * Legacy getter for other bridge address.         Public getter is legacy and will be removed in the future. Use `otherBridge` instead.
      */
     OTHER_BRIDGE(overrides?: CallOverrides): Promise<[string]>;
 
     /**
      * Initiates a bridge of an NFT to the caller's account on the other chain. Note that         this function can only be called by EOAs. Smart contract wallets should use the         `bridgeERC721To` function after ensuring that the recipient address on the remote         chain exists. Also note that the current owner of the token on this chain must         approve this contract to operate the NFT before it can be bridged.         **WARNING**: Do not bridge an ERC721 that was originally deployed on Optimism. This         bridge only supports ERC721s originally deployed on Ethereum. Users will need to         wait for the one-week challenge period to elapse before their Optimism-native NFT         can be refunded on L2.
-     * @param _extraData Optional data to forward to the other chain. Data supplied here will not                     be used to execute any code on the other chain and is only emitted as                     extra data for the convenience of off-chain tooling.
-     * @param _localToken Address of the ERC721 on this domain.
-     * @param _minGasLimit Minimum gas limit for the bridge message on the other domain.
-     * @param _remoteToken Address of the ERC721 on the remote domain.
-     * @param _tokenId Token ID to bridge.
      */
     bridgeERC721(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
 
     /**
      * Initiates a bridge of an NFT to some recipient's account on the other chain. Note         that the current owner of the token on this chain must approve this contract to         operate the NFT before it can be bridged.         **WARNING**: Do not bridge an ERC721 that was originally deployed on Optimism. This         bridge only supports ERC721s originally deployed on Ethereum. Users will need to         wait for the one-week challenge period to elapse before their Optimism-native NFT         can be refunded on L2.
@@ -265,24 +252,43 @@ export interface L1ERC721Bridge extends BaseContract {
      * @param _tokenId Token ID to bridge.
      */
     bridgeERC721To(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _to: BytesLike,
+      _tokenId: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Mapping of L1 token to L2 token to ID to boolean, indicating if the given L1 token         by ID was deposited for a given L2 token.
      */
     deposits(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    /**
+     * Encode L2 message for bridge ERC721 from L1 to L2.
+     * @param _extraData Optional data to forward to the other domain. Data supplied here will                     not be used to execute any code on the other domain and is only emitted                     as extra data for the convenience of off-chain tooling.
+     * @param _from Address of the sender on this domain.
+     * @param _localToken Address of the ERC721 on this domain.
+     * @param _remoteToken Address of the ERC721 on the remote domain.
+     * @param _to Address to receive the token on the other domain.
+     * @param _tokenId Token ID to bridge.
+     */
+    encodeBridgeERC721L2Message(
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: string,
+      _to: BytesLike,
+      _tokenId: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     /**
      * Completes an ERC721 bridge from the other domain and sends the ERC721 token to the         recipient on this domain.
@@ -294,31 +300,33 @@ export interface L1ERC721Bridge extends BaseContract {
      * @param _tokenId ID of the token being deposited.
      */
     finalizeBridgeERC721(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _tokenId: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * @param _messenger Contract of the CrossDomainMessenger on this network.
+     * @param _superchainConfig Contract of the SuperchainConfig contract on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _messenger: string,
+      _superchainConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
-     * Legacy getter for messenger contract.
+     * Messenger contract on this domain.
      */
     messenger(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Legacy getter for other bridge address.
+     * Contract of the bridge on the other network.
      */
     otherBridge(overrides?: CallOverrides): Promise<[string]>;
 
@@ -339,31 +347,26 @@ export interface L1ERC721Bridge extends BaseContract {
   };
 
   /**
-   * Messenger contract on this domain. This will be removed in the         future, use `messenger` instead.
+   * Legacy getter for messenger contract.         Public getter is legacy and will be removed in the future. Use `messenger` instead.
    */
   MESSENGER(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Address of the bridge on the other network. This will be removed in the         future, use `otherBridge` instead.
+   * Legacy getter for other bridge address.         Public getter is legacy and will be removed in the future. Use `otherBridge` instead.
    */
   OTHER_BRIDGE(overrides?: CallOverrides): Promise<string>;
 
   /**
    * Initiates a bridge of an NFT to the caller's account on the other chain. Note that         this function can only be called by EOAs. Smart contract wallets should use the         `bridgeERC721To` function after ensuring that the recipient address on the remote         chain exists. Also note that the current owner of the token on this chain must         approve this contract to operate the NFT before it can be bridged.         **WARNING**: Do not bridge an ERC721 that was originally deployed on Optimism. This         bridge only supports ERC721s originally deployed on Ethereum. Users will need to         wait for the one-week challenge period to elapse before their Optimism-native NFT         can be refunded on L2.
-   * @param _extraData Optional data to forward to the other chain. Data supplied here will not                     be used to execute any code on the other chain and is only emitted as                     extra data for the convenience of off-chain tooling.
-   * @param _localToken Address of the ERC721 on this domain.
-   * @param _minGasLimit Minimum gas limit for the bridge message on the other domain.
-   * @param _remoteToken Address of the ERC721 on the remote domain.
-   * @param _tokenId Token ID to bridge.
    */
   bridgeERC721(
-    _localToken: PromiseOrValue<string>,
-    _remoteToken: PromiseOrValue<string>,
-    _tokenId: PromiseOrValue<BigNumberish>,
-    _minGasLimit: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+    arg0: string,
+    arg1: BytesLike,
+    arg2: BigNumberish,
+    arg3: BigNumberish,
+    arg4: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
 
   /**
    * Initiates a bridge of an NFT to some recipient's account on the other chain. Note         that the current owner of the token on this chain must approve this contract to         operate the NFT before it can be bridged.         **WARNING**: Do not bridge an ERC721 that was originally deployed on Optimism. This         bridge only supports ERC721s originally deployed on Ethereum. Users will need to         wait for the one-week challenge period to elapse before their Optimism-native NFT         can be refunded on L2.
@@ -375,24 +378,43 @@ export interface L1ERC721Bridge extends BaseContract {
    * @param _tokenId Token ID to bridge.
    */
   bridgeERC721To(
-    _localToken: PromiseOrValue<string>,
-    _remoteToken: PromiseOrValue<string>,
-    _to: PromiseOrValue<string>,
-    _tokenId: PromiseOrValue<BigNumberish>,
-    _minGasLimit: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _localToken: string,
+    _remoteToken: BytesLike,
+    _to: BytesLike,
+    _tokenId: BigNumberish,
+    _minGasLimit: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Mapping of L1 token to L2 token to ID to boolean, indicating if the given L1 token         by ID was deposited for a given L2 token.
    */
   deposits(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<string>,
-    arg2: PromiseOrValue<BigNumberish>,
+    arg0: string,
+    arg1: BytesLike,
+    arg2: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  /**
+   * Encode L2 message for bridge ERC721 from L1 to L2.
+   * @param _extraData Optional data to forward to the other domain. Data supplied here will                     not be used to execute any code on the other domain and is only emitted                     as extra data for the convenience of off-chain tooling.
+   * @param _from Address of the sender on this domain.
+   * @param _localToken Address of the ERC721 on this domain.
+   * @param _remoteToken Address of the ERC721 on the remote domain.
+   * @param _to Address to receive the token on the other domain.
+   * @param _tokenId Token ID to bridge.
+   */
+  encodeBridgeERC721L2Message(
+    _localToken: string,
+    _remoteToken: BytesLike,
+    _from: string,
+    _to: BytesLike,
+    _tokenId: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   /**
    * Completes an ERC721 bridge from the other domain and sends the ERC721 token to the         recipient on this domain.
@@ -404,31 +426,33 @@ export interface L1ERC721Bridge extends BaseContract {
    * @param _tokenId ID of the token being deposited.
    */
   finalizeBridgeERC721(
-    _localToken: PromiseOrValue<string>,
-    _remoteToken: PromiseOrValue<string>,
-    _from: PromiseOrValue<string>,
-    _to: PromiseOrValue<string>,
-    _tokenId: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _localToken: string,
+    _remoteToken: BytesLike,
+    _from: BytesLike,
+    _to: string,
+    _tokenId: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Initializes the contract.
-   * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+   * @param _messenger Contract of the CrossDomainMessenger on this network.
+   * @param _superchainConfig Contract of the SuperchainConfig contract on this network.
    */
   initialize(
-    _superchainConfig: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _messenger: string,
+    _superchainConfig: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
-   * Legacy getter for messenger contract.
+   * Messenger contract on this domain.
    */
   messenger(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Legacy getter for other bridge address.
+   * Contract of the bridge on the other network.
    */
   otherBridge(overrides?: CallOverrides): Promise<string>;
 
@@ -449,29 +473,24 @@ export interface L1ERC721Bridge extends BaseContract {
 
   callStatic: {
     /**
-     * Messenger contract on this domain. This will be removed in the         future, use `messenger` instead.
+     * Legacy getter for messenger contract.         Public getter is legacy and will be removed in the future. Use `messenger` instead.
      */
     MESSENGER(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Address of the bridge on the other network. This will be removed in the         future, use `otherBridge` instead.
+     * Legacy getter for other bridge address.         Public getter is legacy and will be removed in the future. Use `otherBridge` instead.
      */
     OTHER_BRIDGE(overrides?: CallOverrides): Promise<string>;
 
     /**
      * Initiates a bridge of an NFT to the caller's account on the other chain. Note that         this function can only be called by EOAs. Smart contract wallets should use the         `bridgeERC721To` function after ensuring that the recipient address on the remote         chain exists. Also note that the current owner of the token on this chain must         approve this contract to operate the NFT before it can be bridged.         **WARNING**: Do not bridge an ERC721 that was originally deployed on Optimism. This         bridge only supports ERC721s originally deployed on Ethereum. Users will need to         wait for the one-week challenge period to elapse before their Optimism-native NFT         can be refunded on L2.
-     * @param _extraData Optional data to forward to the other chain. Data supplied here will not                     be used to execute any code on the other chain and is only emitted as                     extra data for the convenience of off-chain tooling.
-     * @param _localToken Address of the ERC721 on this domain.
-     * @param _minGasLimit Minimum gas limit for the bridge message on the other domain.
-     * @param _remoteToken Address of the ERC721 on the remote domain.
-     * @param _tokenId Token ID to bridge.
      */
     bridgeERC721(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -485,12 +504,12 @@ export interface L1ERC721Bridge extends BaseContract {
      * @param _tokenId Token ID to bridge.
      */
     bridgeERC721To(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _to: BytesLike,
+      _tokenId: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -498,11 +517,30 @@ export interface L1ERC721Bridge extends BaseContract {
      * Mapping of L1 token to L2 token to ID to boolean, indicating if the given L1 token         by ID was deposited for a given L2 token.
      */
     deposits(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    /**
+     * Encode L2 message for bridge ERC721 from L1 to L2.
+     * @param _extraData Optional data to forward to the other domain. Data supplied here will                     not be used to execute any code on the other domain and is only emitted                     as extra data for the convenience of off-chain tooling.
+     * @param _from Address of the sender on this domain.
+     * @param _localToken Address of the ERC721 on this domain.
+     * @param _remoteToken Address of the ERC721 on the remote domain.
+     * @param _to Address to receive the token on the other domain.
+     * @param _tokenId Token ID to bridge.
+     */
+    encodeBridgeERC721L2Message(
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: string,
+      _to: BytesLike,
+      _tokenId: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     /**
      * Completes an ERC721 bridge from the other domain and sends the ERC721 token to the         recipient on this domain.
@@ -514,31 +552,33 @@ export interface L1ERC721Bridge extends BaseContract {
      * @param _tokenId ID of the token being deposited.
      */
     finalizeBridgeERC721(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _tokenId: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
      * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * @param _messenger Contract of the CrossDomainMessenger on this network.
+     * @param _superchainConfig Contract of the SuperchainConfig contract on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
+      _messenger: string,
+      _superchainConfig: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
-     * Legacy getter for messenger contract.
+     * Messenger contract on this domain.
      */
     messenger(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Legacy getter for other bridge address.
+     * Contract of the bridge on the other network.
      */
     otherBridge(overrides?: CallOverrides): Promise<string>;
 
@@ -559,35 +599,35 @@ export interface L1ERC721Bridge extends BaseContract {
   };
 
   filters: {
-    "ERC721BridgeFinalized(address,address,address,address,uint256,bytes)"(
-      localToken?: PromiseOrValue<string> | null,
-      remoteToken?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
+    "ERC721BridgeFinalized(address,bytes32,bytes32,address,uint256,bytes)"(
+      localToken?: string | null,
+      remoteToken?: BytesLike | null,
+      from?: BytesLike | null,
       to?: null,
       tokenId?: null,
       extraData?: null
     ): ERC721BridgeFinalizedEventFilter;
     ERC721BridgeFinalized(
-      localToken?: PromiseOrValue<string> | null,
-      remoteToken?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
+      localToken?: string | null,
+      remoteToken?: BytesLike | null,
+      from?: BytesLike | null,
       to?: null,
       tokenId?: null,
       extraData?: null
     ): ERC721BridgeFinalizedEventFilter;
 
-    "ERC721BridgeInitiated(address,address,address,address,uint256,bytes)"(
-      localToken?: PromiseOrValue<string> | null,
-      remoteToken?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
+    "ERC721BridgeInitiated(address,bytes32,address,bytes32,uint256,bytes)"(
+      localToken?: string | null,
+      remoteToken?: BytesLike | null,
+      from?: string | null,
       to?: null,
       tokenId?: null,
       extraData?: null
     ): ERC721BridgeInitiatedEventFilter;
     ERC721BridgeInitiated(
-      localToken?: PromiseOrValue<string> | null,
-      remoteToken?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
+      localToken?: string | null,
+      remoteToken?: BytesLike | null,
+      from?: string | null,
       to?: null,
       tokenId?: null,
       extraData?: null
@@ -599,30 +639,25 @@ export interface L1ERC721Bridge extends BaseContract {
 
   estimateGas: {
     /**
-     * Messenger contract on this domain. This will be removed in the         future, use `messenger` instead.
+     * Legacy getter for messenger contract.         Public getter is legacy and will be removed in the future. Use `messenger` instead.
      */
     MESSENGER(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Address of the bridge on the other network. This will be removed in the         future, use `otherBridge` instead.
+     * Legacy getter for other bridge address.         Public getter is legacy and will be removed in the future. Use `otherBridge` instead.
      */
     OTHER_BRIDGE(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Initiates a bridge of an NFT to the caller's account on the other chain. Note that         this function can only be called by EOAs. Smart contract wallets should use the         `bridgeERC721To` function after ensuring that the recipient address on the remote         chain exists. Also note that the current owner of the token on this chain must         approve this contract to operate the NFT before it can be bridged.         **WARNING**: Do not bridge an ERC721 that was originally deployed on Optimism. This         bridge only supports ERC721s originally deployed on Ethereum. Users will need to         wait for the one-week challenge period to elapse before their Optimism-native NFT         can be refunded on L2.
-     * @param _extraData Optional data to forward to the other chain. Data supplied here will not                     be used to execute any code on the other chain and is only emitted as                     extra data for the convenience of off-chain tooling.
-     * @param _localToken Address of the ERC721 on this domain.
-     * @param _minGasLimit Minimum gas limit for the bridge message on the other domain.
-     * @param _remoteToken Address of the ERC721 on the remote domain.
-     * @param _tokenId Token ID to bridge.
      */
     bridgeERC721(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
@@ -635,22 +670,41 @@ export interface L1ERC721Bridge extends BaseContract {
      * @param _tokenId Token ID to bridge.
      */
     bridgeERC721To(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _to: BytesLike,
+      _tokenId: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Mapping of L1 token to L2 token to ID to boolean, indicating if the given L1 token         by ID was deposited for a given L2 token.
      */
     deposits(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Encode L2 message for bridge ERC721 from L1 to L2.
+     * @param _extraData Optional data to forward to the other domain. Data supplied here will                     not be used to execute any code on the other domain and is only emitted                     as extra data for the convenience of off-chain tooling.
+     * @param _from Address of the sender on this domain.
+     * @param _localToken Address of the ERC721 on this domain.
+     * @param _remoteToken Address of the ERC721 on the remote domain.
+     * @param _to Address to receive the token on the other domain.
+     * @param _tokenId Token ID to bridge.
+     */
+    encodeBridgeERC721L2Message(
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: string,
+      _to: BytesLike,
+      _tokenId: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -664,31 +718,33 @@ export interface L1ERC721Bridge extends BaseContract {
      * @param _tokenId ID of the token being deposited.
      */
     finalizeBridgeERC721(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _tokenId: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * @param _messenger Contract of the CrossDomainMessenger on this network.
+     * @param _superchainConfig Contract of the SuperchainConfig contract on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _messenger: string,
+      _superchainConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
-     * Legacy getter for messenger contract.
+     * Messenger contract on this domain.
      */
     messenger(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Legacy getter for other bridge address.
+     * Contract of the bridge on the other network.
      */
     otherBridge(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -710,30 +766,25 @@ export interface L1ERC721Bridge extends BaseContract {
 
   populateTransaction: {
     /**
-     * Messenger contract on this domain. This will be removed in the         future, use `messenger` instead.
+     * Legacy getter for messenger contract.         Public getter is legacy and will be removed in the future. Use `messenger` instead.
      */
     MESSENGER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Address of the bridge on the other network. This will be removed in the         future, use `otherBridge` instead.
+     * Legacy getter for other bridge address.         Public getter is legacy and will be removed in the future. Use `otherBridge` instead.
      */
     OTHER_BRIDGE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Initiates a bridge of an NFT to the caller's account on the other chain. Note that         this function can only be called by EOAs. Smart contract wallets should use the         `bridgeERC721To` function after ensuring that the recipient address on the remote         chain exists. Also note that the current owner of the token on this chain must         approve this contract to operate the NFT before it can be bridged.         **WARNING**: Do not bridge an ERC721 that was originally deployed on Optimism. This         bridge only supports ERC721s originally deployed on Ethereum. Users will need to         wait for the one-week challenge period to elapse before their Optimism-native NFT         can be refunded on L2.
-     * @param _extraData Optional data to forward to the other chain. Data supplied here will not                     be used to execute any code on the other chain and is only emitted as                     extra data for the convenience of off-chain tooling.
-     * @param _localToken Address of the ERC721 on this domain.
-     * @param _minGasLimit Minimum gas limit for the bridge message on the other domain.
-     * @param _remoteToken Address of the ERC721 on the remote domain.
-     * @param _tokenId Token ID to bridge.
      */
     bridgeERC721(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -746,22 +797,41 @@ export interface L1ERC721Bridge extends BaseContract {
      * @param _tokenId Token ID to bridge.
      */
     bridgeERC721To(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _to: BytesLike,
+      _tokenId: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Mapping of L1 token to L2 token to ID to boolean, indicating if the given L1 token         by ID was deposited for a given L2 token.
      */
     deposits(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<string>,
-      arg2: PromiseOrValue<BigNumberish>,
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Encode L2 message for bridge ERC721 from L1 to L2.
+     * @param _extraData Optional data to forward to the other domain. Data supplied here will                     not be used to execute any code on the other domain and is only emitted                     as extra data for the convenience of off-chain tooling.
+     * @param _from Address of the sender on this domain.
+     * @param _localToken Address of the ERC721 on this domain.
+     * @param _remoteToken Address of the ERC721 on the remote domain.
+     * @param _to Address to receive the token on the other domain.
+     * @param _tokenId Token ID to bridge.
+     */
+    encodeBridgeERC721L2Message(
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: string,
+      _to: BytesLike,
+      _tokenId: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -775,31 +845,33 @@ export interface L1ERC721Bridge extends BaseContract {
      * @param _tokenId ID of the token being deposited.
      */
     finalizeBridgeERC721(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _tokenId: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _tokenId: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * @param _messenger Contract of the CrossDomainMessenger on this network.
+     * @param _superchainConfig Contract of the SuperchainConfig contract on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _messenger: string,
+      _superchainConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Legacy getter for messenger contract.
+     * Messenger contract on this domain.
      */
     messenger(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Legacy getter for other bridge address.
+     * Contract of the bridge on the other network.
      */
     otherBridge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
