@@ -24,7 +24,6 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "./common";
 
 export interface SuperchainConfigInterface extends utils.Interface {
@@ -62,12 +61,9 @@ export interface SuperchainConfigInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "guardian", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
+    values: [string, boolean]
   ): string;
-  encodeFunctionData(
-    functionFragment: "pause",
-    values: [PromiseOrValue<string>]
-  ): string;
+  encodeFunctionData(functionFragment: "pause", values: [string]): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
@@ -180,9 +176,9 @@ export interface SuperchainConfig extends BaseContract {
      * @param _paused Initial paused status.
      */
     initialize(
-      _guardian: PromiseOrValue<string>,
-      _paused: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _guardian: string,
+      _paused: boolean,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -190,8 +186,8 @@ export interface SuperchainConfig extends BaseContract {
      * @param _identifier (Optional) A string to identify provenance of the pause transaction.
      */
     pause(
-      _identifier: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _identifier: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -205,7 +201,7 @@ export interface SuperchainConfig extends BaseContract {
      * Unpauses withdrawals.
      */
     unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -235,9 +231,9 @@ export interface SuperchainConfig extends BaseContract {
    * @param _paused Initial paused status.
    */
   initialize(
-    _guardian: PromiseOrValue<string>,
-    _paused: PromiseOrValue<boolean>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _guardian: string,
+    _paused: boolean,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -245,8 +241,8 @@ export interface SuperchainConfig extends BaseContract {
    * @param _identifier (Optional) A string to identify provenance of the pause transaction.
    */
   pause(
-    _identifier: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _identifier: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -258,7 +254,7 @@ export interface SuperchainConfig extends BaseContract {
    * Unpauses withdrawals.
    */
   unpause(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -288,8 +284,8 @@ export interface SuperchainConfig extends BaseContract {
      * @param _paused Initial paused status.
      */
     initialize(
-      _guardian: PromiseOrValue<string>,
-      _paused: PromiseOrValue<boolean>,
+      _guardian: string,
+      _paused: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -297,10 +293,7 @@ export interface SuperchainConfig extends BaseContract {
      * Pauses withdrawals.
      * @param _identifier (Optional) A string to identify provenance of the pause transaction.
      */
-    pause(
-      _identifier: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    pause(_identifier: string, overrides?: CallOverrides): Promise<void>;
 
     /**
      * Getter for the current paused status.
@@ -320,11 +313,11 @@ export interface SuperchainConfig extends BaseContract {
 
   filters: {
     "ConfigUpdate(uint8,bytes)"(
-      updateType?: PromiseOrValue<BigNumberish> | null,
+      updateType?: BigNumberish | null,
       data?: null
     ): ConfigUpdateEventFilter;
     ConfigUpdate(
-      updateType?: PromiseOrValue<BigNumberish> | null,
+      updateType?: BigNumberish | null,
       data?: null
     ): ConfigUpdateEventFilter;
 
@@ -360,9 +353,9 @@ export interface SuperchainConfig extends BaseContract {
      * @param _paused Initial paused status.
      */
     initialize(
-      _guardian: PromiseOrValue<string>,
-      _paused: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _guardian: string,
+      _paused: boolean,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -370,8 +363,8 @@ export interface SuperchainConfig extends BaseContract {
      * @param _identifier (Optional) A string to identify provenance of the pause transaction.
      */
     pause(
-      _identifier: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _identifier: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -382,9 +375,7 @@ export interface SuperchainConfig extends BaseContract {
     /**
      * Unpauses withdrawals.
      */
-    unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    unpause(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
     /**
      * Semantic version.
@@ -414,9 +405,9 @@ export interface SuperchainConfig extends BaseContract {
      * @param _paused Initial paused status.
      */
     initialize(
-      _guardian: PromiseOrValue<string>,
-      _paused: PromiseOrValue<boolean>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _guardian: string,
+      _paused: boolean,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -424,8 +415,8 @@ export interface SuperchainConfig extends BaseContract {
      * @param _identifier (Optional) A string to identify provenance of the pause transaction.
      */
     pause(
-      _identifier: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _identifier: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -437,7 +428,7 @@ export interface SuperchainConfig extends BaseContract {
      * Unpauses withdrawals.
      */
     unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**

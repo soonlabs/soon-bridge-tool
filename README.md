@@ -9,7 +9,7 @@
 `yarn expend_deposit --expandNum=10`
 
 ### issue withdraw transaction
-`yarn issue_withdraw --l1Target='0x018281853eCC543Aa251732e8FDaa7323247eBeB' --value=200000000 --gasLimit=100000`
+`yarn issue_withdraw --l1Target='0x0000000000000000000000000000000000000001' --value=100 --gasLimit=100000`
 
 ### propose withdraw transaction
 `yarn propose_withdraw --withdrawHeight=15020`
