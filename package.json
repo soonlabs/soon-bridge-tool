@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "index": "npx ts-node --project tsconfig.json src/index.ts",
-    "happypass": "npx ts-node --project tsconfig.json src/happy_pass.ts",
     "init_soon": "npx ts-node --project tsconfig.json src/init_soon.ts",
     "reset_output_oracle": "npx ts-node --project tsconfig.json src/reset_output_oracle.ts",
     "expend_deposit": "npx ts-node --project tsconfig.json src/expend_deposit_account.ts",
