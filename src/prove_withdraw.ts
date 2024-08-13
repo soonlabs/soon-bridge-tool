@@ -72,7 +72,7 @@ async function main() {
   const receipt = await (
     await OptimismPortal.connect(
       EVMContext.EVM_USER,
-    ).provePDAWithdrawalTransaction(
+    ).proveWithdrawalTransaction(
       withdrawTx,
       l2OutputIndex,
       hexPubkey,

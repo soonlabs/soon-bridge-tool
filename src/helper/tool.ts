@@ -42,7 +42,7 @@ export function base58PublicKeyToHex(publicKey: string): string {
 
 export function parseWithdrawTxInfo(
   withdrawInfoData: Buffer,
-): Types.PdaWithdrawalTransactionStruct {
+): Types.WithdrawalTransactionStruct {
   const nonce = '0x' + withdrawInfoData.slice(0, 32).toString('hex');
   const sender = '0x' + withdrawInfoData.slice(32, 64).toString('hex');
   const target = '0x' + withdrawInfoData.slice(64, 84).toString('hex');

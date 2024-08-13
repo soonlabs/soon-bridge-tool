@@ -25,7 +25,6 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "./common";
 
 export interface L1CrossDomainMessengerInterface extends utils.Interface {
@@ -41,15 +40,18 @@ export interface L1CrossDomainMessengerInterface extends utils.Interface {
     "RELAY_GAS_CHECK_BUFFER()": FunctionFragment;
     "RELAY_RESERVED_GAS()": FunctionFragment;
     "baseGas(bytes,uint32)": FunctionFragment;
+    "encodeRelayL2Message(uint256,address,bytes32,uint256,uint256,bytes)": FunctionFragment;
     "failedMessages(bytes32)": FunctionFragment;
-    "initialize(address)": FunctionFragment;
+    "initialize(address,address,address)": FunctionFragment;
     "messageNonce()": FunctionFragment;
+    "otherMessenger()": FunctionFragment;
     "paused()": FunctionFragment;
     "portal()": FunctionFragment;
-    "relayMessage(uint256,address,address,uint256,uint256,bytes)": FunctionFragment;
-    "sendMessage(address,bytes,uint32)": FunctionFragment;
+    "relayMessage(uint256,bytes32,address,uint256,uint256,bytes)": FunctionFragment;
+    "sendMessage(bytes32,bytes,uint32)": FunctionFragment;
     "successfulMessages(bytes32)": FunctionFragment;
     "superchainConfig()": FunctionFragment;
+    "systemConfig()": FunctionFragment;
     "version()": FunctionFragment;
     "xDomainMessageSender()": FunctionFragment;
   };
@@ -67,15 +69,18 @@ export interface L1CrossDomainMessengerInterface extends utils.Interface {
       | "RELAY_GAS_CHECK_BUFFER"
       | "RELAY_RESERVED_GAS"
       | "baseGas"
+      | "encodeRelayL2Message"
       | "failedMessages"
       | "initialize"
       | "messageNonce"
+      | "otherMessenger"
       | "paused"
       | "portal"
       | "relayMessage"
       | "sendMessage"
       | "successfulMessages"
       | "superchainConfig"
+      | "systemConfig"
       | "version"
       | "xDomainMessageSender"
   ): FunctionFragment;
@@ -119,18 +124,33 @@ export interface L1CrossDomainMessengerInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "baseGas",
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
+    values: [BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "encodeRelayL2Message",
+    values: [
+      BigNumberish,
+      string,
+      BytesLike,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "failedMessages",
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [PromiseOrValue<string>]
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "messageNonce",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "otherMessenger",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
@@ -138,28 +158,28 @@ export interface L1CrossDomainMessengerInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "relayMessage",
     values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
+      BigNumberish,
+      BytesLike,
+      string,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "sendMessage",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BytesLike, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "successfulMessages",
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "superchainConfig",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "systemConfig",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
@@ -207,12 +227,20 @@ export interface L1CrossDomainMessengerInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "baseGas", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "encodeRelayL2Message",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "failedMessages",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "messageNonce",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "otherMessenger",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
@@ -233,6 +261,10 @@ export interface L1CrossDomainMessengerInterface extends utils.Interface {
     functionFragment: "superchainConfig",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "systemConfig",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "xDomainMessageSender",
@@ -243,7 +275,7 @@ export interface L1CrossDomainMessengerInterface extends utils.Interface {
     "FailedRelayedMessage(bytes32)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "RelayedMessage(bytes32)": EventFragment;
-    "SentMessage(address,address,bytes,uint256,uint256)": EventFragment;
+    "SentMessage(bytes32,address,bytes,uint256,uint256)": EventFragment;
     "SentMessageExtension1(address,uint256)": EventFragment;
   };
 
@@ -360,12 +392,12 @@ export interface L1CrossDomainMessenger extends BaseContract {
     ): Promise<[BigNumber]>;
 
     /**
-     * Address of the paired CrossDomainMessenger contract on the other chain.
+     * Retrieves the address of the paired CrossDomainMessenger contract on the other chain         Public getter is legacy and will be removed in the future. Use `otherMessenger()` instead.
      */
     OTHER_MESSENGER(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Address of the OptimismPortal. This will be removed in the         future, use `portal` instead.
+     * Getter function for the OptimismPortal contract on this chain.         Public getter is legacy and will be removed in the future. Use `portal()` instead.
      */
     PORTAL(overrides?: CallOverrides): Promise<[string]>;
 
@@ -395,26 +427,46 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _minGasLimit Minimum desired gas limit when message goes to target.
      */
     baseGas(
-      _message: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
+      _message: BytesLike,
+      _minGasLimit: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    /**
+     * Encode L2 message to relay on L2.
+     * @param _message Message to trigger the target address with.
+     * @param _minGasLimit Minimum gas limit that the message can be executed with.
+     * @param _target Target contract or wallet address.
+     */
+    encodeRelayL2Message(
+      _nonce: BigNumberish,
+      _sender: string,
+      _target: BytesLike,
+      _value: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _message: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     /**
      * Mapping of message hashes to a boolean if and only if the message has failed to be         executed at least once. A message will not be present in this mapping if it         successfully executed on the first attempt.
      */
     failedMessages(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     /**
      * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * @param _portal Contract of the OptimismPortal contract on this network.
+     * @param _superchainConfig Contract of the SuperchainConfig contract on this network.
+     * @param _systemConfig Contract of the SystemConfig contract on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _superchainConfig: string,
+      _portal: string,
+      _systemConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -423,12 +475,17 @@ export interface L1CrossDomainMessenger extends BaseContract {
     messageNonce(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
+     * CrossDomainMessenger contract on the other chain.
+     */
+    otherMessenger(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
      * This function should return true if the contract is paused.         On L1 this function will check the SuperchainConfig for its paused status.         On L2 this function should be a no-op.
      */
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
     /**
-     * Getter for the OptimismPortal address.
+     * Contract of the OptimismPortal.
      */
     portal(overrides?: CallOverrides): Promise<[string]>;
 
@@ -442,13 +499,13 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _value ETH value to send with the message.
      */
     relayMessage(
-      _nonce: PromiseOrValue<BigNumberish>,
-      _sender: PromiseOrValue<string>,
-      _target: PromiseOrValue<string>,
-      _value: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _message: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _nonce: BigNumberish,
+      _sender: BytesLike,
+      _target: string,
+      _value: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _message: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -458,24 +515,29 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _target Target contract or wallet address.
      */
     sendMessage(
-      _target: PromiseOrValue<string>,
-      _message: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _target: BytesLike,
+      _message: BytesLike,
+      _minGasLimit: BigNumberish,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Mapping of message hashes to boolean receipt values. Note that a message will only         be present in this mapping if it has successfully been relayed on this chain, and         can therefore not be relayed again.
      */
     successfulMessages(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     /**
-     * Address of the SuperchainConfig contract.
+     * Contract of the SuperchainConfig.
      */
     superchainConfig(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Address of the SystemConfig contract.
+     */
+    systemConfig(overrides?: CallOverrides): Promise<[string]>;
 
     /**
      * Semantic version.
@@ -513,12 +575,12 @@ export interface L1CrossDomainMessenger extends BaseContract {
   ): Promise<BigNumber>;
 
   /**
-   * Address of the paired CrossDomainMessenger contract on the other chain.
+   * Retrieves the address of the paired CrossDomainMessenger contract on the other chain         Public getter is legacy and will be removed in the future. Use `otherMessenger()` instead.
    */
   OTHER_MESSENGER(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Address of the OptimismPortal. This will be removed in the         future, use `portal` instead.
+   * Getter function for the OptimismPortal contract on this chain.         Public getter is legacy and will be removed in the future. Use `portal()` instead.
    */
   PORTAL(overrides?: CallOverrides): Promise<string>;
 
@@ -548,26 +610,43 @@ export interface L1CrossDomainMessenger extends BaseContract {
    * @param _minGasLimit Minimum desired gas limit when message goes to target.
    */
   baseGas(
-    _message: PromiseOrValue<BytesLike>,
-    _minGasLimit: PromiseOrValue<BigNumberish>,
+    _message: BytesLike,
+    _minGasLimit: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   /**
+   * Encode L2 message to relay on L2.
+   * @param _message Message to trigger the target address with.
+   * @param _minGasLimit Minimum gas limit that the message can be executed with.
+   * @param _target Target contract or wallet address.
+   */
+  encodeRelayL2Message(
+    _nonce: BigNumberish,
+    _sender: string,
+    _target: BytesLike,
+    _value: BigNumberish,
+    _minGasLimit: BigNumberish,
+    _message: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  /**
    * Mapping of message hashes to a boolean if and only if the message has failed to be         executed at least once. A message will not be present in this mapping if it         successfully executed on the first attempt.
    */
-  failedMessages(
-    arg0: PromiseOrValue<BytesLike>,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  failedMessages(arg0: BytesLike, overrides?: CallOverrides): Promise<boolean>;
 
   /**
    * Initializes the contract.
-   * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+   * @param _portal Contract of the OptimismPortal contract on this network.
+   * @param _superchainConfig Contract of the SuperchainConfig contract on this network.
+   * @param _systemConfig Contract of the SystemConfig contract on this network.
    */
   initialize(
-    _superchainConfig: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _superchainConfig: string,
+    _portal: string,
+    _systemConfig: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -576,12 +655,17 @@ export interface L1CrossDomainMessenger extends BaseContract {
   messageNonce(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
+   * CrossDomainMessenger contract on the other chain.
+   */
+  otherMessenger(overrides?: CallOverrides): Promise<string>;
+
+  /**
    * This function should return true if the contract is paused.         On L1 this function will check the SuperchainConfig for its paused status.         On L2 this function should be a no-op.
    */
   paused(overrides?: CallOverrides): Promise<boolean>;
 
   /**
-   * Getter for the OptimismPortal address.
+   * Contract of the OptimismPortal.
    */
   portal(overrides?: CallOverrides): Promise<string>;
 
@@ -595,13 +679,13 @@ export interface L1CrossDomainMessenger extends BaseContract {
    * @param _value ETH value to send with the message.
    */
   relayMessage(
-    _nonce: PromiseOrValue<BigNumberish>,
-    _sender: PromiseOrValue<string>,
-    _target: PromiseOrValue<string>,
-    _value: PromiseOrValue<BigNumberish>,
-    _minGasLimit: PromiseOrValue<BigNumberish>,
-    _message: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    _nonce: BigNumberish,
+    _sender: BytesLike,
+    _target: string,
+    _value: BigNumberish,
+    _minGasLimit: BigNumberish,
+    _message: BytesLike,
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -611,24 +695,29 @@ export interface L1CrossDomainMessenger extends BaseContract {
    * @param _target Target contract or wallet address.
    */
   sendMessage(
-    _target: PromiseOrValue<string>,
-    _message: PromiseOrValue<BytesLike>,
-    _minGasLimit: PromiseOrValue<BigNumberish>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    _target: BytesLike,
+    _message: BytesLike,
+    _minGasLimit: BigNumberish,
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Mapping of message hashes to boolean receipt values. Note that a message will only         be present in this mapping if it has successfully been relayed on this chain, and         can therefore not be relayed again.
    */
   successfulMessages(
-    arg0: PromiseOrValue<BytesLike>,
+    arg0: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   /**
-   * Address of the SuperchainConfig contract.
+   * Contract of the SuperchainConfig.
    */
   superchainConfig(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Address of the SystemConfig contract.
+   */
+  systemConfig(overrides?: CallOverrides): Promise<string>;
 
   /**
    * Semantic version.
@@ -666,12 +755,12 @@ export interface L1CrossDomainMessenger extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Address of the paired CrossDomainMessenger contract on the other chain.
+     * Retrieves the address of the paired CrossDomainMessenger contract on the other chain         Public getter is legacy and will be removed in the future. Use `otherMessenger()` instead.
      */
     OTHER_MESSENGER(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Address of the OptimismPortal. This will be removed in the         future, use `portal` instead.
+     * Getter function for the OptimismPortal contract on this chain.         Public getter is legacy and will be removed in the future. Use `portal()` instead.
      */
     PORTAL(overrides?: CallOverrides): Promise<string>;
 
@@ -701,25 +790,45 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _minGasLimit Minimum desired gas limit when message goes to target.
      */
     baseGas(
-      _message: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
+      _message: BytesLike,
+      _minGasLimit: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    /**
+     * Encode L2 message to relay on L2.
+     * @param _message Message to trigger the target address with.
+     * @param _minGasLimit Minimum gas limit that the message can be executed with.
+     * @param _target Target contract or wallet address.
+     */
+    encodeRelayL2Message(
+      _nonce: BigNumberish,
+      _sender: string,
+      _target: BytesLike,
+      _value: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _message: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     /**
      * Mapping of message hashes to a boolean if and only if the message has failed to be         executed at least once. A message will not be present in this mapping if it         successfully executed on the first attempt.
      */
     failedMessages(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     /**
      * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * @param _portal Contract of the OptimismPortal contract on this network.
+     * @param _superchainConfig Contract of the SuperchainConfig contract on this network.
+     * @param _systemConfig Contract of the SystemConfig contract on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
+      _superchainConfig: string,
+      _portal: string,
+      _systemConfig: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -729,12 +838,17 @@ export interface L1CrossDomainMessenger extends BaseContract {
     messageNonce(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * CrossDomainMessenger contract on the other chain.
+     */
+    otherMessenger(overrides?: CallOverrides): Promise<string>;
+
+    /**
      * This function should return true if the contract is paused.         On L1 this function will check the SuperchainConfig for its paused status.         On L2 this function should be a no-op.
      */
     paused(overrides?: CallOverrides): Promise<boolean>;
 
     /**
-     * Getter for the OptimismPortal address.
+     * Contract of the OptimismPortal.
      */
     portal(overrides?: CallOverrides): Promise<string>;
 
@@ -748,12 +862,12 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _value ETH value to send with the message.
      */
     relayMessage(
-      _nonce: PromiseOrValue<BigNumberish>,
-      _sender: PromiseOrValue<string>,
-      _target: PromiseOrValue<string>,
-      _value: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _message: PromiseOrValue<BytesLike>,
+      _nonce: BigNumberish,
+      _sender: BytesLike,
+      _target: string,
+      _value: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _message: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -764,9 +878,9 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _target Target contract or wallet address.
      */
     sendMessage(
-      _target: PromiseOrValue<string>,
-      _message: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
+      _target: BytesLike,
+      _message: BytesLike,
+      _minGasLimit: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -774,14 +888,19 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * Mapping of message hashes to boolean receipt values. Note that a message will only         be present in this mapping if it has successfully been relayed on this chain, and         can therefore not be relayed again.
      */
     successfulMessages(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     /**
-     * Address of the SuperchainConfig contract.
+     * Contract of the SuperchainConfig.
      */
     superchainConfig(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Address of the SystemConfig contract.
+     */
+    systemConfig(overrides?: CallOverrides): Promise<string>;
 
     /**
      * Semantic version.
@@ -796,31 +915,29 @@ export interface L1CrossDomainMessenger extends BaseContract {
 
   filters: {
     "FailedRelayedMessage(bytes32)"(
-      msgHash?: PromiseOrValue<BytesLike> | null
+      msgHash?: BytesLike | null
     ): FailedRelayedMessageEventFilter;
     FailedRelayedMessage(
-      msgHash?: PromiseOrValue<BytesLike> | null
+      msgHash?: BytesLike | null
     ): FailedRelayedMessageEventFilter;
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 
     "RelayedMessage(bytes32)"(
-      msgHash?: PromiseOrValue<BytesLike> | null
+      msgHash?: BytesLike | null
     ): RelayedMessageEventFilter;
-    RelayedMessage(
-      msgHash?: PromiseOrValue<BytesLike> | null
-    ): RelayedMessageEventFilter;
+    RelayedMessage(msgHash?: BytesLike | null): RelayedMessageEventFilter;
 
-    "SentMessage(address,address,bytes,uint256,uint256)"(
-      target?: PromiseOrValue<string> | null,
+    "SentMessage(bytes32,address,bytes,uint256,uint256)"(
+      target?: BytesLike | null,
       sender?: null,
       message?: null,
       messageNonce?: null,
       gasLimit?: null
     ): SentMessageEventFilter;
     SentMessage(
-      target?: PromiseOrValue<string> | null,
+      target?: BytesLike | null,
       sender?: null,
       message?: null,
       messageNonce?: null,
@@ -828,11 +945,11 @@ export interface L1CrossDomainMessenger extends BaseContract {
     ): SentMessageEventFilter;
 
     "SentMessageExtension1(address,uint256)"(
-      sender?: PromiseOrValue<string> | null,
+      sender?: string | null,
       value?: null
     ): SentMessageExtension1EventFilter;
     SentMessageExtension1(
-      sender?: PromiseOrValue<string> | null,
+      sender?: string | null,
       value?: null
     ): SentMessageExtension1EventFilter;
   };
@@ -863,12 +980,12 @@ export interface L1CrossDomainMessenger extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Address of the paired CrossDomainMessenger contract on the other chain.
+     * Retrieves the address of the paired CrossDomainMessenger contract on the other chain         Public getter is legacy and will be removed in the future. Use `otherMessenger()` instead.
      */
     OTHER_MESSENGER(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Address of the OptimismPortal. This will be removed in the         future, use `portal` instead.
+     * Getter function for the OptimismPortal contract on this chain.         Public getter is legacy and will be removed in the future. Use `portal()` instead.
      */
     PORTAL(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -898,8 +1015,24 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _minGasLimit Minimum desired gas limit when message goes to target.
      */
     baseGas(
-      _message: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
+      _message: BytesLike,
+      _minGasLimit: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Encode L2 message to relay on L2.
+     * @param _message Message to trigger the target address with.
+     * @param _minGasLimit Minimum gas limit that the message can be executed with.
+     * @param _target Target contract or wallet address.
+     */
+    encodeRelayL2Message(
+      _nonce: BigNumberish,
+      _sender: string,
+      _target: BytesLike,
+      _value: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _message: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -907,17 +1040,21 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * Mapping of message hashes to a boolean if and only if the message has failed to be         executed at least once. A message will not be present in this mapping if it         successfully executed on the first attempt.
      */
     failedMessages(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
      * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * @param _portal Contract of the OptimismPortal contract on this network.
+     * @param _superchainConfig Contract of the SuperchainConfig contract on this network.
+     * @param _systemConfig Contract of the SystemConfig contract on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _superchainConfig: string,
+      _portal: string,
+      _systemConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -926,12 +1063,17 @@ export interface L1CrossDomainMessenger extends BaseContract {
     messageNonce(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * CrossDomainMessenger contract on the other chain.
+     */
+    otherMessenger(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * This function should return true if the contract is paused.         On L1 this function will check the SuperchainConfig for its paused status.         On L2 this function should be a no-op.
      */
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Getter for the OptimismPortal address.
+     * Contract of the OptimismPortal.
      */
     portal(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -945,13 +1087,13 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _value ETH value to send with the message.
      */
     relayMessage(
-      _nonce: PromiseOrValue<BigNumberish>,
-      _sender: PromiseOrValue<string>,
-      _target: PromiseOrValue<string>,
-      _value: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _message: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _nonce: BigNumberish,
+      _sender: BytesLike,
+      _target: string,
+      _value: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _message: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -961,24 +1103,29 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _target Target contract or wallet address.
      */
     sendMessage(
-      _target: PromiseOrValue<string>,
-      _message: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _target: BytesLike,
+      _message: BytesLike,
+      _minGasLimit: BigNumberish,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Mapping of message hashes to boolean receipt values. Note that a message will only         be present in this mapping if it has successfully been relayed on this chain, and         can therefore not be relayed again.
      */
     successfulMessages(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
-     * Address of the SuperchainConfig contract.
+     * Contract of the SuperchainConfig.
      */
     superchainConfig(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Address of the SystemConfig contract.
+     */
+    systemConfig(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Semantic version.
@@ -1019,12 +1166,12 @@ export interface L1CrossDomainMessenger extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Address of the paired CrossDomainMessenger contract on the other chain.
+     * Retrieves the address of the paired CrossDomainMessenger contract on the other chain         Public getter is legacy and will be removed in the future. Use `otherMessenger()` instead.
      */
     OTHER_MESSENGER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Address of the OptimismPortal. This will be removed in the         future, use `portal` instead.
+     * Getter function for the OptimismPortal contract on this chain.         Public getter is legacy and will be removed in the future. Use `portal()` instead.
      */
     PORTAL(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1062,8 +1209,24 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _minGasLimit Minimum desired gas limit when message goes to target.
      */
     baseGas(
-      _message: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
+      _message: BytesLike,
+      _minGasLimit: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Encode L2 message to relay on L2.
+     * @param _message Message to trigger the target address with.
+     * @param _minGasLimit Minimum gas limit that the message can be executed with.
+     * @param _target Target contract or wallet address.
+     */
+    encodeRelayL2Message(
+      _nonce: BigNumberish,
+      _sender: string,
+      _target: BytesLike,
+      _value: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _message: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1071,17 +1234,21 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * Mapping of message hashes to a boolean if and only if the message has failed to be         executed at least once. A message will not be present in this mapping if it         successfully executed on the first attempt.
      */
     failedMessages(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
      * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * @param _portal Contract of the OptimismPortal contract on this network.
+     * @param _superchainConfig Contract of the SuperchainConfig contract on this network.
+     * @param _systemConfig Contract of the SystemConfig contract on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _superchainConfig: string,
+      _portal: string,
+      _systemConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1090,12 +1257,17 @@ export interface L1CrossDomainMessenger extends BaseContract {
     messageNonce(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
+     * CrossDomainMessenger contract on the other chain.
+     */
+    otherMessenger(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
      * This function should return true if the contract is paused.         On L1 this function will check the SuperchainConfig for its paused status.         On L2 this function should be a no-op.
      */
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Getter for the OptimismPortal address.
+     * Contract of the OptimismPortal.
      */
     portal(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1109,13 +1281,13 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _value ETH value to send with the message.
      */
     relayMessage(
-      _nonce: PromiseOrValue<BigNumberish>,
-      _sender: PromiseOrValue<string>,
-      _target: PromiseOrValue<string>,
-      _value: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _message: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _nonce: BigNumberish,
+      _sender: BytesLike,
+      _target: string,
+      _value: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _message: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1125,24 +1297,29 @@ export interface L1CrossDomainMessenger extends BaseContract {
      * @param _target Target contract or wallet address.
      */
     sendMessage(
-      _target: PromiseOrValue<string>,
-      _message: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _target: BytesLike,
+      _message: BytesLike,
+      _minGasLimit: BigNumberish,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Mapping of message hashes to boolean receipt values. Note that a message will only         be present in this mapping if it has successfully been relayed on this chain, and         can therefore not be relayed again.
      */
     successfulMessages(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Address of the SuperchainConfig contract.
+     * Contract of the SuperchainConfig.
      */
     superchainConfig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Address of the SystemConfig contract.
+     */
+    systemConfig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Semantic version.

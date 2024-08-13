@@ -25,14 +25,13 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "./common";
 
 export declare namespace Types {
   export type OutputProposalStruct = {
-    outputRoot: PromiseOrValue<BytesLike>;
-    timestamp: PromiseOrValue<BigNumberish>;
-    l2BlockNumber: PromiseOrValue<BigNumberish>;
+    outputRoot: BytesLike;
+    timestamp: BigNumberish;
+    l2BlockNumber: BigNumberish;
   };
 
   export type OutputProposalStructOutput = [string, BigNumber, BigNumber] & {
@@ -52,11 +51,12 @@ export interface L2OutputOracleInterface extends utils.Interface {
     "challenger()": FunctionFragment;
     "computeL2Timestamp(uint256)": FunctionFragment;
     "deleteL2Outputs(uint256)": FunctionFragment;
+    "devClearL2Outputs()": FunctionFragment;
     "finalizationPeriodSeconds()": FunctionFragment;
     "getL2Output(uint256)": FunctionFragment;
     "getL2OutputAfter(uint256)": FunctionFragment;
     "getL2OutputIndexAfter(uint256)": FunctionFragment;
-    "initialize(uint256,uint256)": FunctionFragment;
+    "initialize(uint256,uint256,uint256,uint256,address,address,uint256)": FunctionFragment;
     "l2BlockTime()": FunctionFragment;
     "latestBlockNumber()": FunctionFragment;
     "latestOutputIndex()": FunctionFragment;
@@ -80,6 +80,7 @@ export interface L2OutputOracleInterface extends utils.Interface {
       | "challenger"
       | "computeL2Timestamp"
       | "deleteL2Outputs"
+      | "devClearL2Outputs"
       | "finalizationPeriodSeconds"
       | "getL2Output"
       | "getL2OutputAfter"
@@ -121,11 +122,15 @@ export interface L2OutputOracleInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "computeL2Timestamp",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "deleteL2Outputs",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "devClearL2Outputs",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "finalizationPeriodSeconds",
@@ -133,19 +138,27 @@ export interface L2OutputOracleInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getL2Output",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getL2OutputAfter",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getL2OutputIndexAfter",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      string,
+      string,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "l2BlockTime",
@@ -169,12 +182,7 @@ export interface L2OutputOracleInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "proposeL2Output",
-    values: [
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
-    ]
+    values: [BytesLike, BigNumberish, BytesLike, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "proposer", values?: undefined): string;
   encodeFunctionData(
@@ -212,6 +220,10 @@ export interface L2OutputOracleInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "deleteL2Outputs",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "devClearL2Outputs",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -340,34 +352,34 @@ export interface L2OutputOracle extends BaseContract {
 
   functions: {
     /**
-     * The address of the challenger. Can be updated via upgrade. This will be removed in the         future, use `challenger` instead.
+     * Getter for the challenger address.         Public getter is legacy and will be removed in the future. Use `challenger` instead.
      */
     CHALLENGER(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
+     * Getter for the finalizationPeriodSeconds.         Public getter is legacy and will be removed in the future. Use `finalizationPeriodSeconds` instead.
      */
     FINALIZATION_PERIOD_SECONDS(
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     /**
-     * The time between L2 blocks in seconds. Once set, this value MUST NOT be modified.
+     * Getter for the l2BlockTime.         Public getter is legacy and will be removed in the future. Use `l2BlockTime` instead.
      */
     L2_BLOCK_TIME(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
-     * The address of the proposer. Can be updated via upgrade.  This will be removed in the         future, use `proposer` instead.
+     * Getter for the proposer address.         Public getter is legacy and will be removed in the future. Use `proposer` instead.
      */
     PROPOSER(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * The interval in L2 blocks at which checkpoints must be submitted.         Although this is immutable, it can safely be modified by upgrading the         implementation contract.         Public getter is legacy and will be removed in the future. Use `submissionInterval`         instead.
+     * Getter for the submissionInterval.         Public getter is legacy and will be removed in the future. Use `submissionInterval` instead.
      */
     SUBMISSION_INTERVAL(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
-     * Getter for the challenger address.
+     * The address of the challenger. Can be updated via upgrade.
      */
     challenger(overrides?: CallOverrides): Promise<[string]>;
 
@@ -376,7 +388,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber The L2 block number of the target block.
      */
     computeL2Timestamp(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -385,12 +397,19 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2OutputIndex Index of the first L2 output to be deleted.                       All outputs after this output will also be deleted.
      */
     deleteL2Outputs(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l2OutputIndex: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
-     * Getter for the FINALIZATION_PERIOD_SECONDS.
+     * Deletes all output proposals. Only for dev on sepolia
+     */
+    devClearL2Outputs(
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
      */
     finalizationPeriodSeconds(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -399,7 +418,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2OutputIndex Index of the output to return.
      */
     getL2Output(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[Types.OutputProposalStructOutput]>;
 
@@ -408,7 +427,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber L2 block number to find a checkpoint for.
      */
     getL2OutputAfter(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[Types.OutputProposalStructOutput]>;
 
@@ -417,23 +436,33 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber L2 block number to find a checkpoint for.
      */
     getL2OutputIndexAfter(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     /**
      * Initializer.
-     * @param _startingBlockNumber Block number for the first recoded L2 block.
-     * @param _startingTimestamp Timestamp for the first recoded L2 block.
+     * @param _challenger The address of the challenger.
+     * @param _finalizationPeriodSeconds The minimum time (in seconds) that must elapse before a withdrawal                                   can be finalized.
+     * @param _l2BlockTime The time per L2 block, in seconds.
+     * @param _proposer The address of the proposer.
+     * @param _startingBlockNumber The number of the first L2 block.
+     * @param _startingTimestamp The timestamp of the first L2 block.
+     * @param _submissionInterval Interval in blocks at which checkpoints must be submitted.
      */
     initialize(
-      _startingBlockNumber: PromiseOrValue<BigNumberish>,
-      _startingTimestamp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _submissionInterval: BigNumberish,
+      _l2BlockTime: BigNumberish,
+      _startingBlockNumber: BigNumberish,
+      _startingTimestamp: BigNumberish,
+      _proposer: string,
+      _challenger: string,
+      _finalizationPeriodSeconds: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
-     * Getter for the L2_BLOCK_TIME.
+     * The time between L2 blocks in milli-seconds. Once set, this value MUST NOT be modified.
      */
     l2BlockTime(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -465,15 +494,15 @@ export interface L2OutputOracle extends BaseContract {
      * @param _outputRoot The L2 output of the checkpoint block.
      */
     proposeL2Output(
-      _outputRoot: PromiseOrValue<BytesLike>,
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
-      _l1BlockHash: PromiseOrValue<BytesLike>,
-      _l1BlockNumber: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _outputRoot: BytesLike,
+      _l2BlockNumber: BigNumberish,
+      _l1BlockHash: BytesLike,
+      _l1BlockNumber: BigNumberish,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
-     * Getter for the PROPOSER address.
+     * The address of the proposer. Can be updated via upgrade.
      */
     proposer(overrides?: CallOverrides): Promise<[string]>;
 
@@ -488,7 +517,7 @@ export interface L2OutputOracle extends BaseContract {
     startingTimestamp(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
-     * Getter for the SUBMISSION_INTERVAL.
+     * The interval in L2 blocks at which checkpoints must be submitted.
      */
     submissionInterval(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -499,32 +528,32 @@ export interface L2OutputOracle extends BaseContract {
   };
 
   /**
-   * The address of the challenger. Can be updated via upgrade. This will be removed in the         future, use `challenger` instead.
+   * Getter for the challenger address.         Public getter is legacy and will be removed in the future. Use `challenger` instead.
    */
   CHALLENGER(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
+   * Getter for the finalizationPeriodSeconds.         Public getter is legacy and will be removed in the future. Use `finalizationPeriodSeconds` instead.
    */
   FINALIZATION_PERIOD_SECONDS(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
-   * The time between L2 blocks in seconds. Once set, this value MUST NOT be modified.
+   * Getter for the l2BlockTime.         Public getter is legacy and will be removed in the future. Use `l2BlockTime` instead.
    */
   L2_BLOCK_TIME(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
-   * The address of the proposer. Can be updated via upgrade.  This will be removed in the         future, use `proposer` instead.
+   * Getter for the proposer address.         Public getter is legacy and will be removed in the future. Use `proposer` instead.
    */
   PROPOSER(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * The interval in L2 blocks at which checkpoints must be submitted.         Although this is immutable, it can safely be modified by upgrading the         implementation contract.         Public getter is legacy and will be removed in the future. Use `submissionInterval`         instead.
+   * Getter for the submissionInterval.         Public getter is legacy and will be removed in the future. Use `submissionInterval` instead.
    */
   SUBMISSION_INTERVAL(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
-   * Getter for the challenger address.
+   * The address of the challenger. Can be updated via upgrade.
    */
   challenger(overrides?: CallOverrides): Promise<string>;
 
@@ -533,7 +562,7 @@ export interface L2OutputOracle extends BaseContract {
    * @param _l2BlockNumber The L2 block number of the target block.
    */
   computeL2Timestamp(
-    _l2BlockNumber: PromiseOrValue<BigNumberish>,
+    _l2BlockNumber: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -542,12 +571,19 @@ export interface L2OutputOracle extends BaseContract {
    * @param _l2OutputIndex Index of the first L2 output to be deleted.                       All outputs after this output will also be deleted.
    */
   deleteL2Outputs(
-    _l2OutputIndex: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _l2OutputIndex: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
-   * Getter for the FINALIZATION_PERIOD_SECONDS.
+   * Deletes all output proposals. Only for dev on sepolia
+   */
+  devClearL2Outputs(
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
    */
   finalizationPeriodSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -556,7 +592,7 @@ export interface L2OutputOracle extends BaseContract {
    * @param _l2OutputIndex Index of the output to return.
    */
   getL2Output(
-    _l2OutputIndex: PromiseOrValue<BigNumberish>,
+    _l2OutputIndex: BigNumberish,
     overrides?: CallOverrides
   ): Promise<Types.OutputProposalStructOutput>;
 
@@ -565,7 +601,7 @@ export interface L2OutputOracle extends BaseContract {
    * @param _l2BlockNumber L2 block number to find a checkpoint for.
    */
   getL2OutputAfter(
-    _l2BlockNumber: PromiseOrValue<BigNumberish>,
+    _l2BlockNumber: BigNumberish,
     overrides?: CallOverrides
   ): Promise<Types.OutputProposalStructOutput>;
 
@@ -574,23 +610,33 @@ export interface L2OutputOracle extends BaseContract {
    * @param _l2BlockNumber L2 block number to find a checkpoint for.
    */
   getL2OutputIndexAfter(
-    _l2BlockNumber: PromiseOrValue<BigNumberish>,
+    _l2BlockNumber: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   /**
    * Initializer.
-   * @param _startingBlockNumber Block number for the first recoded L2 block.
-   * @param _startingTimestamp Timestamp for the first recoded L2 block.
+   * @param _challenger The address of the challenger.
+   * @param _finalizationPeriodSeconds The minimum time (in seconds) that must elapse before a withdrawal                                   can be finalized.
+   * @param _l2BlockTime The time per L2 block, in seconds.
+   * @param _proposer The address of the proposer.
+   * @param _startingBlockNumber The number of the first L2 block.
+   * @param _startingTimestamp The timestamp of the first L2 block.
+   * @param _submissionInterval Interval in blocks at which checkpoints must be submitted.
    */
   initialize(
-    _startingBlockNumber: PromiseOrValue<BigNumberish>,
-    _startingTimestamp: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _submissionInterval: BigNumberish,
+    _l2BlockTime: BigNumberish,
+    _startingBlockNumber: BigNumberish,
+    _startingTimestamp: BigNumberish,
+    _proposer: string,
+    _challenger: string,
+    _finalizationPeriodSeconds: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
-   * Getter for the L2_BLOCK_TIME.
+   * The time between L2 blocks in milli-seconds. Once set, this value MUST NOT be modified.
    */
   l2BlockTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -622,15 +668,15 @@ export interface L2OutputOracle extends BaseContract {
    * @param _outputRoot The L2 output of the checkpoint block.
    */
   proposeL2Output(
-    _outputRoot: PromiseOrValue<BytesLike>,
-    _l2BlockNumber: PromiseOrValue<BigNumberish>,
-    _l1BlockHash: PromiseOrValue<BytesLike>,
-    _l1BlockNumber: PromiseOrValue<BigNumberish>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    _outputRoot: BytesLike,
+    _l2BlockNumber: BigNumberish,
+    _l1BlockHash: BytesLike,
+    _l1BlockNumber: BigNumberish,
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
-   * Getter for the PROPOSER address.
+   * The address of the proposer. Can be updated via upgrade.
    */
   proposer(overrides?: CallOverrides): Promise<string>;
 
@@ -645,7 +691,7 @@ export interface L2OutputOracle extends BaseContract {
   startingTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
-   * Getter for the SUBMISSION_INTERVAL.
+   * The interval in L2 blocks at which checkpoints must be submitted.
    */
   submissionInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -656,32 +702,32 @@ export interface L2OutputOracle extends BaseContract {
 
   callStatic: {
     /**
-     * The address of the challenger. Can be updated via upgrade. This will be removed in the         future, use `challenger` instead.
+     * Getter for the challenger address.         Public getter is legacy and will be removed in the future. Use `challenger` instead.
      */
     CHALLENGER(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
+     * Getter for the finalizationPeriodSeconds.         Public getter is legacy and will be removed in the future. Use `finalizationPeriodSeconds` instead.
      */
     FINALIZATION_PERIOD_SECONDS(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * The time between L2 blocks in seconds. Once set, this value MUST NOT be modified.
+     * Getter for the l2BlockTime.         Public getter is legacy and will be removed in the future. Use `l2BlockTime` instead.
      */
     L2_BLOCK_TIME(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * The address of the proposer. Can be updated via upgrade.  This will be removed in the         future, use `proposer` instead.
+     * Getter for the proposer address.         Public getter is legacy and will be removed in the future. Use `proposer` instead.
      */
     PROPOSER(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * The interval in L2 blocks at which checkpoints must be submitted.         Although this is immutable, it can safely be modified by upgrading the         implementation contract.         Public getter is legacy and will be removed in the future. Use `submissionInterval`         instead.
+     * Getter for the submissionInterval.         Public getter is legacy and will be removed in the future. Use `submissionInterval` instead.
      */
     SUBMISSION_INTERVAL(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Getter for the challenger address.
+     * The address of the challenger. Can be updated via upgrade.
      */
     challenger(overrides?: CallOverrides): Promise<string>;
 
@@ -690,7 +736,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber The L2 block number of the target block.
      */
     computeL2Timestamp(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -699,12 +745,17 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2OutputIndex Index of the first L2 output to be deleted.                       All outputs after this output will also be deleted.
      */
     deleteL2Outputs(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
-     * Getter for the FINALIZATION_PERIOD_SECONDS.
+     * Deletes all output proposals. Only for dev on sepolia
+     */
+    devClearL2Outputs(overrides?: CallOverrides): Promise<void>;
+
+    /**
+     * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
      */
     finalizationPeriodSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -713,7 +764,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2OutputIndex Index of the output to return.
      */
     getL2Output(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<Types.OutputProposalStructOutput>;
 
@@ -722,7 +773,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber L2 block number to find a checkpoint for.
      */
     getL2OutputAfter(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<Types.OutputProposalStructOutput>;
 
@@ -731,23 +782,33 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber L2 block number to find a checkpoint for.
      */
     getL2OutputIndexAfter(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
      * Initializer.
-     * @param _startingBlockNumber Block number for the first recoded L2 block.
-     * @param _startingTimestamp Timestamp for the first recoded L2 block.
+     * @param _challenger The address of the challenger.
+     * @param _finalizationPeriodSeconds The minimum time (in seconds) that must elapse before a withdrawal                                   can be finalized.
+     * @param _l2BlockTime The time per L2 block, in seconds.
+     * @param _proposer The address of the proposer.
+     * @param _startingBlockNumber The number of the first L2 block.
+     * @param _startingTimestamp The timestamp of the first L2 block.
+     * @param _submissionInterval Interval in blocks at which checkpoints must be submitted.
      */
     initialize(
-      _startingBlockNumber: PromiseOrValue<BigNumberish>,
-      _startingTimestamp: PromiseOrValue<BigNumberish>,
+      _submissionInterval: BigNumberish,
+      _l2BlockTime: BigNumberish,
+      _startingBlockNumber: BigNumberish,
+      _startingTimestamp: BigNumberish,
+      _proposer: string,
+      _challenger: string,
+      _finalizationPeriodSeconds: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
-     * Getter for the L2_BLOCK_TIME.
+     * The time between L2 blocks in milli-seconds. Once set, this value MUST NOT be modified.
      */
     l2BlockTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -779,15 +840,15 @@ export interface L2OutputOracle extends BaseContract {
      * @param _outputRoot The L2 output of the checkpoint block.
      */
     proposeL2Output(
-      _outputRoot: PromiseOrValue<BytesLike>,
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
-      _l1BlockHash: PromiseOrValue<BytesLike>,
-      _l1BlockNumber: PromiseOrValue<BigNumberish>,
+      _outputRoot: BytesLike,
+      _l2BlockNumber: BigNumberish,
+      _l1BlockHash: BytesLike,
+      _l1BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
-     * Getter for the PROPOSER address.
+     * The address of the proposer. Can be updated via upgrade.
      */
     proposer(overrides?: CallOverrides): Promise<string>;
 
@@ -802,7 +863,7 @@ export interface L2OutputOracle extends BaseContract {
     startingTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Getter for the SUBMISSION_INTERVAL.
+     * The interval in L2 blocks at which checkpoints must be submitted.
      */
     submissionInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -817,56 +878,56 @@ export interface L2OutputOracle extends BaseContract {
     Initialized(version?: null): InitializedEventFilter;
 
     "OutputProposed(bytes32,uint256,uint256,uint256)"(
-      outputRoot?: PromiseOrValue<BytesLike> | null,
-      l2OutputIndex?: PromiseOrValue<BigNumberish> | null,
-      l2BlockNumber?: PromiseOrValue<BigNumberish> | null,
+      outputRoot?: BytesLike | null,
+      l2OutputIndex?: BigNumberish | null,
+      l2BlockNumber?: BigNumberish | null,
       l1Timestamp?: null
     ): OutputProposedEventFilter;
     OutputProposed(
-      outputRoot?: PromiseOrValue<BytesLike> | null,
-      l2OutputIndex?: PromiseOrValue<BigNumberish> | null,
-      l2BlockNumber?: PromiseOrValue<BigNumberish> | null,
+      outputRoot?: BytesLike | null,
+      l2OutputIndex?: BigNumberish | null,
+      l2BlockNumber?: BigNumberish | null,
       l1Timestamp?: null
     ): OutputProposedEventFilter;
 
     "OutputsDeleted(uint256,uint256)"(
-      prevNextOutputIndex?: PromiseOrValue<BigNumberish> | null,
-      newNextOutputIndex?: PromiseOrValue<BigNumberish> | null
+      prevNextOutputIndex?: BigNumberish | null,
+      newNextOutputIndex?: BigNumberish | null
     ): OutputsDeletedEventFilter;
     OutputsDeleted(
-      prevNextOutputIndex?: PromiseOrValue<BigNumberish> | null,
-      newNextOutputIndex?: PromiseOrValue<BigNumberish> | null
+      prevNextOutputIndex?: BigNumberish | null,
+      newNextOutputIndex?: BigNumberish | null
     ): OutputsDeletedEventFilter;
   };
 
   estimateGas: {
     /**
-     * The address of the challenger. Can be updated via upgrade. This will be removed in the         future, use `challenger` instead.
+     * Getter for the challenger address.         Public getter is legacy and will be removed in the future. Use `challenger` instead.
      */
     CHALLENGER(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
+     * Getter for the finalizationPeriodSeconds.         Public getter is legacy and will be removed in the future. Use `finalizationPeriodSeconds` instead.
      */
     FINALIZATION_PERIOD_SECONDS(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * The time between L2 blocks in seconds. Once set, this value MUST NOT be modified.
+     * Getter for the l2BlockTime.         Public getter is legacy and will be removed in the future. Use `l2BlockTime` instead.
      */
     L2_BLOCK_TIME(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * The address of the proposer. Can be updated via upgrade.  This will be removed in the         future, use `proposer` instead.
+     * Getter for the proposer address.         Public getter is legacy and will be removed in the future. Use `proposer` instead.
      */
     PROPOSER(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * The interval in L2 blocks at which checkpoints must be submitted.         Although this is immutable, it can safely be modified by upgrading the         implementation contract.         Public getter is legacy and will be removed in the future. Use `submissionInterval`         instead.
+     * Getter for the submissionInterval.         Public getter is legacy and will be removed in the future. Use `submissionInterval` instead.
      */
     SUBMISSION_INTERVAL(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Getter for the challenger address.
+     * The address of the challenger. Can be updated via upgrade.
      */
     challenger(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -875,7 +936,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber The L2 block number of the target block.
      */
     computeL2Timestamp(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -884,12 +945,19 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2OutputIndex Index of the first L2 output to be deleted.                       All outputs after this output will also be deleted.
      */
     deleteL2Outputs(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l2OutputIndex: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
-     * Getter for the FINALIZATION_PERIOD_SECONDS.
+     * Deletes all output proposals. Only for dev on sepolia
+     */
+    devClearL2Outputs(
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
      */
     finalizationPeriodSeconds(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -898,7 +966,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2OutputIndex Index of the output to return.
      */
     getL2Output(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -907,7 +975,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber L2 block number to find a checkpoint for.
      */
     getL2OutputAfter(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -916,23 +984,33 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber L2 block number to find a checkpoint for.
      */
     getL2OutputIndexAfter(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
      * Initializer.
-     * @param _startingBlockNumber Block number for the first recoded L2 block.
-     * @param _startingTimestamp Timestamp for the first recoded L2 block.
+     * @param _challenger The address of the challenger.
+     * @param _finalizationPeriodSeconds The minimum time (in seconds) that must elapse before a withdrawal                                   can be finalized.
+     * @param _l2BlockTime The time per L2 block, in seconds.
+     * @param _proposer The address of the proposer.
+     * @param _startingBlockNumber The number of the first L2 block.
+     * @param _startingTimestamp The timestamp of the first L2 block.
+     * @param _submissionInterval Interval in blocks at which checkpoints must be submitted.
      */
     initialize(
-      _startingBlockNumber: PromiseOrValue<BigNumberish>,
-      _startingTimestamp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _submissionInterval: BigNumberish,
+      _l2BlockTime: BigNumberish,
+      _startingBlockNumber: BigNumberish,
+      _startingTimestamp: BigNumberish,
+      _proposer: string,
+      _challenger: string,
+      _finalizationPeriodSeconds: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
-     * Getter for the L2_BLOCK_TIME.
+     * The time between L2 blocks in milli-seconds. Once set, this value MUST NOT be modified.
      */
     l2BlockTime(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -964,15 +1042,15 @@ export interface L2OutputOracle extends BaseContract {
      * @param _outputRoot The L2 output of the checkpoint block.
      */
     proposeL2Output(
-      _outputRoot: PromiseOrValue<BytesLike>,
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
-      _l1BlockHash: PromiseOrValue<BytesLike>,
-      _l1BlockNumber: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _outputRoot: BytesLike,
+      _l2BlockNumber: BigNumberish,
+      _l1BlockHash: BytesLike,
+      _l1BlockNumber: BigNumberish,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
-     * Getter for the PROPOSER address.
+     * The address of the proposer. Can be updated via upgrade.
      */
     proposer(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -987,7 +1065,7 @@ export interface L2OutputOracle extends BaseContract {
     startingTimestamp(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Getter for the SUBMISSION_INTERVAL.
+     * The interval in L2 blocks at which checkpoints must be submitted.
      */
     submissionInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -999,36 +1077,36 @@ export interface L2OutputOracle extends BaseContract {
 
   populateTransaction: {
     /**
-     * The address of the challenger. Can be updated via upgrade. This will be removed in the         future, use `challenger` instead.
+     * Getter for the challenger address.         Public getter is legacy and will be removed in the future. Use `challenger` instead.
      */
     CHALLENGER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
+     * Getter for the finalizationPeriodSeconds.         Public getter is legacy and will be removed in the future. Use `finalizationPeriodSeconds` instead.
      */
     FINALIZATION_PERIOD_SECONDS(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
-     * The time between L2 blocks in seconds. Once set, this value MUST NOT be modified.
+     * Getter for the l2BlockTime.         Public getter is legacy and will be removed in the future. Use `l2BlockTime` instead.
      */
     L2_BLOCK_TIME(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * The address of the proposer. Can be updated via upgrade.  This will be removed in the         future, use `proposer` instead.
+     * Getter for the proposer address.         Public getter is legacy and will be removed in the future. Use `proposer` instead.
      */
     PROPOSER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * The interval in L2 blocks at which checkpoints must be submitted.         Although this is immutable, it can safely be modified by upgrading the         implementation contract.         Public getter is legacy and will be removed in the future. Use `submissionInterval`         instead.
+     * Getter for the submissionInterval.         Public getter is legacy and will be removed in the future. Use `submissionInterval` instead.
      */
     SUBMISSION_INTERVAL(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Getter for the challenger address.
+     * The address of the challenger. Can be updated via upgrade.
      */
     challenger(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1037,7 +1115,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber The L2 block number of the target block.
      */
     computeL2Timestamp(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1046,12 +1124,19 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2OutputIndex Index of the first L2 output to be deleted.                       All outputs after this output will also be deleted.
      */
     deleteL2Outputs(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l2OutputIndex: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Getter for the FINALIZATION_PERIOD_SECONDS.
+     * Deletes all output proposals. Only for dev on sepolia
+     */
+    devClearL2Outputs(
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
      */
     finalizationPeriodSeconds(
       overrides?: CallOverrides
@@ -1062,7 +1147,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2OutputIndex Index of the output to return.
      */
     getL2Output(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1071,7 +1156,7 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber L2 block number to find a checkpoint for.
      */
     getL2OutputAfter(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1080,23 +1165,33 @@ export interface L2OutputOracle extends BaseContract {
      * @param _l2BlockNumber L2 block number to find a checkpoint for.
      */
     getL2OutputIndexAfter(
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
+      _l2BlockNumber: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
      * Initializer.
-     * @param _startingBlockNumber Block number for the first recoded L2 block.
-     * @param _startingTimestamp Timestamp for the first recoded L2 block.
+     * @param _challenger The address of the challenger.
+     * @param _finalizationPeriodSeconds The minimum time (in seconds) that must elapse before a withdrawal                                   can be finalized.
+     * @param _l2BlockTime The time per L2 block, in seconds.
+     * @param _proposer The address of the proposer.
+     * @param _startingBlockNumber The number of the first L2 block.
+     * @param _startingTimestamp The timestamp of the first L2 block.
+     * @param _submissionInterval Interval in blocks at which checkpoints must be submitted.
      */
     initialize(
-      _startingBlockNumber: PromiseOrValue<BigNumberish>,
-      _startingTimestamp: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _submissionInterval: BigNumberish,
+      _l2BlockTime: BigNumberish,
+      _startingBlockNumber: BigNumberish,
+      _startingTimestamp: BigNumberish,
+      _proposer: string,
+      _challenger: string,
+      _finalizationPeriodSeconds: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Getter for the L2_BLOCK_TIME.
+     * The time between L2 blocks in milli-seconds. Once set, this value MUST NOT be modified.
      */
     l2BlockTime(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1128,15 +1223,15 @@ export interface L2OutputOracle extends BaseContract {
      * @param _outputRoot The L2 output of the checkpoint block.
      */
     proposeL2Output(
-      _outputRoot: PromiseOrValue<BytesLike>,
-      _l2BlockNumber: PromiseOrValue<BigNumberish>,
-      _l1BlockHash: PromiseOrValue<BytesLike>,
-      _l1BlockNumber: PromiseOrValue<BigNumberish>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _outputRoot: BytesLike,
+      _l2BlockNumber: BigNumberish,
+      _l1BlockHash: BytesLike,
+      _l1BlockNumber: BigNumberish,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Getter for the PROPOSER address.
+     * The address of the proposer. Can be updated via upgrade.
      */
     proposer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1153,7 +1248,7 @@ export interface L2OutputOracle extends BaseContract {
     startingTimestamp(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Getter for the SUBMISSION_INTERVAL.
+     * The interval in L2 blocks at which checkpoints must be submitted.
      */
     submissionInterval(
       overrides?: CallOverrides

@@ -24,17 +24,16 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "./common";
 
 export declare namespace ResourceMetering {
   export type ResourceConfigStruct = {
-    maxResourceLimit: PromiseOrValue<BigNumberish>;
-    elasticityMultiplier: PromiseOrValue<BigNumberish>;
-    baseFeeMaxChangeDenominator: PromiseOrValue<BigNumberish>;
-    minimumBaseFee: PromiseOrValue<BigNumberish>;
-    systemTxMaxGas: PromiseOrValue<BigNumberish>;
-    maximumBaseFee: PromiseOrValue<BigNumberish>;
+    maxResourceLimit: BigNumberish;
+    elasticityMultiplier: BigNumberish;
+    baseFeeMaxChangeDenominator: BigNumberish;
+    minimumBaseFee: BigNumberish;
+    systemTxMaxGas: BigNumberish;
+    maximumBaseFee: BigNumberish;
   };
 
   export type ResourceConfigStructOutput = [
@@ -54,14 +53,66 @@ export declare namespace ResourceMetering {
   };
 }
 
+export declare namespace SystemConfig {
+  export type AddressesStruct = {
+    l1CrossDomainMessenger: string;
+    l1ERC721Bridge: string;
+    l1StandardBridge: string;
+    disputeGameFactory: string;
+    optimismPortal: string;
+    optimismMintableERC20Factory: string;
+    gasPayingToken: string;
+  };
+
+  export type AddressesStructOutput = [
+    string,
+    string,
+    string,
+    string,
+    string,
+    string,
+    string
+  ] & {
+    l1CrossDomainMessenger: string;
+    l1ERC721Bridge: string;
+    l1StandardBridge: string;
+    disputeGameFactory: string;
+    optimismPortal: string;
+    optimismMintableERC20Factory: string;
+    gasPayingToken: string;
+  };
+}
+
 export interface SystemConfigInterface extends utils.Interface {
   functions: {
+    "BATCH_INBOX_SLOT()": FunctionFragment;
+    "DISPUTE_GAME_FACTORY_SLOT()": FunctionFragment;
+    "L1_CROSS_DOMAIN_MESSENGER_SLOT()": FunctionFragment;
+    "L1_ERC_721_BRIDGE_SLOT()": FunctionFragment;
+    "L1_STANDARD_BRIDGE_SLOT()": FunctionFragment;
+    "OPTIMISM_MINTABLE_ERC20_FACTORY_SLOT()": FunctionFragment;
+    "OPTIMISM_PORTAL_SLOT()": FunctionFragment;
+    "START_BLOCK_SLOT()": FunctionFragment;
     "UNSAFE_BLOCK_SIGNER_SLOT()": FunctionFragment;
     "VERSION()": FunctionFragment;
+    "basefeeScalar()": FunctionFragment;
+    "batchInbox()": FunctionFragment;
     "batcherHash()": FunctionFragment;
+    "blobbasefeeScalar()": FunctionFragment;
+    "disputeGameFactory()": FunctionFragment;
     "gasLimit()": FunctionFragment;
-    "initialize(address,uint256,uint256,bytes32,uint64,address,(uint32,uint8,uint8,uint32,uint32,uint128))": FunctionFragment;
+    "gasPayingToken()": FunctionFragment;
+    "gasPayingTokenName()": FunctionFragment;
+    "gasPayingTokenSymbol()": FunctionFragment;
+    "initialize(address,uint32,uint32,bytes32,uint64,address,(uint32,uint8,uint8,uint32,uint32,uint128),address,(address,address,address,address,address,address,address))": FunctionFragment;
+    "isCustomGasToken()": FunctionFragment;
+    "l1CrossDomainMessenger()": FunctionFragment;
+    "l1ERC721Bridge()": FunctionFragment;
+    "l1StandardBridge()": FunctionFragment;
+    "maximumGasLimit()": FunctionFragment;
     "minimumGasLimit()": FunctionFragment;
+    "optimismMintableERC20Factory()": FunctionFragment;
+    "optimismPortal()": FunctionFragment;
     "overhead()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -69,9 +120,10 @@ export interface SystemConfigInterface extends utils.Interface {
     "scalar()": FunctionFragment;
     "setBatcherHash(bytes32)": FunctionFragment;
     "setGasConfig(uint256,uint256)": FunctionFragment;
+    "setGasConfigEcotone(uint32,uint32)": FunctionFragment;
     "setGasLimit(uint64)": FunctionFragment;
-    "setResourceConfig((uint32,uint8,uint8,uint32,uint32,uint128))": FunctionFragment;
     "setUnsafeBlockSigner(address)": FunctionFragment;
+    "startBlock()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unsafeBlockSigner()": FunctionFragment;
     "version()": FunctionFragment;
@@ -79,12 +131,34 @@ export interface SystemConfigInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "BATCH_INBOX_SLOT"
+      | "DISPUTE_GAME_FACTORY_SLOT"
+      | "L1_CROSS_DOMAIN_MESSENGER_SLOT"
+      | "L1_ERC_721_BRIDGE_SLOT"
+      | "L1_STANDARD_BRIDGE_SLOT"
+      | "OPTIMISM_MINTABLE_ERC20_FACTORY_SLOT"
+      | "OPTIMISM_PORTAL_SLOT"
+      | "START_BLOCK_SLOT"
       | "UNSAFE_BLOCK_SIGNER_SLOT"
       | "VERSION"
+      | "basefeeScalar"
+      | "batchInbox"
       | "batcherHash"
+      | "blobbasefeeScalar"
+      | "disputeGameFactory"
       | "gasLimit"
+      | "gasPayingToken"
+      | "gasPayingTokenName"
+      | "gasPayingTokenSymbol"
       | "initialize"
+      | "isCustomGasToken"
+      | "l1CrossDomainMessenger"
+      | "l1ERC721Bridge"
+      | "l1StandardBridge"
+      | "maximumGasLimit"
       | "minimumGasLimit"
+      | "optimismMintableERC20Factory"
+      | "optimismPortal"
       | "overhead"
       | "owner"
       | "renounceOwnership"
@@ -92,38 +166,129 @@ export interface SystemConfigInterface extends utils.Interface {
       | "scalar"
       | "setBatcherHash"
       | "setGasConfig"
+      | "setGasConfigEcotone"
       | "setGasLimit"
-      | "setResourceConfig"
       | "setUnsafeBlockSigner"
+      | "startBlock"
       | "transferOwnership"
       | "unsafeBlockSigner"
       | "version"
   ): FunctionFragment;
 
   encodeFunctionData(
+    functionFragment: "BATCH_INBOX_SLOT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "DISPUTE_GAME_FACTORY_SLOT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "L1_CROSS_DOMAIN_MESSENGER_SLOT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "L1_ERC_721_BRIDGE_SLOT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "L1_STANDARD_BRIDGE_SLOT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "OPTIMISM_MINTABLE_ERC20_FACTORY_SLOT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "OPTIMISM_PORTAL_SLOT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "START_BLOCK_SLOT",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "UNSAFE_BLOCK_SIGNER_SLOT",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "VERSION", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "basefeeScalar",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "batchInbox",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "batcherHash",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "blobbasefeeScalar",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "disputeGameFactory",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "gasLimit", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "gasPayingToken",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "gasPayingTokenName",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "gasPayingTokenSymbol",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "initialize",
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      ResourceMetering.ResourceConfigStruct
+      string,
+      BigNumberish,
+      BigNumberish,
+      BytesLike,
+      BigNumberish,
+      string,
+      ResourceMetering.ResourceConfigStruct,
+      string,
+      SystemConfig.AddressesStruct
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "isCustomGasToken",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "l1CrossDomainMessenger",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "l1ERC721Bridge",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "l1StandardBridge",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maximumGasLimit",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "minimumGasLimit",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "optimismMintableERC20Factory",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "optimismPortal",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "overhead", values?: undefined): string;
@@ -139,27 +304,31 @@ export interface SystemConfigInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "scalar", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "setBatcherHash",
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "setGasConfig",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setGasConfigEcotone",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setGasLimit",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setResourceConfig",
-    values: [ResourceMetering.ResourceConfigStruct]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setUnsafeBlockSigner",
-    values: [PromiseOrValue<string>]
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "startBlock",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
-    values: [PromiseOrValue<string>]
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "unsafeBlockSigner",
@@ -168,18 +337,103 @@ export interface SystemConfigInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
   decodeFunctionResult(
+    functionFragment: "BATCH_INBOX_SLOT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "DISPUTE_GAME_FACTORY_SLOT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "L1_CROSS_DOMAIN_MESSENGER_SLOT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "L1_ERC_721_BRIDGE_SLOT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "L1_STANDARD_BRIDGE_SLOT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "OPTIMISM_MINTABLE_ERC20_FACTORY_SLOT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "OPTIMISM_PORTAL_SLOT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "START_BLOCK_SLOT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "UNSAFE_BLOCK_SIGNER_SLOT",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "VERSION", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "basefeeScalar",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "batchInbox", data: BytesLike): Result;
+  decodeFunctionResult(
     functionFragment: "batcherHash",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "blobbasefeeScalar",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "disputeGameFactory",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "gasLimit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "gasPayingToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "gasPayingTokenName",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "gasPayingTokenSymbol",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "isCustomGasToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "l1CrossDomainMessenger",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "l1ERC721Bridge",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "l1StandardBridge",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "maximumGasLimit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "minimumGasLimit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "optimismMintableERC20Factory",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "optimismPortal",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "overhead", data: BytesLike): Result;
@@ -202,17 +456,18 @@ export interface SystemConfigInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setGasLimit",
+    functionFragment: "setGasConfigEcotone",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setResourceConfig",
+    functionFragment: "setGasLimit",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "setUnsafeBlockSigner",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "startBlock", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -293,6 +548,50 @@ export interface SystemConfig extends BaseContract {
 
   functions: {
     /**
+     * Storage slot that the batch inbox address is stored at.
+     */
+    BATCH_INBOX_SLOT(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Storage slot for the DisputeGameFactory address.
+     */
+    DISPUTE_GAME_FACTORY_SLOT(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Storage slot that the L1CrossDomainMessenger address is stored at.
+     */
+    L1_CROSS_DOMAIN_MESSENGER_SLOT(
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    /**
+     * Storage slot that the L1ERC721Bridge address is stored at.
+     */
+    L1_ERC_721_BRIDGE_SLOT(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Storage slot that the L1StandardBridge address is stored at.
+     */
+    L1_STANDARD_BRIDGE_SLOT(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Storage slot that the OptimismMintableERC20Factory address is stored at.
+     */
+    OPTIMISM_MINTABLE_ERC20_FACTORY_SLOT(
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    /**
+     * Storage slot that the OptimismPortal address is stored at.
+     */
+    OPTIMISM_PORTAL_SLOT(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Storage slot for block at which the op-node can start searching for logs from.
+     */
+    START_BLOCK_SLOT(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
      * Storage slot that the unsafe block signer is stored at.         Storing it at this deterministic storage slot allows for decoupling the storage         layout from the way that `solc` lays out storage. The `op-node` uses a storage         proof to fetch this value.
      */
     UNSAFE_BLOCK_SIGNER_SLOT(overrides?: CallOverrides): Promise<[string]>;
@@ -303,25 +602,103 @@ export interface SystemConfig extends BaseContract {
     VERSION(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
+     * Basefee scalar value. Part of the L2 fee calculation since the Ecotone network upgrade.
+     */
+    basefeeScalar(overrides?: CallOverrides): Promise<[number]>;
+
+    /**
+     * Getter for the BatchInbox address.
+     */
+    batchInbox(
+      overrides?: CallOverrides
+    ): Promise<[string] & { addr_: string }>;
+
+    /**
      * Identifier for the batcher.         For version 1 of this configuration, this is represented as an address left-padded         with zeros to 32 bytes.
      */
     batcherHash(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Blobbasefee scalar value. Part of the L2 fee calculation since the Ecotone network upgrade.
+     */
+    blobbasefeeScalar(overrides?: CallOverrides): Promise<[number]>;
+
+    /**
+     * Getter for the DisputeGameFactory address.
+     */
+    disputeGameFactory(
+      overrides?: CallOverrides
+    ): Promise<[string] & { addr_: string }>;
 
     /**
      * L2 block gas limit.
      */
     gasLimit(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    /**
+     * Getter for the gas paying asset address.
+     */
+    gasPayingToken(
+      overrides?: CallOverrides
+    ): Promise<[string, number] & { addr_: string; decimals_: number }>;
+
+    /**
+     * Getter for the gas paying token name.
+     */
+    gasPayingTokenName(
+      overrides?: CallOverrides
+    ): Promise<[string] & { name_: string }>;
+
+    /**
+     * Getter for the gas paying token symbol.
+     */
+    gasPayingTokenSymbol(
+      overrides?: CallOverrides
+    ): Promise<[string] & { symbol_: string }>;
+
     initialize(
-      _owner: PromiseOrValue<string>,
-      _overhead: PromiseOrValue<BigNumberish>,
-      _scalar: PromiseOrValue<BigNumberish>,
-      _batcherHash: PromiseOrValue<BytesLike>,
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      _unsafeBlockSigner: PromiseOrValue<string>,
+      _owner: string,
+      _basefeeScalar: BigNumberish,
+      _blobbasefeeScalar: BigNumberish,
+      _batcherHash: BytesLike,
+      _gasLimit: BigNumberish,
+      _unsafeBlockSigner: string,
       _config: ResourceMetering.ResourceConfigStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _batchInbox: string,
+      _addresses: SystemConfig.AddressesStruct,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
+
+    /**
+     * Getter for custom gas token paying networks. Returns true if the         network uses a custom gas token.
+     */
+    isCustomGasToken(overrides?: CallOverrides): Promise<[boolean]>;
+
+    /**
+     * Getter for the L1CrossDomainMessenger address.
+     */
+    l1CrossDomainMessenger(
+      overrides?: CallOverrides
+    ): Promise<[string] & { addr_: string }>;
+
+    /**
+     * Getter for the L1ERC721Bridge address.
+     */
+    l1ERC721Bridge(
+      overrides?: CallOverrides
+    ): Promise<[string] & { addr_: string }>;
+
+    /**
+     * Getter for the L1StandardBridge address.
+     */
+    l1StandardBridge(
+      overrides?: CallOverrides
+    ): Promise<[string] & { addr_: string }>;
+
+    /**
+     * Returns the maximum L2 gas limit that can be safely set for the system to         operate. This bound is used to prevent the gas limit from being set too high         and causing the system to be unable to process and/or prove L2 blocks.
+     */
+    maximumGasLimit(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
      * Returns the minimum L2 gas limit that can be safely set for the system to         operate. The L2 gas limit must be larger than or equal to the amount of         gas that is allocated for deposits per block plus the amount of gas that         is allocated for the system transaction.         This function is used to determine if changes to parameters are safe.
@@ -329,7 +706,21 @@ export interface SystemConfig extends BaseContract {
     minimumGasLimit(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
-     * Fixed L2 gas overhead. Used as part of the L2 fee calculation.
+     * Getter for the OptimismMintableERC20Factory address.
+     */
+    optimismMintableERC20Factory(
+      overrides?: CallOverrides
+    ): Promise<[string] & { addr_: string }>;
+
+    /**
+     * Getter for the OptimismPortal address.
+     */
+    optimismPortal(
+      overrides?: CallOverrides
+    ): Promise<[string] & { addr_: string }>;
+
+    /**
+     * Fixed L2 gas overhead. Used as part of the L2 fee calculation.         Deprecated since the Ecotone network upgrade
      */
     overhead(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -342,7 +733,7 @@ export interface SystemConfig extends BaseContract {
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
      */
     renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -353,7 +744,7 @@ export interface SystemConfig extends BaseContract {
     ): Promise<[ResourceMetering.ResourceConfigStructOutput]>;
 
     /**
-     * Dynamic L2 gas overhead. Used as part of the L2 fee calculation.
+     * Dynamic L2 gas overhead. Used as part of the L2 fee calculation.         The most significant byte is used to determine the version since the         Ecotone network upgrade.
      */
     scalar(overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -362,19 +753,30 @@ export interface SystemConfig extends BaseContract {
      * @param _batcherHash New batcher hash.
      */
     setBatcherHash(
-      _batcherHash: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _batcherHash: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
-     * Updates gas config. Can only be called by the owner.
+     * Updates gas config. Can only be called by the owner.         Deprecated in favor of setGasConfigEcotone since the Ecotone upgrade.
      * @param _overhead New overhead value.
      * @param _scalar New scalar value.
      */
     setGasConfig(
-      _overhead: PromiseOrValue<BigNumberish>,
-      _scalar: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _overhead: BigNumberish,
+      _scalar: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Updates gas config as of the Ecotone upgrade. Can only be called by the owner.
+     * @param _basefeeScalar New basefeeScalar value.
+     * @param _blobbasefeeScalar New blobbasefeeScalar value.
+     */
+    setGasConfigEcotone(
+      _basefeeScalar: BigNumberish,
+      _blobbasefeeScalar: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -382,13 +784,8 @@ export interface SystemConfig extends BaseContract {
      * @param _gasLimit New gas limit.
      */
     setGasLimit(
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setResourceConfig(
-      _config: ResourceMetering.ResourceConfigStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _gasLimit: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -396,16 +793,23 @@ export interface SystemConfig extends BaseContract {
      * @param _unsafeBlockSigner New unsafe block signer address.
      */
     setUnsafeBlockSigner(
-      _unsafeBlockSigner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _unsafeBlockSigner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
+
+    /**
+     * Getter for the StartBlock number.
+     */
+    startBlock(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { startBlock_: BigNumber }>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -422,6 +826,48 @@ export interface SystemConfig extends BaseContract {
   };
 
   /**
+   * Storage slot that the batch inbox address is stored at.
+   */
+  BATCH_INBOX_SLOT(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Storage slot for the DisputeGameFactory address.
+   */
+  DISPUTE_GAME_FACTORY_SLOT(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Storage slot that the L1CrossDomainMessenger address is stored at.
+   */
+  L1_CROSS_DOMAIN_MESSENGER_SLOT(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Storage slot that the L1ERC721Bridge address is stored at.
+   */
+  L1_ERC_721_BRIDGE_SLOT(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Storage slot that the L1StandardBridge address is stored at.
+   */
+  L1_STANDARD_BRIDGE_SLOT(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Storage slot that the OptimismMintableERC20Factory address is stored at.
+   */
+  OPTIMISM_MINTABLE_ERC20_FACTORY_SLOT(
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  /**
+   * Storage slot that the OptimismPortal address is stored at.
+   */
+  OPTIMISM_PORTAL_SLOT(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Storage slot for block at which the op-node can start searching for logs from.
+   */
+  START_BLOCK_SLOT(overrides?: CallOverrides): Promise<string>;
+
+  /**
    * Storage slot that the unsafe block signer is stored at.         Storing it at this deterministic storage slot allows for decoupling the storage         layout from the way that `solc` lays out storage. The `op-node` uses a storage         proof to fetch this value.
    */
   UNSAFE_BLOCK_SIGNER_SLOT(overrides?: CallOverrides): Promise<string>;
@@ -432,25 +878,89 @@ export interface SystemConfig extends BaseContract {
   VERSION(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
+   * Basefee scalar value. Part of the L2 fee calculation since the Ecotone network upgrade.
+   */
+  basefeeScalar(overrides?: CallOverrides): Promise<number>;
+
+  /**
+   * Getter for the BatchInbox address.
+   */
+  batchInbox(overrides?: CallOverrides): Promise<string>;
+
+  /**
    * Identifier for the batcher.         For version 1 of this configuration, this is represented as an address left-padded         with zeros to 32 bytes.
    */
   batcherHash(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Blobbasefee scalar value. Part of the L2 fee calculation since the Ecotone network upgrade.
+   */
+  blobbasefeeScalar(overrides?: CallOverrides): Promise<number>;
+
+  /**
+   * Getter for the DisputeGameFactory address.
+   */
+  disputeGameFactory(overrides?: CallOverrides): Promise<string>;
 
   /**
    * L2 block gas limit.
    */
   gasLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
+  /**
+   * Getter for the gas paying asset address.
+   */
+  gasPayingToken(
+    overrides?: CallOverrides
+  ): Promise<[string, number] & { addr_: string; decimals_: number }>;
+
+  /**
+   * Getter for the gas paying token name.
+   */
+  gasPayingTokenName(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Getter for the gas paying token symbol.
+   */
+  gasPayingTokenSymbol(overrides?: CallOverrides): Promise<string>;
+
   initialize(
-    _owner: PromiseOrValue<string>,
-    _overhead: PromiseOrValue<BigNumberish>,
-    _scalar: PromiseOrValue<BigNumberish>,
-    _batcherHash: PromiseOrValue<BytesLike>,
-    _gasLimit: PromiseOrValue<BigNumberish>,
-    _unsafeBlockSigner: PromiseOrValue<string>,
+    _owner: string,
+    _basefeeScalar: BigNumberish,
+    _blobbasefeeScalar: BigNumberish,
+    _batcherHash: BytesLike,
+    _gasLimit: BigNumberish,
+    _unsafeBlockSigner: string,
     _config: ResourceMetering.ResourceConfigStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _batchInbox: string,
+    _addresses: SystemConfig.AddressesStruct,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
+
+  /**
+   * Getter for custom gas token paying networks. Returns true if the         network uses a custom gas token.
+   */
+  isCustomGasToken(overrides?: CallOverrides): Promise<boolean>;
+
+  /**
+   * Getter for the L1CrossDomainMessenger address.
+   */
+  l1CrossDomainMessenger(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Getter for the L1ERC721Bridge address.
+   */
+  l1ERC721Bridge(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Getter for the L1StandardBridge address.
+   */
+  l1StandardBridge(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Returns the maximum L2 gas limit that can be safely set for the system to         operate. This bound is used to prevent the gas limit from being set too high         and causing the system to be unable to process and/or prove L2 blocks.
+   */
+  maximumGasLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
    * Returns the minimum L2 gas limit that can be safely set for the system to         operate. The L2 gas limit must be larger than or equal to the amount of         gas that is allocated for deposits per block plus the amount of gas that         is allocated for the system transaction.         This function is used to determine if changes to parameters are safe.
@@ -458,7 +968,17 @@ export interface SystemConfig extends BaseContract {
   minimumGasLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
-   * Fixed L2 gas overhead. Used as part of the L2 fee calculation.
+   * Getter for the OptimismMintableERC20Factory address.
+   */
+  optimismMintableERC20Factory(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Getter for the OptimismPortal address.
+   */
+  optimismPortal(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Fixed L2 gas overhead. Used as part of the L2 fee calculation.         Deprecated since the Ecotone network upgrade
    */
   overhead(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -471,7 +991,7 @@ export interface SystemConfig extends BaseContract {
    * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
    */
   renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -482,7 +1002,7 @@ export interface SystemConfig extends BaseContract {
   ): Promise<ResourceMetering.ResourceConfigStructOutput>;
 
   /**
-   * Dynamic L2 gas overhead. Used as part of the L2 fee calculation.
+   * Dynamic L2 gas overhead. Used as part of the L2 fee calculation.         The most significant byte is used to determine the version since the         Ecotone network upgrade.
    */
   scalar(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -491,19 +1011,30 @@ export interface SystemConfig extends BaseContract {
    * @param _batcherHash New batcher hash.
    */
   setBatcherHash(
-    _batcherHash: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _batcherHash: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
-   * Updates gas config. Can only be called by the owner.
+   * Updates gas config. Can only be called by the owner.         Deprecated in favor of setGasConfigEcotone since the Ecotone upgrade.
    * @param _overhead New overhead value.
    * @param _scalar New scalar value.
    */
   setGasConfig(
-    _overhead: PromiseOrValue<BigNumberish>,
-    _scalar: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _overhead: BigNumberish,
+    _scalar: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Updates gas config as of the Ecotone upgrade. Can only be called by the owner.
+   * @param _basefeeScalar New basefeeScalar value.
+   * @param _blobbasefeeScalar New blobbasefeeScalar value.
+   */
+  setGasConfigEcotone(
+    _basefeeScalar: BigNumberish,
+    _blobbasefeeScalar: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -511,13 +1042,8 @@ export interface SystemConfig extends BaseContract {
    * @param _gasLimit New gas limit.
    */
   setGasLimit(
-    _gasLimit: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setResourceConfig(
-    _config: ResourceMetering.ResourceConfigStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _gasLimit: BigNumberish,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -525,16 +1051,21 @@ export interface SystemConfig extends BaseContract {
    * @param _unsafeBlockSigner New unsafe block signer address.
    */
   setUnsafeBlockSigner(
-    _unsafeBlockSigner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _unsafeBlockSigner: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
+
+  /**
+   * Getter for the StartBlock number.
+   */
+  startBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
    * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
    */
   transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    newOwner: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -549,6 +1080,48 @@ export interface SystemConfig extends BaseContract {
 
   callStatic: {
     /**
+     * Storage slot that the batch inbox address is stored at.
+     */
+    BATCH_INBOX_SLOT(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Storage slot for the DisputeGameFactory address.
+     */
+    DISPUTE_GAME_FACTORY_SLOT(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Storage slot that the L1CrossDomainMessenger address is stored at.
+     */
+    L1_CROSS_DOMAIN_MESSENGER_SLOT(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Storage slot that the L1ERC721Bridge address is stored at.
+     */
+    L1_ERC_721_BRIDGE_SLOT(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Storage slot that the L1StandardBridge address is stored at.
+     */
+    L1_STANDARD_BRIDGE_SLOT(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Storage slot that the OptimismMintableERC20Factory address is stored at.
+     */
+    OPTIMISM_MINTABLE_ERC20_FACTORY_SLOT(
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    /**
+     * Storage slot that the OptimismPortal address is stored at.
+     */
+    OPTIMISM_PORTAL_SLOT(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Storage slot for block at which the op-node can start searching for logs from.
+     */
+    START_BLOCK_SLOT(overrides?: CallOverrides): Promise<string>;
+
+    /**
      * Storage slot that the unsafe block signer is stored at.         Storing it at this deterministic storage slot allows for decoupling the storage         layout from the way that `solc` lays out storage. The `op-node` uses a storage         proof to fetch this value.
      */
     UNSAFE_BLOCK_SIGNER_SLOT(overrides?: CallOverrides): Promise<string>;
@@ -559,25 +1132,89 @@ export interface SystemConfig extends BaseContract {
     VERSION(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Basefee scalar value. Part of the L2 fee calculation since the Ecotone network upgrade.
+     */
+    basefeeScalar(overrides?: CallOverrides): Promise<number>;
+
+    /**
+     * Getter for the BatchInbox address.
+     */
+    batchInbox(overrides?: CallOverrides): Promise<string>;
+
+    /**
      * Identifier for the batcher.         For version 1 of this configuration, this is represented as an address left-padded         with zeros to 32 bytes.
      */
     batcherHash(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Blobbasefee scalar value. Part of the L2 fee calculation since the Ecotone network upgrade.
+     */
+    blobbasefeeScalar(overrides?: CallOverrides): Promise<number>;
+
+    /**
+     * Getter for the DisputeGameFactory address.
+     */
+    disputeGameFactory(overrides?: CallOverrides): Promise<string>;
 
     /**
      * L2 block gas limit.
      */
     gasLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Getter for the gas paying asset address.
+     */
+    gasPayingToken(
+      overrides?: CallOverrides
+    ): Promise<[string, number] & { addr_: string; decimals_: number }>;
+
+    /**
+     * Getter for the gas paying token name.
+     */
+    gasPayingTokenName(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Getter for the gas paying token symbol.
+     */
+    gasPayingTokenSymbol(overrides?: CallOverrides): Promise<string>;
+
     initialize(
-      _owner: PromiseOrValue<string>,
-      _overhead: PromiseOrValue<BigNumberish>,
-      _scalar: PromiseOrValue<BigNumberish>,
-      _batcherHash: PromiseOrValue<BytesLike>,
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      _unsafeBlockSigner: PromiseOrValue<string>,
+      _owner: string,
+      _basefeeScalar: BigNumberish,
+      _blobbasefeeScalar: BigNumberish,
+      _batcherHash: BytesLike,
+      _gasLimit: BigNumberish,
+      _unsafeBlockSigner: string,
       _config: ResourceMetering.ResourceConfigStruct,
+      _batchInbox: string,
+      _addresses: SystemConfig.AddressesStruct,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    /**
+     * Getter for custom gas token paying networks. Returns true if the         network uses a custom gas token.
+     */
+    isCustomGasToken(overrides?: CallOverrides): Promise<boolean>;
+
+    /**
+     * Getter for the L1CrossDomainMessenger address.
+     */
+    l1CrossDomainMessenger(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Getter for the L1ERC721Bridge address.
+     */
+    l1ERC721Bridge(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Getter for the L1StandardBridge address.
+     */
+    l1StandardBridge(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Returns the maximum L2 gas limit that can be safely set for the system to         operate. This bound is used to prevent the gas limit from being set too high         and causing the system to be unable to process and/or prove L2 blocks.
+     */
+    maximumGasLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Returns the minimum L2 gas limit that can be safely set for the system to         operate. The L2 gas limit must be larger than or equal to the amount of         gas that is allocated for deposits per block plus the amount of gas that         is allocated for the system transaction.         This function is used to determine if changes to parameters are safe.
@@ -585,7 +1222,17 @@ export interface SystemConfig extends BaseContract {
     minimumGasLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Fixed L2 gas overhead. Used as part of the L2 fee calculation.
+     * Getter for the OptimismMintableERC20Factory address.
+     */
+    optimismMintableERC20Factory(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Getter for the OptimismPortal address.
+     */
+    optimismPortal(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Fixed L2 gas overhead. Used as part of the L2 fee calculation.         Deprecated since the Ecotone network upgrade
      */
     overhead(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -607,7 +1254,7 @@ export interface SystemConfig extends BaseContract {
     ): Promise<ResourceMetering.ResourceConfigStructOutput>;
 
     /**
-     * Dynamic L2 gas overhead. Used as part of the L2 fee calculation.
+     * Dynamic L2 gas overhead. Used as part of the L2 fee calculation.         The most significant byte is used to determine the version since the         Ecotone network upgrade.
      */
     scalar(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -616,18 +1263,29 @@ export interface SystemConfig extends BaseContract {
      * @param _batcherHash New batcher hash.
      */
     setBatcherHash(
-      _batcherHash: PromiseOrValue<BytesLike>,
+      _batcherHash: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
-     * Updates gas config. Can only be called by the owner.
+     * Updates gas config. Can only be called by the owner.         Deprecated in favor of setGasConfigEcotone since the Ecotone upgrade.
      * @param _overhead New overhead value.
      * @param _scalar New scalar value.
      */
     setGasConfig(
-      _overhead: PromiseOrValue<BigNumberish>,
-      _scalar: PromiseOrValue<BigNumberish>,
+      _overhead: BigNumberish,
+      _scalar: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Updates gas config as of the Ecotone upgrade. Can only be called by the owner.
+     * @param _basefeeScalar New basefeeScalar value.
+     * @param _blobbasefeeScalar New blobbasefeeScalar value.
+     */
+    setGasConfigEcotone(
+      _basefeeScalar: BigNumberish,
+      _blobbasefeeScalar: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -636,12 +1294,7 @@ export interface SystemConfig extends BaseContract {
      * @param _gasLimit New gas limit.
      */
     setGasLimit(
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setResourceConfig(
-      _config: ResourceMetering.ResourceConfigStruct,
+      _gasLimit: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -650,15 +1303,20 @@ export interface SystemConfig extends BaseContract {
      * @param _unsafeBlockSigner New unsafe block signer address.
      */
     setUnsafeBlockSigner(
-      _unsafeBlockSigner: PromiseOrValue<string>,
+      _unsafeBlockSigner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    /**
+     * Getter for the StartBlock number.
+     */
+    startBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
+      newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -675,13 +1333,13 @@ export interface SystemConfig extends BaseContract {
 
   filters: {
     "ConfigUpdate(uint256,uint8,bytes)"(
-      version?: PromiseOrValue<BigNumberish> | null,
-      updateType?: PromiseOrValue<BigNumberish> | null,
+      version?: BigNumberish | null,
+      updateType?: BigNumberish | null,
       data?: null
     ): ConfigUpdateEventFilter;
     ConfigUpdate(
-      version?: PromiseOrValue<BigNumberish> | null,
-      updateType?: PromiseOrValue<BigNumberish> | null,
+      version?: BigNumberish | null,
+      updateType?: BigNumberish | null,
       data?: null
     ): ConfigUpdateEventFilter;
 
@@ -689,16 +1347,60 @@ export interface SystemConfig extends BaseContract {
     Initialized(version?: null): InitializedEventFilter;
 
     "OwnershipTransferred(address,address)"(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): OwnershipTransferredEventFilter;
     OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
+      previousOwner?: string | null,
+      newOwner?: string | null
     ): OwnershipTransferredEventFilter;
   };
 
   estimateGas: {
+    /**
+     * Storage slot that the batch inbox address is stored at.
+     */
+    BATCH_INBOX_SLOT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Storage slot for the DisputeGameFactory address.
+     */
+    DISPUTE_GAME_FACTORY_SLOT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Storage slot that the L1CrossDomainMessenger address is stored at.
+     */
+    L1_CROSS_DOMAIN_MESSENGER_SLOT(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Storage slot that the L1ERC721Bridge address is stored at.
+     */
+    L1_ERC_721_BRIDGE_SLOT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Storage slot that the L1StandardBridge address is stored at.
+     */
+    L1_STANDARD_BRIDGE_SLOT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Storage slot that the OptimismMintableERC20Factory address is stored at.
+     */
+    OPTIMISM_MINTABLE_ERC20_FACTORY_SLOT(
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Storage slot that the OptimismPortal address is stored at.
+     */
+    OPTIMISM_PORTAL_SLOT(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Storage slot for block at which the op-node can start searching for logs from.
+     */
+    START_BLOCK_SLOT(overrides?: CallOverrides): Promise<BigNumber>;
+
     /**
      * Storage slot that the unsafe block signer is stored at.         Storing it at this deterministic storage slot allows for decoupling the storage         layout from the way that `solc` lays out storage. The `op-node` uses a storage         proof to fetch this value.
      */
@@ -710,25 +1412,87 @@ export interface SystemConfig extends BaseContract {
     VERSION(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Basefee scalar value. Part of the L2 fee calculation since the Ecotone network upgrade.
+     */
+    basefeeScalar(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Getter for the BatchInbox address.
+     */
+    batchInbox(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * Identifier for the batcher.         For version 1 of this configuration, this is represented as an address left-padded         with zeros to 32 bytes.
      */
     batcherHash(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Blobbasefee scalar value. Part of the L2 fee calculation since the Ecotone network upgrade.
+     */
+    blobbasefeeScalar(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Getter for the DisputeGameFactory address.
+     */
+    disputeGameFactory(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * L2 block gas limit.
      */
     gasLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
+    /**
+     * Getter for the gas paying asset address.
+     */
+    gasPayingToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Getter for the gas paying token name.
+     */
+    gasPayingTokenName(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Getter for the gas paying token symbol.
+     */
+    gasPayingTokenSymbol(overrides?: CallOverrides): Promise<BigNumber>;
+
     initialize(
-      _owner: PromiseOrValue<string>,
-      _overhead: PromiseOrValue<BigNumberish>,
-      _scalar: PromiseOrValue<BigNumberish>,
-      _batcherHash: PromiseOrValue<BytesLike>,
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      _unsafeBlockSigner: PromiseOrValue<string>,
+      _owner: string,
+      _basefeeScalar: BigNumberish,
+      _blobbasefeeScalar: BigNumberish,
+      _batcherHash: BytesLike,
+      _gasLimit: BigNumberish,
+      _unsafeBlockSigner: string,
       _config: ResourceMetering.ResourceConfigStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _batchInbox: string,
+      _addresses: SystemConfig.AddressesStruct,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
+
+    /**
+     * Getter for custom gas token paying networks. Returns true if the         network uses a custom gas token.
+     */
+    isCustomGasToken(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Getter for the L1CrossDomainMessenger address.
+     */
+    l1CrossDomainMessenger(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Getter for the L1ERC721Bridge address.
+     */
+    l1ERC721Bridge(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Getter for the L1StandardBridge address.
+     */
+    l1StandardBridge(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Returns the maximum L2 gas limit that can be safely set for the system to         operate. This bound is used to prevent the gas limit from being set too high         and causing the system to be unable to process and/or prove L2 blocks.
+     */
+    maximumGasLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Returns the minimum L2 gas limit that can be safely set for the system to         operate. The L2 gas limit must be larger than or equal to the amount of         gas that is allocated for deposits per block plus the amount of gas that         is allocated for the system transaction.         This function is used to determine if changes to parameters are safe.
@@ -736,7 +1500,17 @@ export interface SystemConfig extends BaseContract {
     minimumGasLimit(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Fixed L2 gas overhead. Used as part of the L2 fee calculation.
+     * Getter for the OptimismMintableERC20Factory address.
+     */
+    optimismMintableERC20Factory(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Getter for the OptimismPortal address.
+     */
+    optimismPortal(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Fixed L2 gas overhead. Used as part of the L2 fee calculation.         Deprecated since the Ecotone network upgrade
      */
     overhead(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -749,7 +1523,7 @@ export interface SystemConfig extends BaseContract {
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
      */
     renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -758,7 +1532,7 @@ export interface SystemConfig extends BaseContract {
     resourceConfig(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Dynamic L2 gas overhead. Used as part of the L2 fee calculation.
+     * Dynamic L2 gas overhead. Used as part of the L2 fee calculation.         The most significant byte is used to determine the version since the         Ecotone network upgrade.
      */
     scalar(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -767,19 +1541,30 @@ export interface SystemConfig extends BaseContract {
      * @param _batcherHash New batcher hash.
      */
     setBatcherHash(
-      _batcherHash: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _batcherHash: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
-     * Updates gas config. Can only be called by the owner.
+     * Updates gas config. Can only be called by the owner.         Deprecated in favor of setGasConfigEcotone since the Ecotone upgrade.
      * @param _overhead New overhead value.
      * @param _scalar New scalar value.
      */
     setGasConfig(
-      _overhead: PromiseOrValue<BigNumberish>,
-      _scalar: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _overhead: BigNumberish,
+      _scalar: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Updates gas config as of the Ecotone upgrade. Can only be called by the owner.
+     * @param _basefeeScalar New basefeeScalar value.
+     * @param _blobbasefeeScalar New blobbasefeeScalar value.
+     */
+    setGasConfigEcotone(
+      _basefeeScalar: BigNumberish,
+      _blobbasefeeScalar: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -787,13 +1572,8 @@ export interface SystemConfig extends BaseContract {
      * @param _gasLimit New gas limit.
      */
     setGasLimit(
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setResourceConfig(
-      _config: ResourceMetering.ResourceConfigStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _gasLimit: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -801,16 +1581,21 @@ export interface SystemConfig extends BaseContract {
      * @param _unsafeBlockSigner New unsafe block signer address.
      */
     setUnsafeBlockSigner(
-      _unsafeBlockSigner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _unsafeBlockSigner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
+
+    /**
+     * Getter for the StartBlock number.
+     */
+    startBlock(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -826,6 +1611,58 @@ export interface SystemConfig extends BaseContract {
 
   populateTransaction: {
     /**
+     * Storage slot that the batch inbox address is stored at.
+     */
+    BATCH_INBOX_SLOT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Storage slot for the DisputeGameFactory address.
+     */
+    DISPUTE_GAME_FACTORY_SLOT(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Storage slot that the L1CrossDomainMessenger address is stored at.
+     */
+    L1_CROSS_DOMAIN_MESSENGER_SLOT(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Storage slot that the L1ERC721Bridge address is stored at.
+     */
+    L1_ERC_721_BRIDGE_SLOT(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Storage slot that the L1StandardBridge address is stored at.
+     */
+    L1_STANDARD_BRIDGE_SLOT(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Storage slot that the OptimismMintableERC20Factory address is stored at.
+     */
+    OPTIMISM_MINTABLE_ERC20_FACTORY_SLOT(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Storage slot that the OptimismPortal address is stored at.
+     */
+    OPTIMISM_PORTAL_SLOT(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Storage slot for block at which the op-node can start searching for logs from.
+     */
+    START_BLOCK_SLOT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
      * Storage slot that the unsafe block signer is stored at.         Storing it at this deterministic storage slot allows for decoupling the storage         layout from the way that `solc` lays out storage. The `op-node` uses a storage         proof to fetch this value.
      */
     UNSAFE_BLOCK_SIGNER_SLOT(
@@ -838,25 +1675,95 @@ export interface SystemConfig extends BaseContract {
     VERSION(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
+     * Basefee scalar value. Part of the L2 fee calculation since the Ecotone network upgrade.
+     */
+    basefeeScalar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for the BatchInbox address.
+     */
+    batchInbox(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
      * Identifier for the batcher.         For version 1 of this configuration, this is represented as an address left-padded         with zeros to 32 bytes.
      */
     batcherHash(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Blobbasefee scalar value. Part of the L2 fee calculation since the Ecotone network upgrade.
+     */
+    blobbasefeeScalar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for the DisputeGameFactory address.
+     */
+    disputeGameFactory(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     /**
      * L2 block gas limit.
      */
     gasLimit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    initialize(
-      _owner: PromiseOrValue<string>,
-      _overhead: PromiseOrValue<BigNumberish>,
-      _scalar: PromiseOrValue<BigNumberish>,
-      _batcherHash: PromiseOrValue<BytesLike>,
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      _unsafeBlockSigner: PromiseOrValue<string>,
-      _config: ResourceMetering.ResourceConfigStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    /**
+     * Getter for the gas paying asset address.
+     */
+    gasPayingToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for the gas paying token name.
+     */
+    gasPayingTokenName(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for the gas paying token symbol.
+     */
+    gasPayingTokenSymbol(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      _owner: string,
+      _basefeeScalar: BigNumberish,
+      _blobbasefeeScalar: BigNumberish,
+      _batcherHash: BytesLike,
+      _gasLimit: BigNumberish,
+      _unsafeBlockSigner: string,
+      _config: ResourceMetering.ResourceConfigStruct,
+      _batchInbox: string,
+      _addresses: SystemConfig.AddressesStruct,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for custom gas token paying networks. Returns true if the         network uses a custom gas token.
+     */
+    isCustomGasToken(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for the L1CrossDomainMessenger address.
+     */
+    l1CrossDomainMessenger(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for the L1ERC721Bridge address.
+     */
+    l1ERC721Bridge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for the L1StandardBridge address.
+     */
+    l1StandardBridge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Returns the maximum L2 gas limit that can be safely set for the system to         operate. This bound is used to prevent the gas limit from being set too high         and causing the system to be unable to process and/or prove L2 blocks.
+     */
+    maximumGasLimit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Returns the minimum L2 gas limit that can be safely set for the system to         operate. The L2 gas limit must be larger than or equal to the amount of         gas that is allocated for deposits per block plus the amount of gas that         is allocated for the system transaction.         This function is used to determine if changes to parameters are safe.
@@ -864,7 +1771,19 @@ export interface SystemConfig extends BaseContract {
     minimumGasLimit(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Fixed L2 gas overhead. Used as part of the L2 fee calculation.
+     * Getter for the OptimismMintableERC20Factory address.
+     */
+    optimismMintableERC20Factory(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for the OptimismPortal address.
+     */
+    optimismPortal(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Fixed L2 gas overhead. Used as part of the L2 fee calculation.         Deprecated since the Ecotone network upgrade
      */
     overhead(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -877,7 +1796,7 @@ export interface SystemConfig extends BaseContract {
      * Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
      */
     renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -886,7 +1805,7 @@ export interface SystemConfig extends BaseContract {
     resourceConfig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Dynamic L2 gas overhead. Used as part of the L2 fee calculation.
+     * Dynamic L2 gas overhead. Used as part of the L2 fee calculation.         The most significant byte is used to determine the version since the         Ecotone network upgrade.
      */
     scalar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -895,19 +1814,30 @@ export interface SystemConfig extends BaseContract {
      * @param _batcherHash New batcher hash.
      */
     setBatcherHash(
-      _batcherHash: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _batcherHash: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Updates gas config. Can only be called by the owner.
+     * Updates gas config. Can only be called by the owner.         Deprecated in favor of setGasConfigEcotone since the Ecotone upgrade.
      * @param _overhead New overhead value.
      * @param _scalar New scalar value.
      */
     setGasConfig(
-      _overhead: PromiseOrValue<BigNumberish>,
-      _scalar: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _overhead: BigNumberish,
+      _scalar: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Updates gas config as of the Ecotone upgrade. Can only be called by the owner.
+     * @param _basefeeScalar New basefeeScalar value.
+     * @param _blobbasefeeScalar New blobbasefeeScalar value.
+     */
+    setGasConfigEcotone(
+      _basefeeScalar: BigNumberish,
+      _blobbasefeeScalar: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -915,13 +1845,8 @@ export interface SystemConfig extends BaseContract {
      * @param _gasLimit New gas limit.
      */
     setGasLimit(
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setResourceConfig(
-      _config: ResourceMetering.ResourceConfigStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _gasLimit: BigNumberish,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -929,16 +1854,21 @@ export interface SystemConfig extends BaseContract {
      * @param _unsafeBlockSigner New unsafe block signer address.
      */
     setUnsafeBlockSigner(
-      _unsafeBlockSigner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _unsafeBlockSigner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for the StartBlock number.
+     */
+    startBlock(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
      */
     transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      newOwner: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**

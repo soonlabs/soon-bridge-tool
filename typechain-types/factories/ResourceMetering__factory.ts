@@ -46,6 +46,11 @@ const _abi = [
     ],
     anonymous: false,
   },
+  {
+    type: "error",
+    name: "OutOfGas",
+    inputs: [],
+  },
 ] as const;
 
 export class ResourceMetering__factory {
