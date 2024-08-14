@@ -17,6 +17,7 @@
     "finalize_withdraw": "npx ts-node --project tsconfig.json src/finalize_withdraw.ts",
     "deposit_eth": "npx ts-node --project tsconfig.json src/deposit_eth.ts",
     "deposit_erc20": "npx ts-node --project tsconfig.json src/deposit_erc20.ts",
+    "mint_test_erc20": "npx ts-node --project tsconfig.json src/mint_test_erc20.ts",
     "fetch_all_withdrawal_tx_by_user": "npx ts-node --project tsconfig.json src/fetch_all_withdrawal_tx_by_user.ts",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
     "pkg": "yarn pkg_init_soon && yarn pkg_reset_output_oracle",

@@ -23,7 +23,7 @@ async function main() {
     let EVMContext = await createEVMContext(false);
 
     const ERC20 = ERC20__factory.connect(args.l1Token, EVMContext.EVM_USER);
-    await ERC20.approve(EVMContext.EVM_STANDARD_BRIDGE, args.amount);
+    await (await ERC20.approve(EVMContext.EVM_STANDARD_BRIDGE, args.amount)).wait(1);
 
     const L1Bridge = L1StandardBridge__factory.connect(
         EVMContext.EVM_STANDARD_BRIDGE,
