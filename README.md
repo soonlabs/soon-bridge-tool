@@ -33,7 +33,10 @@
 `yarn finalize_withdraw --withdrawId=5y4cigJregZVg7QzjXHPJCZwq1nGzjzqWkG7JjXiRHo7`
 
 ### deposit eth transaction
-`yarn deposit_eth --l2Target=442GBBJoU23a92aA3bs9hVkQRxB3SsF3hzbgnjbYetFL --value=200000 --gasLimit=100000`
+`yarn deposit_eth --l2Target=442GBBJoU23a92aA3bs9hVkQRxB3SsF3hzbgnjbYetFL --value=100000000000000000 --gasLimit=100000`
+
+### deposit erc20 transaction
+`yarn deposit_erc20 --l1Token=0x018281853eCC543Aa251732e8FDaa7323247eBeB --l2Token=442GBBJoU23a92aA3bs9hVkQRxB3SsF3hzbgnjbYetFL --l2Receiver=442GBBJoU23a92aA3bs9hVkQRxB3SsF3hzbgnjbYetFL --amount=200000 --gasLimit=100000`
 
 ### fetch all withdrawal transactions by user pubkey
 `yarn fetch_all_withdrawal_tx_by_user --sender=9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU`
