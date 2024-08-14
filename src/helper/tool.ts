@@ -20,10 +20,6 @@ export function isValidSolanaSignature(signature: string): boolean {
 }
 
 export function isValidSolanaPublicKey(publicKey: string): boolean {
-  if (publicKey.length !== 44) {
-    return false;
-  }
-
   try {
     const decoded = bs58.decode(publicKey);
     return decoded.length === 32;
