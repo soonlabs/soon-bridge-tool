@@ -17,6 +17,9 @@
 ### issue withdraw spl transaction
 `yarn issue_withdraw_spl --l1Target='0x018281853eCC543Aa251732e8FDaa7323247eBeB' --amount=200000000 --gasLimit=100000`
 
+### calculate ata
+`yarn calculate_ata --l2Pubkey='9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU' --splMintKey='Av7G6mUjHpRQtW1eAvKkmcm9NuuUkADmR1xR4F41sSfM'`
+
 ### propose withdraw transaction
 `yarn propose_withdraw --withdrawHeight=15020`
 

@@ -10,6 +10,7 @@
     "create_spl_token": "npx ts-node --project tsconfig.json src/create_spl_token.ts",
     "issue_withdraw_eth": "npx ts-node --project tsconfig.json src/issue_withdraw_eth.ts",
     "issue_withdraw_spl": "npx ts-node --project tsconfig.json src/issue_withdraw_spl.ts",
+    "calculate_ata": "npx ts-node --project tsconfig.json src/calculate_ata.ts",
     "propose_withdraw": "npx ts-node --project tsconfig.json src/propose_withdraw.ts",
     "fetch_proposed_height": "npx ts-node --project tsconfig.json src/fetch_proposed_height.ts",
     "prove_withdraw": "npx ts-node --project tsconfig.json src/prove_withdraw.ts",
