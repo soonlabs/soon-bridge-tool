@@ -14,18 +14,21 @@ import {
 import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
-import { isValidEthereumAddress } from './helper/tool';
+import {isValidEthereumAddress, isValidSolanaPublicKey} from './helper/tool';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 const options = {
-  string: ['l1Target', 'amount', 'gasLimit'],
+  string: ['l1Token', 'l1Target', 'amount', 'gasLimit'],
 };
 
 async function main() {
   const args = minimist(process.argv.slice(2), options);
   console.log('args:', args);
+  if (!isValidEthereumAddress(args.l1Token)) {
+    throw new Error('l1Token is invalid ethereum address format.');
+  }
   if (!isValidEthereumAddress(args.l1Target)) {
-    throw new Error('invalid ethereum address format.');
+    throw new Error('l1Target is invalid ethereum address format.');
   }
 
   let svmContext = await createSVMContext();
@@ -50,13 +53,13 @@ async function main() {
   );
 
   const [splTokenInfoKey, ] = PublicKey.findProgramAddressSync(
-    [ethers.utils.arrayify(args.l1Target)],
+    [ethers.utils.arrayify(args.l1Token)],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
   console.log(`splTokenInfoKey: ${splTokenInfoKey.toString()}`);
 
   const [splTokenMintKey, ] = PublicKey.findProgramAddressSync(
-    [Buffer.from("spl"), ethers.utils.arrayify(args.l1Target)],
+    [Buffer.from("spl"), ethers.utils.arrayify(args.l1Token)],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
   console.log(`splTokenMintKey: ${splTokenMintKey.toString()}`);
@@ -94,10 +97,10 @@ async function main() {
     ],
     programId: svmContext.SVM_BRIDGE_PROGRAM_ID,
   });
+  console.log(`Withdraw ID: ${withdrawTxKey.toString()}`);
 
   const signature = await sendTransaction(svmContext, [instruction]);
   const status = await svmContext.SVM_Connection.getSignatureStatus(signature);
-  console.log(`Withdraw ID: ${withdrawTxKey.toString()}`);
   console.log(`Withdraw Height: ${status!.value?.slot}`);
 }
 

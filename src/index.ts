@@ -8,7 +8,7 @@ async function main() {
   // const signature = "39zvQqiSRfVBsS21sQ8Hkcwwr8BaQNrMFLdFD2BWvpBQqBBsGArTZVEjuzWdCnSrasbEqWQdHtBwhpRs7kFXCYW2";
   // const status = await svmContext.SVM_Connection.getSignatureStatus(signature);
   // console.log(`Tx Signature Height: ${status!.value?.slot}`);
-  const hexKey = base58PublicKeyToHex("69J1WtV3bJb4F2v2Cfj3f6PrPymdCzxyEM46WPFvmDej");
+  const hexKey = base58PublicKeyToHex("Bridge1111111111111111111111111111111111111");
   console.log(`hexKey: ${hexKey}`);
 }
 
