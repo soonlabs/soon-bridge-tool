@@ -1,5 +1,5 @@
 import {
-  BridgeInstructionIndex,
+  BridgeInstructionIndex, createBridgeConfigAccount,
   createSVMContext,
   genDepositInfoAccount,
   genProgramDataAccountKey,
@@ -11,7 +11,12 @@ import {
   transferSOL
 } from './helper/svm_context';
 import { LAMPORTS_PER_SOL, PublicKey, SYSVAR_RENT_PUBKEY, TransactionInstruction } from '@solana/web3.js';
-import { sleep } from './helper/tool';
+import { isValidEthereumAddress, sleep } from './helper/tool';
+import minimist from 'minimist';
+
+const options = {
+  string: ['l1CrossDomainMessenger', 'l1StandardBridge'],
+};
 
 async function createL1BlockInfo(svmContext: SVM_CONTEXT) {
   console.log('start createL1BlockInfo');
@@ -30,6 +35,17 @@ async function createVault(svmContext: SVM_CONTEXT) {
     'vault',
     svmContext.SVM_BRIDGE_PROGRAM_ID,
     BridgeInstructionIndex.CreateVaultAccount,
+  );
+}
+
+async function createBridgeConfig(svmContext: SVM_CONTEXT, l1CrossDomainMessenger: string, l1StandardBridge: string) {
+  console.log('start createBridgeConfig');
+  return createBridgeConfigAccount(
+    svmContext,
+    'bridge-config',
+    svmContext.SVM_BRIDGE_PROGRAM_ID,
+    l1CrossDomainMessenger,
+    l1StandardBridge,
   );
 }
 
@@ -70,7 +86,15 @@ async function transferForVault(svmContext: SVM_CONTEXT) {
 }
 
 async function main() {
+  const args = minimist(process.argv.slice(2), options);
+  console.log('args:', args);
+  if (!isValidEthereumAddress(args.l1CrossDomainMessenger) || !isValidEthereumAddress(args.l1StandardBridge)) {
+    throw new Error('invalid ethereum address format.');
+  }
+
   let svmContext = await createSVMContext();
+
+  await createBridgeConfig(svmContext, args.l1CrossDomainMessenger, args.l1StandardBridge);
 
   await createL1BlockInfo(svmContext);
 

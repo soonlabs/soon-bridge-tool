@@ -14,7 +14,7 @@ import {
 import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
-import {isValidEthereumAddress, isValidSolanaPublicKey} from './helper/tool';
+import { isValidEthereumAddress } from './helper/tool';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 const options = {
@@ -45,6 +45,10 @@ async function main() {
   const withdrawTxSeed = accountInfo!.data.slice(0, 8);
   const counter = Numberu64.fromBuffer(withdrawTxSeed);
   console.log(`counter: ${counter}`);
+
+  //get bridge config key
+  const bridgeConfigKey = genProgramDataAccountKey('bridge-config', DEFAULT_BRIDGE_PROGRAM);
+  console.log(`bridgeConfigKey key: ${bridgeConfigKey.toString()}`);
 
   //get withdraw tx key
   const [withdrawTxKey] = PublicKey.findProgramAddressSync(
@@ -89,6 +93,7 @@ async function main() {
       { pubkey: splTokenInfoKey, isSigner: false, isWritable: false },
       { pubkey: splTokenMintKey, isSigner: false, isWritable: true },
       { pubkey: userATAKey, isSigner: false, isWritable: true },
+      { pubkey: bridgeConfigKey, isSigner: false, isWritable: false },
       {
         pubkey: svmContext.SVM_USER.publicKey,
         isSigner: true,

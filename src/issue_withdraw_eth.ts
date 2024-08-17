@@ -47,11 +47,15 @@ async function main() {
     [withdrawTxSeed],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
+  console.log(`Withdraw ID: ${withdrawTxKey.toString()}`);
 
   //get vault key
   const vaultKey = genProgramDataAccountKey('vault', DEFAULT_BRIDGE_PROGRAM);
   console.log(`vaultKey key: ${vaultKey.toString()}`);
-  console.log(`Withdraw ID: ${withdrawTxKey.toString()}`);
+
+  //get bridge config key
+  const bridgeConfigKey = genProgramDataAccountKey('bridge-config', DEFAULT_BRIDGE_PROGRAM);
+  console.log(`bridgeConfigKey key: ${bridgeConfigKey.toString()}`);
 
   const instructionIndex = Buffer.from(
     Int8Array.from([BridgeInstructionIndex.WithdrawETH]),
@@ -69,6 +73,7 @@ async function main() {
       { pubkey: counterKey, isSigner: false, isWritable: true },
       { pubkey: withdrawTxKey, isSigner: false, isWritable: true },
       { pubkey: vaultKey, isSigner: false, isWritable: true },
+      { pubkey: bridgeConfigKey, isSigner: false, isWritable: false },
       {
         pubkey: svmContext.SVM_USER.publicKey,
         isSigner: true,

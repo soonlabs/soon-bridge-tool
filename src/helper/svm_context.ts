@@ -10,6 +10,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import 'dotenv/config';
+import { ethers } from 'ethers';
 
 export const SYSTEM_PROGRAM = new PublicKey('11111111111111111111111111111111');
 export const DEFAULT_L1_BLOCK_INFO_PROGRAM = new PublicKey(
@@ -41,6 +42,7 @@ export enum BridgeInstructionIndex {
   CreateSPL = 4,
   //DepositERC20 = 5,
   WithdrawSPL = 6,
+  CreateBridgeConfig = 7,
 }
 
 export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
@@ -137,6 +139,42 @@ export async function initProgramDataAccount(
   );
   const instruction = new TransactionInstruction({
     data: Buffer.concat([instructionIndex]),
+    keys: [
+      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+      { pubkey: accountKey, isSigner: false, isWritable: true },
+      {
+        pubkey: svmContext.SVM_USER.publicKey,
+        isSigner: true,
+        isWritable: true,
+      },
+    ],
+    programId: programId,
+  });
+
+  return await sendTransaction(svmContext, [instruction]);
+}
+
+export async function createBridgeConfigAccount(
+  svmContext: SVM_CONTEXT,
+  seed: string,
+  programId: PublicKey,
+  l1CrossDomainMessenger: string,
+  l1StandardBridge: string,
+): Promise<string> {
+  const accountKey = genProgramDataAccountKey(seed, programId);
+  console.log(`accountKey: ${accountKey}`);
+
+  const instructionIndex = Buffer.from(
+    Int8Array.from([BridgeInstructionIndex.CreateBridgeConfig]),
+  );
+
+  const instruction = new TransactionInstruction({
+    data: Buffer.concat([
+      instructionIndex,
+      Buffer.concat([ethers.utils.arrayify(l1CrossDomainMessenger)]),
+      Buffer.concat([ethers.utils.arrayify(l1StandardBridge)]),
+    ]),
     keys: [
       { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
