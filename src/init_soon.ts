@@ -1,5 +1,6 @@
 import {
-  BridgeInstructionIndex, createBridgeConfigAccount,
+  BridgeInstructionIndex,
+  createBridgeConfigAccount,
   createSVMContext,
   genDepositInfoAccount,
   genProgramDataAccountKey,
@@ -8,15 +9,17 @@ import {
   sendTransaction,
   SVM_CONTEXT,
   SYSTEM_PROGRAM,
-  transferSOL
+  transferSOL,
 } from './helper/svm_context';
-import { LAMPORTS_PER_SOL, PublicKey, SYSVAR_RENT_PUBKEY, TransactionInstruction } from '@solana/web3.js';
-import { isValidEthereumAddress, sleep } from './helper/tool';
-import minimist from 'minimist';
-
-const options = {
-  string: ['l1CrossDomainMessenger', 'l1StandardBridge'],
-};
+import {
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  SYSVAR_RENT_PUBKEY,
+  TransactionInstruction,
+} from '@solana/web3.js';
+import { sleep } from './helper/tool';
+import { createEVMContext } from './helper/evm_context';
+import { L1StandardBridge__factory } from '../typechain-types';
 
 async function createL1BlockInfo(svmContext: SVM_CONTEXT) {
   console.log('start createL1BlockInfo');
@@ -38,7 +41,11 @@ async function createVault(svmContext: SVM_CONTEXT) {
   );
 }
 
-async function createBridgeConfig(svmContext: SVM_CONTEXT, l1CrossDomainMessenger: string, l1StandardBridge: string) {
+async function createBridgeConfig(
+  svmContext: SVM_CONTEXT,
+  l1CrossDomainMessenger: string,
+  l1StandardBridge: string,
+) {
   console.log('start createBridgeConfig');
   return createBridgeConfigAccount(
     svmContext,
@@ -86,15 +93,20 @@ async function transferForVault(svmContext: SVM_CONTEXT) {
 }
 
 async function main() {
-  const args = minimist(process.argv.slice(2), options);
-  console.log('args:', args);
-  if (!isValidEthereumAddress(args.l1CrossDomainMessenger) || !isValidEthereumAddress(args.l1StandardBridge)) {
-    throw new Error('invalid ethereum address format.');
-  }
-
   let svmContext = await createSVMContext();
 
-  await createBridgeConfig(svmContext, args.l1CrossDomainMessenger, args.l1StandardBridge);
+  let evmContext = await createEVMContext(false);
+  const StandardBridge = L1StandardBridge__factory.connect(
+    evmContext.EVM_STANDARD_BRIDGE,
+    evmContext.EVM_USER,
+  );
+  const l1CrossDomainMessenger = await StandardBridge.messenger();
+
+  await createBridgeConfig(
+    svmContext,
+    l1CrossDomainMessenger,
+    evmContext.EVM_STANDARD_BRIDGE,
+  );
 
   await createL1BlockInfo(svmContext);
 
