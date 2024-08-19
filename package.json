@@ -5,17 +5,20 @@
   "main": "index.js",
   "scripts": {
     "index": "npx ts-node --project tsconfig.json src/index.ts",
-    "happypass": "npx ts-node --project tsconfig.json src/happy_pass.ts",
     "init_soon": "npx ts-node --project tsconfig.json src/init_soon.ts",
     "reset_output_oracle": "npx ts-node --project tsconfig.json src/reset_output_oracle.ts",
-    "expend_deposit": "npx ts-node --project tsconfig.json src/expend_deposit_account.ts",
-    "issue_withdraw": "npx ts-node --project tsconfig.json src/issue_withdraw.ts",
+    "create_spl_token": "npx ts-node --project tsconfig.json src/create_spl_token.ts",
+    "issue_withdraw_eth": "npx ts-node --project tsconfig.json src/issue_withdraw_eth.ts",
+    "issue_withdraw_spl": "npx ts-node --project tsconfig.json src/issue_withdraw_spl.ts",
+    "calculate_ata": "npx ts-node --project tsconfig.json src/calculate_ata.ts",
     "propose_withdraw": "npx ts-node --project tsconfig.json src/propose_withdraw.ts",
     "fetch_proposed_height": "npx ts-node --project tsconfig.json src/fetch_proposed_height.ts",
     "prove_withdraw": "npx ts-node --project tsconfig.json src/prove_withdraw.ts",
     "fetch_withdraw_finalize_status": "npx ts-node --project tsconfig.json src/fetch_withdraw_finalize_status.ts",
     "finalize_withdraw": "npx ts-node --project tsconfig.json src/finalize_withdraw.ts",
     "deposit_eth": "npx ts-node --project tsconfig.json src/deposit_eth.ts",
+    "deposit_erc20": "npx ts-node --project tsconfig.json src/deposit_erc20.ts",
+    "mint_test_erc20": "npx ts-node --project tsconfig.json src/mint_test_erc20.ts",
     "fetch_all_withdrawal_tx_by_user": "npx ts-node --project tsconfig.json src/fetch_all_withdrawal_tx_by_user.ts",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
     "pkg": "yarn pkg_init_soon && yarn pkg_reset_output_oracle",
@@ -29,10 +32,9 @@
     "@types/minimist": "^1.2.5"
   },
   "dependencies": {
+    "@solana/spl-token": "^0.4.8",
     "@solana/web3.js": "^1.93.1",
     "@types/bn.js": "^5.1.5",
-    "typescript": "^5.5.2",
-    "ts-node": "^10.9.1",
     "@types/node": "^17.0.8",
     "axios": "^1.7.2",
     "bs58": "^6.0.0",
@@ -40,6 +42,8 @@
     "dotenv": "^16.4.5",
     "ethers": "^5.7.2",
     "minimist": "^1.2.8",
-    "prettier": "^3.3.2"
+    "prettier": "^3.3.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.5.2"
   }
 }

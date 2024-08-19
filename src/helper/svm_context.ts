@@ -10,16 +10,14 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import 'dotenv/config';
+import { ethers } from 'ethers';
 
 export const SYSTEM_PROGRAM = new PublicKey('11111111111111111111111111111111');
-export const DEFAULT_DEPOSIT_PROGRAM = new PublicKey(
-  'Deposit111111111111111111111111111111111111',
-);
 export const DEFAULT_L1_BLOCK_INFO_PROGRAM = new PublicKey(
   'L1BLockinfo11111111111111111111111111111111',
 );
-export const DEFAULT_WITHDRAW_PROGRAM = new PublicKey(
-  'SvmWithdrawBridge11111111111111111111111111',
+export const DEFAULT_BRIDGE_PROGRAM = new PublicKey(
+  'Bridge1111111111111111111111111111111111111',
 );
 
 export interface SVM_CONTEXT {
@@ -27,15 +25,24 @@ export interface SVM_CONTEXT {
   SVM_SOON_RPC_URL: string;
   SVM_USER: Keypair;
   SVM_DEPOSITOR: Keypair;
-  SVM_WITHDRAW_PROGRAM_ID: PublicKey;
+  SVM_BRIDGE_PROGRAM_ID: PublicKey;
   SVM_L1_BLOCK_INFO_PROGRAM_ID: PublicKey;
-  SVM_DEPOSIT_PROGRAM_ID: PublicKey;
 }
 
-export enum InstructionIndex {
-  CreateBot = 0,
-  RedeemAllAssetsFromBot = 1,
-  StartBot = 2,
+export enum L1BlockInfoInstructionIndex {
+  CreateL1BlockInfoAccount = 0,
+  //UpdateL1BlockInfo = 1,
+}
+
+export enum BridgeInstructionIndex {
+  CreateVaultAccount = 0,
+  //DepositETH = 1,
+  CreateWithdrawalCounterAccount = 2,
+  WithdrawETH = 3,
+  CreateSPL = 4,
+  //DepositERC20 = 5,
+  WithdrawSPL = 6,
+  CreateBridgeConfig = 7,
 }
 
 export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
@@ -53,20 +60,12 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
   const SVM_SOON_RPC_URL = process.env.SVM_SOON_RPC_URL;
   if (!SVM_SOON_RPC_URL) throw `missing required env SVM_SOON_RPC_URL for SVM`;
 
-  let SVM_DEPOSIT_PROGRAM_ID;
-  let SVM_DEPOSIT_PROGRAM_KEY = process.env.SVM_DEPOSIT_PROGRAM_KEY;
-  if (SVM_DEPOSIT_PROGRAM_KEY) {
-    SVM_DEPOSIT_PROGRAM_ID = new PublicKey(SVM_DEPOSIT_PROGRAM_KEY);
+  let SVM_BRIDGE_PROGRAM_ID;
+  let SVM_BRIDGE_PROGRAM_KEY = process.env.SVM_BRIDGE_PROGRAM_KEY;
+  if (SVM_BRIDGE_PROGRAM_KEY) {
+    SVM_BRIDGE_PROGRAM_ID = new PublicKey(SVM_BRIDGE_PROGRAM_KEY);
   } else {
-    SVM_DEPOSIT_PROGRAM_ID = DEFAULT_DEPOSIT_PROGRAM;
-  }
-
-  let SVM_WITHDRAW_PROGRAM_ID;
-  let SVM_WITHDRAW_PROGRAM_KEY = process.env.SVM_WITHDRAW_PROGRAM_KEY;
-  if (SVM_WITHDRAW_PROGRAM_KEY) {
-    SVM_WITHDRAW_PROGRAM_ID = new PublicKey(SVM_WITHDRAW_PROGRAM_KEY);
-  } else {
-    SVM_WITHDRAW_PROGRAM_ID = DEFAULT_WITHDRAW_PROGRAM;
+    SVM_BRIDGE_PROGRAM_ID = DEFAULT_BRIDGE_PROGRAM;
   }
 
   let SVM_L1_BLOCK_INFO_PROGRAM_ID;
@@ -98,9 +97,8 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
     SVM_Connection,
     SVM_USER,
     SVM_DEPOSITOR,
-    SVM_WITHDRAW_PROGRAM_ID,
+    SVM_BRIDGE_PROGRAM_ID,
     SVM_L1_BLOCK_INFO_PROGRAM_ID,
-    SVM_DEPOSIT_PROGRAM_ID,
     SVM_SOON_RPC_URL,
   };
 };
@@ -131,15 +129,50 @@ export async function initProgramDataAccount(
   svmContext: SVM_CONTEXT,
   seed: string,
   programId: PublicKey,
+  ixIndex: BridgeInstructionIndex | L1BlockInfoInstructionIndex,
+): Promise<string> {
+  const accountKey = genProgramDataAccountKey(seed, programId);
+  console.log(`accountKey: ${accountKey}`);
+
+  const instructionIndex = Buffer.from(Int8Array.from([ixIndex]));
+  const instruction = new TransactionInstruction({
+    data: Buffer.concat([instructionIndex]),
+    keys: [
+      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+      { pubkey: accountKey, isSigner: false, isWritable: true },
+      {
+        pubkey: svmContext.SVM_USER.publicKey,
+        isSigner: true,
+        isWritable: true,
+      },
+    ],
+    programId: programId,
+  });
+
+  return await sendTransaction(svmContext, [instruction]);
+}
+
+export async function createBridgeConfigAccount(
+  svmContext: SVM_CONTEXT,
+  seed: string,
+  programId: PublicKey,
+  l1CrossDomainMessenger: string,
+  l1StandardBridge: string,
 ): Promise<string> {
   const accountKey = genProgramDataAccountKey(seed, programId);
   console.log(`accountKey: ${accountKey}`);
 
   const instructionIndex = Buffer.from(
-    Int8Array.from([InstructionIndex.CreateBot]),
+    Int8Array.from([BridgeInstructionIndex.CreateBridgeConfig]),
   );
+
   const instruction = new TransactionInstruction({
-    data: Buffer.concat([instructionIndex]),
+    data: Buffer.concat([
+      instructionIndex,
+      Buffer.concat([ethers.utils.arrayify(l1CrossDomainMessenger)]),
+      Buffer.concat([ethers.utils.arrayify(l1StandardBridge)]),
+    ]),
     keys: [
       { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },

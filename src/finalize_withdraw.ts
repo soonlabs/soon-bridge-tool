@@ -35,7 +35,7 @@ async function main() {
   const receipt = await (
     await OptimismPortal.connect(
       EVMContext.EVM_USER,
-    ).finalizePDAWithdrawalTransaction(withdrawTx, {
+    ).finalizeWithdrawalTransaction(withdrawTx, {
       gasLimit: 1000000,
     })
   ).wait(1);

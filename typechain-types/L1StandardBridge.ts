@@ -25,40 +25,54 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "./common";
 
 export interface L1StandardBridgeInterface extends utils.Interface {
   functions: {
+    "ERC20SharedDecimals()": FunctionFragment;
     "MESSENGER()": FunctionFragment;
     "OTHER_BRIDGE()": FunctionFragment;
+    "bridgeERC20(address,address,uint256,uint32,bytes)": FunctionFragment;
     "bridgeERC20To(address,bytes32,bytes32,uint256,uint32,bytes)": FunctionFragment;
+    "bridgeETH(uint32,bytes)": FunctionFragment;
     "bridgeETHTo(bytes32,uint32,bytes)": FunctionFragment;
+    "depositERC20(address,bytes32,uint256,uint32,bytes)": FunctionFragment;
     "depositERC20To(address,bytes32,bytes32,uint256,uint32,bytes)": FunctionFragment;
+    "depositETH(uint32,bytes)": FunctionFragment;
     "depositETHTo(bytes32,uint32,bytes)": FunctionFragment;
     "deposits(address,bytes32)": FunctionFragment;
-    "finalizeBridgeERC20(address,address,address,address,uint256,bytes)": FunctionFragment;
-    "finalizeBridgeETH(address,address,uint256,bytes)": FunctionFragment;
-    "finalizeERC20Withdrawal(address,address,address,address,uint256,bytes)": FunctionFragment;
-    "finalizeETHWithdrawal(address,address,uint256,bytes)": FunctionFragment;
-    "initialize(address)": FunctionFragment;
+    "encodeBridgeERC20L2Message(address,bytes32,address,bytes32,uint256,bytes)": FunctionFragment;
+    "encodeBridgeETHL2Message(address,bytes32,uint256,bytes)": FunctionFragment;
+    "finalizeBridgeERC20(address,bytes32,bytes32,address,uint256,bytes)": FunctionFragment;
+    "finalizeBridgeETH(bytes32,address,uint256,bytes)": FunctionFragment;
+    "finalizeERC20Withdrawal(address,bytes32,bytes32,address,uint256,bytes)": FunctionFragment;
+    "finalizeETHWithdrawal(bytes32,address,uint256,bytes)": FunctionFragment;
+    "initialize(address,address,address)": FunctionFragment;
     "l2TokenBridge()": FunctionFragment;
     "messenger()": FunctionFragment;
     "otherBridge()": FunctionFragment;
     "paused()": FunctionFragment;
     "superchainConfig()": FunctionFragment;
+    "systemConfig()": FunctionFragment;
     "version()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "ERC20SharedDecimals"
       | "MESSENGER"
       | "OTHER_BRIDGE"
+      | "bridgeERC20"
       | "bridgeERC20To"
+      | "bridgeETH"
       | "bridgeETHTo"
+      | "depositERC20"
       | "depositERC20To"
+      | "depositETH"
       | "depositETHTo"
       | "deposits"
+      | "encodeBridgeERC20L2Message"
+      | "encodeBridgeETHL2Message"
       | "finalizeBridgeERC20"
       | "finalizeBridgeETH"
       | "finalizeERC20Withdrawal"
@@ -69,99 +83,96 @@ export interface L1StandardBridgeInterface extends utils.Interface {
       | "otherBridge"
       | "paused"
       | "superchainConfig"
+      | "systemConfig"
       | "version"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "ERC20SharedDecimals",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "MESSENGER", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "OTHER_BRIDGE",
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "bridgeERC20",
+    values: [string, string, BigNumberish, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "bridgeERC20To",
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
+      string,
+      BytesLike,
+      BytesLike,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "bridgeETH",
+    values: [BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "bridgeETHTo",
-    values: [
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [BytesLike, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "depositERC20",
+    values: [string, BytesLike, BigNumberish, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "depositERC20To",
     values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
+      string,
+      BytesLike,
+      BytesLike,
+      BigNumberish,
+      BigNumberish,
+      BytesLike
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "depositETH",
+    values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "depositETHTo",
-    values: [
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [BytesLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "deposits",
-    values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
+    values: [string, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "encodeBridgeERC20L2Message",
+    values: [string, BytesLike, string, BytesLike, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "encodeBridgeETHL2Message",
+    values: [string, BytesLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "finalizeBridgeERC20",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BytesLike, BytesLike, string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "finalizeBridgeETH",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [BytesLike, string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "finalizeERC20Withdrawal",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [string, BytesLike, BytesLike, string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "finalizeETHWithdrawal",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [BytesLike, string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [PromiseOrValue<string>]
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "l2TokenBridge",
@@ -177,30 +188,56 @@ export interface L1StandardBridgeInterface extends utils.Interface {
     functionFragment: "superchainConfig",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "systemConfig",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "ERC20SharedDecimals",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "MESSENGER", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "OTHER_BRIDGE",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "bridgeERC20To",
+    functionFragment: "bridgeERC20",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "bridgeERC20To",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "bridgeETH", data: BytesLike): Result;
+  decodeFunctionResult(
     functionFragment: "bridgeETHTo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "depositERC20",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "depositERC20To",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "depositETH", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "depositETHTo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposits", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "encodeBridgeERC20L2Message",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "encodeBridgeETHL2Message",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "finalizeBridgeERC20",
     data: BytesLike
@@ -232,17 +269,21 @@ export interface L1StandardBridgeInterface extends utils.Interface {
     functionFragment: "superchainConfig",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "systemConfig",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
-    "ERC20BridgeFinalized(address,address,address,address,uint256,bytes)": EventFragment;
+    "ERC20BridgeFinalized(address,bytes32,bytes32,address,uint256,bytes)": EventFragment;
     "ERC20BridgeInitiated(address,bytes32,address,bytes32,uint256,bytes)": EventFragment;
     "ERC20DepositInitiated(address,bytes32,address,bytes32,uint256,bytes)": EventFragment;
-    "ERC20WithdrawalFinalized(address,address,address,address,uint256,bytes)": EventFragment;
-    "ETHBridgeFinalized(address,address,uint256,bytes)": EventFragment;
+    "ERC20WithdrawalFinalized(address,bytes32,bytes32,address,uint256,bytes)": EventFragment;
+    "ETHBridgeFinalized(bytes32,address,uint256,bytes)": EventFragment;
     "ETHBridgeInitiated(address,bytes32,uint256,bytes)": EventFragment;
     "ETHDepositInitiated(address,bytes32,uint256,bytes)": EventFragment;
-    "ETHWithdrawalFinalized(address,address,uint256,bytes)": EventFragment;
+    "ETHWithdrawalFinalized(bytes32,address,uint256,bytes)": EventFragment;
     "Initialized(uint8)": EventFragment;
   };
 
@@ -412,17 +453,34 @@ export interface L1StandardBridge extends BaseContract {
 
   functions: {
     /**
-     * Messenger contract on this domain.
+     * Getter for the shared decimals when bridge ERC20
+     */
+    ERC20SharedDecimals(overrides?: CallOverrides): Promise<[number]>;
+
+    /**
+     * Getter for messenger contract.         Public getter is legacy and will be removed in the future. Use `messenger` instead.
      */
     MESSENGER(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Corresponding bridge on the other domain.
+     * Getter for the other bridge contract.         Public getter is legacy and will be removed in the future. Use `otherBridge` instead.
      */
     OTHER_BRIDGE(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Sends ERC20 tokens to a receiver's address on the other chain. Note that if the         ERC20 token on the other chain does not recognize the local token as the correct         pair token, the ERC20 bridge will fail and the tokens will be returned to sender on         this chain.
+     * Sends ERC20 tokens to the sender's address on the other chain.
+     */
+    bridgeERC20(
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Sends ERC20 tokens to a receiver's address on the other chain.
      * @param _amount Amount of local tokens to deposit.
      * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
      * @param _localToken Address of the ERC20 on this chain.
@@ -431,13 +489,22 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     bridgeERC20To(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<BytesLike>,
-      _to: PromiseOrValue<BytesLike>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Sends ETH to the sender's address on the other chain.
+     */
+    bridgeETH(
+      arg0: BigNumberish,
+      arg1: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -447,10 +514,21 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     bridgeETHTo(
-      _to: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _to: BytesLike,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     */
+    depositERC20(
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -462,13 +540,21 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L2.
      */
     depositERC20To(
-      _l1Token: PromiseOrValue<string>,
-      _l2Token: PromiseOrValue<BytesLike>,
-      _to: PromiseOrValue<BytesLike>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l1Token: string,
+      _l2Token: BytesLike,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     */
+    depositETH(
+      arg0: BigNumberish,
+      arg1: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -477,20 +563,53 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L2.
      */
     depositETHTo(
-      _to: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _to: BytesLike,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Mapping that stores deposits for a given pair of local and remote tokens.
      */
     deposits(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: BytesLike,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    /**
+     * Encode L2 message for bridge ERC20 from L1 to L2.
+     * @param _amount Amount of local tokens to deposit.
+     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
+     * @param _localToken Address of the ERC20 on this chain.
+     * @param _remoteToken Address of the corresponding token on the remote chain.
+     * @param _to Address of the receiver.
+     */
+    encodeBridgeERC20L2Message(
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: string,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    /**
+     * Encode L2 message for bridge ETH from L1 to L2.
+     * @param _amount Amount of ETH being bridged.
+     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
+     * @param _from Address of the sender.
+     * @param _to Address of the receiver.
+     */
+    encodeBridgeETHL2Message(
+      _from: string,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
 
     /**
      * Finalizes an ERC20 bridge on this chain. Can only be triggered by the other         StandardBridge contract on the remote chain.
@@ -502,13 +621,13 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     finalizeBridgeERC20(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -519,11 +638,11 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     finalizeBridgeETH(
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -535,13 +654,13 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L1.
      */
     finalizeERC20Withdrawal(
-      _l1Token: PromiseOrValue<string>,
-      _l2Token: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l1Token: string,
+      _l2Token: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -551,20 +670,23 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L1.
      */
     finalizeETHWithdrawal(
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
-     * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * Initializer.
+     * @param _messenger Contract for the CrossDomainMessenger on this network.
+     * @param _superchainConfig Contract for the SuperchainConfig on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _messenger: string,
+      _superchainConfig: string,
+      _systemConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
@@ -572,12 +694,12 @@ export interface L1StandardBridge extends BaseContract {
     l2TokenBridge(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Getter for messenger contract.
+     * Messenger contract on this domain.
      */
     messenger(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Getter for the other bridge.
+     * Corresponding bridge on the other domain.
      */
     otherBridge(overrides?: CallOverrides): Promise<[string]>;
 
@@ -592,23 +714,45 @@ export interface L1StandardBridge extends BaseContract {
     superchainConfig(overrides?: CallOverrides): Promise<[string]>;
 
     /**
+     * Address of the SystemConfig contract.
+     */
+    systemConfig(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
      * Semantic version.
      */
     version(overrides?: CallOverrides): Promise<[string]>;
   };
 
   /**
-   * Messenger contract on this domain.
+   * Getter for the shared decimals when bridge ERC20
+   */
+  ERC20SharedDecimals(overrides?: CallOverrides): Promise<number>;
+
+  /**
+   * Getter for messenger contract.         Public getter is legacy and will be removed in the future. Use `messenger` instead.
    */
   MESSENGER(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Corresponding bridge on the other domain.
+   * Getter for the other bridge contract.         Public getter is legacy and will be removed in the future. Use `otherBridge` instead.
    */
   OTHER_BRIDGE(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Sends ERC20 tokens to a receiver's address on the other chain. Note that if the         ERC20 token on the other chain does not recognize the local token as the correct         pair token, the ERC20 bridge will fail and the tokens will be returned to sender on         this chain.
+   * Sends ERC20 tokens to the sender's address on the other chain.
+   */
+  bridgeERC20(
+    arg0: string,
+    arg1: string,
+    arg2: BigNumberish,
+    arg3: BigNumberish,
+    arg4: BytesLike,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Sends ERC20 tokens to a receiver's address on the other chain.
    * @param _amount Amount of local tokens to deposit.
    * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
    * @param _localToken Address of the ERC20 on this chain.
@@ -617,13 +761,22 @@ export interface L1StandardBridge extends BaseContract {
    * @param _to Address of the receiver.
    */
   bridgeERC20To(
-    _localToken: PromiseOrValue<string>,
-    _remoteToken: PromiseOrValue<BytesLike>,
-    _to: PromiseOrValue<BytesLike>,
-    _amount: PromiseOrValue<BigNumberish>,
-    _minGasLimit: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _localToken: string,
+    _remoteToken: BytesLike,
+    _to: BytesLike,
+    _amount: BigNumberish,
+    _minGasLimit: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Sends ETH to the sender's address on the other chain.
+   */
+  bridgeETH(
+    arg0: BigNumberish,
+    arg1: BytesLike,
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -633,10 +786,21 @@ export interface L1StandardBridge extends BaseContract {
    * @param _to Address of the receiver.
    */
   bridgeETHTo(
-    _to: PromiseOrValue<BytesLike>,
-    _minGasLimit: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    _to: BytesLike,
+    _minGasLimit: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: PayableOverrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   */
+  depositERC20(
+    arg0: string,
+    arg1: BytesLike,
+    arg2: BigNumberish,
+    arg3: BigNumberish,
+    arg4: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -648,13 +812,21 @@ export interface L1StandardBridge extends BaseContract {
    * @param _to Address of the recipient on L2.
    */
   depositERC20To(
-    _l1Token: PromiseOrValue<string>,
-    _l2Token: PromiseOrValue<BytesLike>,
-    _to: PromiseOrValue<BytesLike>,
-    _amount: PromiseOrValue<BigNumberish>,
-    _minGasLimit: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _l1Token: string,
+    _l2Token: BytesLike,
+    _to: BytesLike,
+    _amount: BigNumberish,
+    _minGasLimit: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   */
+  depositETH(
+    arg0: BigNumberish,
+    arg1: BytesLike,
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -663,20 +835,53 @@ export interface L1StandardBridge extends BaseContract {
    * @param _to Address of the recipient on L2.
    */
   depositETHTo(
-    _to: PromiseOrValue<BytesLike>,
-    _minGasLimit: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    _to: BytesLike,
+    _minGasLimit: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Mapping that stores deposits for a given pair of local and remote tokens.
    */
   deposits(
-    arg0: PromiseOrValue<string>,
-    arg1: PromiseOrValue<BytesLike>,
+    arg0: string,
+    arg1: BytesLike,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  /**
+   * Encode L2 message for bridge ERC20 from L1 to L2.
+   * @param _amount Amount of local tokens to deposit.
+   * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
+   * @param _localToken Address of the ERC20 on this chain.
+   * @param _remoteToken Address of the corresponding token on the remote chain.
+   * @param _to Address of the receiver.
+   */
+  encodeBridgeERC20L2Message(
+    _localToken: string,
+    _remoteToken: BytesLike,
+    _from: string,
+    _to: BytesLike,
+    _amount: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  /**
+   * Encode L2 message for bridge ETH from L1 to L2.
+   * @param _amount Amount of ETH being bridged.
+   * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
+   * @param _from Address of the sender.
+   * @param _to Address of the receiver.
+   */
+  encodeBridgeETHL2Message(
+    _from: string,
+    _to: BytesLike,
+    _amount: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   /**
    * Finalizes an ERC20 bridge on this chain. Can only be triggered by the other         StandardBridge contract on the remote chain.
@@ -688,13 +893,13 @@ export interface L1StandardBridge extends BaseContract {
    * @param _to Address of the receiver.
    */
   finalizeBridgeERC20(
-    _localToken: PromiseOrValue<string>,
-    _remoteToken: PromiseOrValue<string>,
-    _from: PromiseOrValue<string>,
-    _to: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _localToken: string,
+    _remoteToken: BytesLike,
+    _from: BytesLike,
+    _to: string,
+    _amount: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -705,11 +910,11 @@ export interface L1StandardBridge extends BaseContract {
    * @param _to Address of the receiver.
    */
   finalizeBridgeETH(
-    _from: PromiseOrValue<string>,
-    _to: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    _from: BytesLike,
+    _to: string,
+    _amount: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -721,13 +926,13 @@ export interface L1StandardBridge extends BaseContract {
    * @param _to Address of the recipient on L1.
    */
   finalizeERC20Withdrawal(
-    _l1Token: PromiseOrValue<string>,
-    _l2Token: PromiseOrValue<string>,
-    _from: PromiseOrValue<string>,
-    _to: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _l1Token: string,
+    _l2Token: BytesLike,
+    _from: BytesLike,
+    _to: string,
+    _amount: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -737,20 +942,23 @@ export interface L1StandardBridge extends BaseContract {
    * @param _to Address of the recipient on L1.
    */
   finalizeETHWithdrawal(
-    _from: PromiseOrValue<string>,
-    _to: PromiseOrValue<string>,
-    _amount: PromiseOrValue<BigNumberish>,
-    _extraData: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    _from: BytesLike,
+    _to: string,
+    _amount: BigNumberish,
+    _extraData: BytesLike,
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
-   * Initializes the contract.
-   * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+   * Initializer.
+   * @param _messenger Contract for the CrossDomainMessenger on this network.
+   * @param _superchainConfig Contract for the SuperchainConfig on this network.
    */
   initialize(
-    _superchainConfig: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _messenger: string,
+    _superchainConfig: string,
+    _systemConfig: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
@@ -758,12 +966,12 @@ export interface L1StandardBridge extends BaseContract {
   l2TokenBridge(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Getter for messenger contract.
+   * Messenger contract on this domain.
    */
   messenger(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Getter for the other bridge.
+   * Corresponding bridge on the other domain.
    */
   otherBridge(overrides?: CallOverrides): Promise<string>;
 
@@ -778,23 +986,45 @@ export interface L1StandardBridge extends BaseContract {
   superchainConfig(overrides?: CallOverrides): Promise<string>;
 
   /**
+   * Address of the SystemConfig contract.
+   */
+  systemConfig(overrides?: CallOverrides): Promise<string>;
+
+  /**
    * Semantic version.
    */
   version(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
     /**
-     * Messenger contract on this domain.
+     * Getter for the shared decimals when bridge ERC20
+     */
+    ERC20SharedDecimals(overrides?: CallOverrides): Promise<number>;
+
+    /**
+     * Getter for messenger contract.         Public getter is legacy and will be removed in the future. Use `messenger` instead.
      */
     MESSENGER(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Corresponding bridge on the other domain.
+     * Getter for the other bridge contract.         Public getter is legacy and will be removed in the future. Use `otherBridge` instead.
      */
     OTHER_BRIDGE(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Sends ERC20 tokens to a receiver's address on the other chain. Note that if the         ERC20 token on the other chain does not recognize the local token as the correct         pair token, the ERC20 bridge will fail and the tokens will be returned to sender on         this chain.
+     * Sends ERC20 tokens to the sender's address on the other chain.
+     */
+    bridgeERC20(
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Sends ERC20 tokens to a receiver's address on the other chain.
      * @param _amount Amount of local tokens to deposit.
      * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
      * @param _localToken Address of the ERC20 on this chain.
@@ -803,12 +1033,21 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     bridgeERC20To(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<BytesLike>,
-      _to: PromiseOrValue<BytesLike>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Sends ETH to the sender's address on the other chain.
+     */
+    bridgeETH(
+      arg0: BigNumberish,
+      arg1: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -819,9 +1058,20 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     bridgeETHTo(
-      _to: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      _to: BytesLike,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     */
+    depositERC20(
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -834,12 +1084,20 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L2.
      */
     depositERC20To(
-      _l1Token: PromiseOrValue<string>,
-      _l2Token: PromiseOrValue<BytesLike>,
-      _to: PromiseOrValue<BytesLike>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      _l1Token: string,
+      _l2Token: BytesLike,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     */
+    depositETH(
+      arg0: BigNumberish,
+      arg1: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -849,9 +1107,9 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L2.
      */
     depositETHTo(
-      _to: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      _to: BytesLike,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -859,10 +1117,43 @@ export interface L1StandardBridge extends BaseContract {
      * Mapping that stores deposits for a given pair of local and remote tokens.
      */
     deposits(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    /**
+     * Encode L2 message for bridge ERC20 from L1 to L2.
+     * @param _amount Amount of local tokens to deposit.
+     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
+     * @param _localToken Address of the ERC20 on this chain.
+     * @param _remoteToken Address of the corresponding token on the remote chain.
+     * @param _to Address of the receiver.
+     */
+    encodeBridgeERC20L2Message(
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: string,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    /**
+     * Encode L2 message for bridge ETH from L1 to L2.
+     * @param _amount Amount of ETH being bridged.
+     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
+     * @param _from Address of the sender.
+     * @param _to Address of the receiver.
+     */
+    encodeBridgeETHL2Message(
+      _from: string,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     /**
      * Finalizes an ERC20 bridge on this chain. Can only be triggered by the other         StandardBridge contract on the remote chain.
@@ -874,12 +1165,12 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     finalizeBridgeERC20(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -891,10 +1182,10 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     finalizeBridgeETH(
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -907,12 +1198,12 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L1.
      */
     finalizeERC20Withdrawal(
-      _l1Token: PromiseOrValue<string>,
-      _l2Token: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      _l1Token: string,
+      _l2Token: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -923,19 +1214,22 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L1.
      */
     finalizeETHWithdrawal(
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
-     * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * Initializer.
+     * @param _messenger Contract for the CrossDomainMessenger on this network.
+     * @param _superchainConfig Contract for the SuperchainConfig on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
+      _messenger: string,
+      _superchainConfig: string,
+      _systemConfig: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -944,12 +1238,12 @@ export interface L1StandardBridge extends BaseContract {
     l2TokenBridge(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Getter for messenger contract.
+     * Messenger contract on this domain.
      */
     messenger(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Getter for the other bridge.
+     * Corresponding bridge on the other domain.
      */
     otherBridge(overrides?: CallOverrides): Promise<string>;
 
@@ -964,128 +1258,133 @@ export interface L1StandardBridge extends BaseContract {
     superchainConfig(overrides?: CallOverrides): Promise<string>;
 
     /**
+     * Address of the SystemConfig contract.
+     */
+    systemConfig(overrides?: CallOverrides): Promise<string>;
+
+    /**
      * Semantic version.
      */
     version(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
-    "ERC20BridgeFinalized(address,address,address,address,uint256,bytes)"(
-      localToken?: PromiseOrValue<string> | null,
-      remoteToken?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
+    "ERC20BridgeFinalized(address,bytes32,bytes32,address,uint256,bytes)"(
+      localToken?: string | null,
+      remoteToken?: BytesLike | null,
+      from?: BytesLike | null,
       to?: null,
       amount?: null,
       extraData?: null
     ): ERC20BridgeFinalizedEventFilter;
     ERC20BridgeFinalized(
-      localToken?: PromiseOrValue<string> | null,
-      remoteToken?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
+      localToken?: string | null,
+      remoteToken?: BytesLike | null,
+      from?: BytesLike | null,
       to?: null,
       amount?: null,
       extraData?: null
     ): ERC20BridgeFinalizedEventFilter;
 
     "ERC20BridgeInitiated(address,bytes32,address,bytes32,uint256,bytes)"(
-      localToken?: PromiseOrValue<string> | null,
-      remoteToken?: PromiseOrValue<BytesLike> | null,
-      from?: PromiseOrValue<string> | null,
+      localToken?: string | null,
+      remoteToken?: BytesLike | null,
+      from?: string | null,
       to?: null,
       amount?: null,
       extraData?: null
     ): ERC20BridgeInitiatedEventFilter;
     ERC20BridgeInitiated(
-      localToken?: PromiseOrValue<string> | null,
-      remoteToken?: PromiseOrValue<BytesLike> | null,
-      from?: PromiseOrValue<string> | null,
+      localToken?: string | null,
+      remoteToken?: BytesLike | null,
+      from?: string | null,
       to?: null,
       amount?: null,
       extraData?: null
     ): ERC20BridgeInitiatedEventFilter;
 
     "ERC20DepositInitiated(address,bytes32,address,bytes32,uint256,bytes)"(
-      l1Token?: PromiseOrValue<string> | null,
-      l2Token?: PromiseOrValue<BytesLike> | null,
-      from?: PromiseOrValue<string> | null,
+      l1Token?: string | null,
+      l2Token?: BytesLike | null,
+      from?: string | null,
       to?: null,
       amount?: null,
       extraData?: null
     ): ERC20DepositInitiatedEventFilter;
     ERC20DepositInitiated(
-      l1Token?: PromiseOrValue<string> | null,
-      l2Token?: PromiseOrValue<BytesLike> | null,
-      from?: PromiseOrValue<string> | null,
+      l1Token?: string | null,
+      l2Token?: BytesLike | null,
+      from?: string | null,
       to?: null,
       amount?: null,
       extraData?: null
     ): ERC20DepositInitiatedEventFilter;
 
-    "ERC20WithdrawalFinalized(address,address,address,address,uint256,bytes)"(
-      l1Token?: PromiseOrValue<string> | null,
-      l2Token?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
+    "ERC20WithdrawalFinalized(address,bytes32,bytes32,address,uint256,bytes)"(
+      l1Token?: string | null,
+      l2Token?: BytesLike | null,
+      from?: BytesLike | null,
       to?: null,
       amount?: null,
       extraData?: null
     ): ERC20WithdrawalFinalizedEventFilter;
     ERC20WithdrawalFinalized(
-      l1Token?: PromiseOrValue<string> | null,
-      l2Token?: PromiseOrValue<string> | null,
-      from?: PromiseOrValue<string> | null,
+      l1Token?: string | null,
+      l2Token?: BytesLike | null,
+      from?: BytesLike | null,
       to?: null,
       amount?: null,
       extraData?: null
     ): ERC20WithdrawalFinalizedEventFilter;
 
-    "ETHBridgeFinalized(address,address,uint256,bytes)"(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+    "ETHBridgeFinalized(bytes32,address,uint256,bytes)"(
+      from?: BytesLike | null,
+      to?: string | null,
       amount?: null,
       extraData?: null
     ): ETHBridgeFinalizedEventFilter;
     ETHBridgeFinalized(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+      from?: BytesLike | null,
+      to?: string | null,
       amount?: null,
       extraData?: null
     ): ETHBridgeFinalizedEventFilter;
 
     "ETHBridgeInitiated(address,bytes32,uint256,bytes)"(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<BytesLike> | null,
+      from?: string | null,
+      to?: BytesLike | null,
       amount?: null,
       extraData?: null
     ): ETHBridgeInitiatedEventFilter;
     ETHBridgeInitiated(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<BytesLike> | null,
+      from?: string | null,
+      to?: BytesLike | null,
       amount?: null,
       extraData?: null
     ): ETHBridgeInitiatedEventFilter;
 
     "ETHDepositInitiated(address,bytes32,uint256,bytes)"(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<BytesLike> | null,
+      from?: string | null,
+      to?: BytesLike | null,
       amount?: null,
       extraData?: null
     ): ETHDepositInitiatedEventFilter;
     ETHDepositInitiated(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<BytesLike> | null,
+      from?: string | null,
+      to?: BytesLike | null,
       amount?: null,
       extraData?: null
     ): ETHDepositInitiatedEventFilter;
 
-    "ETHWithdrawalFinalized(address,address,uint256,bytes)"(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+    "ETHWithdrawalFinalized(bytes32,address,uint256,bytes)"(
+      from?: BytesLike | null,
+      to?: string | null,
       amount?: null,
       extraData?: null
     ): ETHWithdrawalFinalizedEventFilter;
     ETHWithdrawalFinalized(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
+      from?: BytesLike | null,
+      to?: string | null,
       amount?: null,
       extraData?: null
     ): ETHWithdrawalFinalizedEventFilter;
@@ -1096,17 +1395,34 @@ export interface L1StandardBridge extends BaseContract {
 
   estimateGas: {
     /**
-     * Messenger contract on this domain.
+     * Getter for the shared decimals when bridge ERC20
+     */
+    ERC20SharedDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Getter for messenger contract.         Public getter is legacy and will be removed in the future. Use `messenger` instead.
      */
     MESSENGER(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Corresponding bridge on the other domain.
+     * Getter for the other bridge contract.         Public getter is legacy and will be removed in the future. Use `otherBridge` instead.
      */
     OTHER_BRIDGE(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Sends ERC20 tokens to a receiver's address on the other chain. Note that if the         ERC20 token on the other chain does not recognize the local token as the correct         pair token, the ERC20 bridge will fail and the tokens will be returned to sender on         this chain.
+     * Sends ERC20 tokens to the sender's address on the other chain.
+     */
+    bridgeERC20(
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Sends ERC20 tokens to a receiver's address on the other chain.
      * @param _amount Amount of local tokens to deposit.
      * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
      * @param _localToken Address of the ERC20 on this chain.
@@ -1115,13 +1431,22 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     bridgeERC20To(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<BytesLike>,
-      _to: PromiseOrValue<BytesLike>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Sends ETH to the sender's address on the other chain.
+     */
+    bridgeETH(
+      arg0: BigNumberish,
+      arg1: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1131,10 +1456,21 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     bridgeETHTo(
-      _to: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _to: BytesLike,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     */
+    depositERC20(
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1146,13 +1482,21 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L2.
      */
     depositERC20To(
-      _l1Token: PromiseOrValue<string>,
-      _l2Token: PromiseOrValue<BytesLike>,
-      _to: PromiseOrValue<BytesLike>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l1Token: string,
+      _l2Token: BytesLike,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     */
+    depositETH(
+      arg0: BigNumberish,
+      arg1: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1161,18 +1505,51 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L2.
      */
     depositETHTo(
-      _to: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _to: BytesLike,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Mapping that stores deposits for a given pair of local and remote tokens.
      */
     deposits(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Encode L2 message for bridge ERC20 from L1 to L2.
+     * @param _amount Amount of local tokens to deposit.
+     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
+     * @param _localToken Address of the ERC20 on this chain.
+     * @param _remoteToken Address of the corresponding token on the remote chain.
+     * @param _to Address of the receiver.
+     */
+    encodeBridgeERC20L2Message(
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: string,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
+     * Encode L2 message for bridge ETH from L1 to L2.
+     * @param _amount Amount of ETH being bridged.
+     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
+     * @param _from Address of the sender.
+     * @param _to Address of the receiver.
+     */
+    encodeBridgeETHL2Message(
+      _from: string,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1186,13 +1563,13 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     finalizeBridgeERC20(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1203,11 +1580,11 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     finalizeBridgeETH(
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1219,13 +1596,13 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L1.
      */
     finalizeERC20Withdrawal(
-      _l1Token: PromiseOrValue<string>,
-      _l2Token: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l1Token: string,
+      _l2Token: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1235,20 +1612,23 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L1.
      */
     finalizeETHWithdrawal(
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
-     * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * Initializer.
+     * @param _messenger Contract for the CrossDomainMessenger on this network.
+     * @param _superchainConfig Contract for the SuperchainConfig on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _messenger: string,
+      _superchainConfig: string,
+      _systemConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
@@ -1256,12 +1636,12 @@ export interface L1StandardBridge extends BaseContract {
     l2TokenBridge(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Getter for messenger contract.
+     * Messenger contract on this domain.
      */
     messenger(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Getter for the other bridge.
+     * Corresponding bridge on the other domain.
      */
     otherBridge(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1276,6 +1656,11 @@ export interface L1StandardBridge extends BaseContract {
     superchainConfig(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Address of the SystemConfig contract.
+     */
+    systemConfig(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * Semantic version.
      */
     version(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1283,17 +1668,36 @@ export interface L1StandardBridge extends BaseContract {
 
   populateTransaction: {
     /**
-     * Messenger contract on this domain.
+     * Getter for the shared decimals when bridge ERC20
+     */
+    ERC20SharedDecimals(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Getter for messenger contract.         Public getter is legacy and will be removed in the future. Use `messenger` instead.
      */
     MESSENGER(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Corresponding bridge on the other domain.
+     * Getter for the other bridge contract.         Public getter is legacy and will be removed in the future. Use `otherBridge` instead.
      */
     OTHER_BRIDGE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Sends ERC20 tokens to a receiver's address on the other chain. Note that if the         ERC20 token on the other chain does not recognize the local token as the correct         pair token, the ERC20 bridge will fail and the tokens will be returned to sender on         this chain.
+     * Sends ERC20 tokens to the sender's address on the other chain.
+     */
+    bridgeERC20(
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Sends ERC20 tokens to a receiver's address on the other chain.
      * @param _amount Amount of local tokens to deposit.
      * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
      * @param _localToken Address of the ERC20 on this chain.
@@ -1302,13 +1706,22 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     bridgeERC20To(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<BytesLike>,
-      _to: PromiseOrValue<BytesLike>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Sends ETH to the sender's address on the other chain.
+     */
+    bridgeETH(
+      arg0: BigNumberish,
+      arg1: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1318,10 +1731,21 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     bridgeETHTo(
-      _to: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _to: BytesLike,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     */
+    depositERC20(
+      arg0: string,
+      arg1: BytesLike,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1333,13 +1757,21 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L2.
      */
     depositERC20To(
-      _l1Token: PromiseOrValue<string>,
-      _l2Token: PromiseOrValue<BytesLike>,
-      _to: PromiseOrValue<BytesLike>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l1Token: string,
+      _l2Token: BytesLike,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     */
+    depositETH(
+      arg0: BigNumberish,
+      arg1: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1348,18 +1780,51 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L2.
      */
     depositETHTo(
-      _to: PromiseOrValue<BytesLike>,
-      _minGasLimit: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _to: BytesLike,
+      _minGasLimit: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Mapping that stores deposits for a given pair of local and remote tokens.
      */
     deposits(
-      arg0: PromiseOrValue<string>,
-      arg1: PromiseOrValue<BytesLike>,
+      arg0: string,
+      arg1: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Encode L2 message for bridge ERC20 from L1 to L2.
+     * @param _amount Amount of local tokens to deposit.
+     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
+     * @param _localToken Address of the ERC20 on this chain.
+     * @param _remoteToken Address of the corresponding token on the remote chain.
+     * @param _to Address of the receiver.
+     */
+    encodeBridgeERC20L2Message(
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: string,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Encode L2 message for bridge ETH from L1 to L2.
+     * @param _amount Amount of ETH being bridged.
+     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
+     * @param _from Address of the sender.
+     * @param _to Address of the receiver.
+     */
+    encodeBridgeETHL2Message(
+      _from: string,
+      _to: BytesLike,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1373,13 +1838,13 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     finalizeBridgeERC20(
-      _localToken: PromiseOrValue<string>,
-      _remoteToken: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _localToken: string,
+      _remoteToken: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1390,11 +1855,11 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the receiver.
      */
     finalizeBridgeETH(
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1406,13 +1871,13 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L1.
      */
     finalizeERC20Withdrawal(
-      _l1Token: PromiseOrValue<string>,
-      _l2Token: PromiseOrValue<string>,
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l1Token: string,
+      _l2Token: BytesLike,
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1422,20 +1887,23 @@ export interface L1StandardBridge extends BaseContract {
      * @param _to Address of the recipient on L1.
      */
     finalizeETHWithdrawal(
-      _from: PromiseOrValue<string>,
-      _to: PromiseOrValue<string>,
-      _amount: PromiseOrValue<BigNumberish>,
-      _extraData: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _from: BytesLike,
+      _to: string,
+      _amount: BigNumberish,
+      _extraData: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Initializes the contract.
-     * @param _superchainConfig Address of the SuperchainConfig contract on this network.
+     * Initializer.
+     * @param _messenger Contract for the CrossDomainMessenger on this network.
+     * @param _superchainConfig Contract for the SuperchainConfig on this network.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _messenger: string,
+      _superchainConfig: string,
+      _systemConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
@@ -1443,12 +1911,12 @@ export interface L1StandardBridge extends BaseContract {
     l2TokenBridge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Getter for messenger contract.
+     * Messenger contract on this domain.
      */
     messenger(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Getter for the other bridge.
+     * Corresponding bridge on the other domain.
      */
     otherBridge(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1461,6 +1929,11 @@ export interface L1StandardBridge extends BaseContract {
      * Address of the SuperchainConfig contract.
      */
     superchainConfig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Address of the SystemConfig contract.
+     */
+    systemConfig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Semantic version.

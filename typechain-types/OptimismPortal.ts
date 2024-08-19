@@ -25,42 +25,16 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-  PromiseOrValue,
 } from "./common";
 
 export declare namespace Types {
-  export type PdaWithdrawalTransactionStruct = {
-    nonce: PromiseOrValue<BigNumberish>;
-    sender: PromiseOrValue<BytesLike>;
-    target: PromiseOrValue<string>;
-    value: PromiseOrValue<BigNumberish>;
-    gasLimit: PromiseOrValue<BigNumberish>;
-    data: PromiseOrValue<BytesLike>;
-  };
-
-  export type PdaWithdrawalTransactionStructOutput = [
-    BigNumber,
-    string,
-    string,
-    BigNumber,
-    BigNumber,
-    string
-  ] & {
-    nonce: BigNumber;
-    sender: string;
-    target: string;
-    value: BigNumber;
-    gasLimit: BigNumber;
-    data: string;
-  };
-
   export type WithdrawalTransactionStruct = {
-    nonce: PromiseOrValue<BigNumberish>;
-    sender: PromiseOrValue<string>;
-    target: PromiseOrValue<string>;
-    value: PromiseOrValue<BigNumberish>;
-    gasLimit: PromiseOrValue<BigNumberish>;
-    data: PromiseOrValue<BytesLike>;
+    nonce: BigNumberish;
+    sender: BytesLike;
+    target: string;
+    value: BigNumberish;
+    gasLimit: BigNumberish;
+    data: BytesLike;
   };
 
   export type WithdrawalTransactionStructOutput = [
@@ -80,10 +54,10 @@ export declare namespace Types {
   };
 
   export type OutputRootProofStruct = {
-    version: PromiseOrValue<BytesLike>;
-    stateRoot: PromiseOrValue<BytesLike>;
-    messagePasserStorageRoot: PromiseOrValue<BytesLike>;
-    latestBlockhash: PromiseOrValue<BytesLike>;
+    version: BytesLike;
+    stateRoot: BytesLike;
+    messagePasserStorageRoot: BytesLike;
+    latestBlockhash: BytesLike;
   };
 
   export type OutputRootProofStructOutput = [string, string, string, string] & {
@@ -96,24 +70,22 @@ export declare namespace Types {
 
 export interface OptimismPortalInterface extends utils.Interface {
   functions: {
-    "GUARDIAN()": FunctionFragment;
-    "L2_ORACLE()": FunctionFragment;
-    "SYSTEM_CONFIG()": FunctionFragment;
-    "depositTransaction(address,uint256,uint64,bool,bytes)": FunctionFragment;
+    "MIN_BRIDGE_VALUE()": FunctionFragment;
+    "balance()": FunctionFragment;
+    "depositERC20Transaction(bytes32,uint256,uint256,uint64,bool,bytes)": FunctionFragment;
+    "depositTransaction(bytes32,uint256,uint64,bool,bytes)": FunctionFragment;
     "donateETH()": FunctionFragment;
-    "finalizePDAWithdrawalTransaction((uint256,bytes32,address,uint256,uint256,bytes))": FunctionFragment;
-    "finalizeWithdrawalTransaction((uint256,address,address,uint256,uint256,bytes))": FunctionFragment;
+    "finalizeWithdrawalTransaction((uint256,bytes32,address,uint256,uint256,bytes))": FunctionFragment;
     "finalizedWithdrawals(bytes32)": FunctionFragment;
     "guardian()": FunctionFragment;
-    "initialize(address)": FunctionFragment;
+    "initialize(address,address,address)": FunctionFragment;
     "isOutputFinalized(uint256)": FunctionFragment;
     "l2Oracle()": FunctionFragment;
     "l2Sender()": FunctionFragment;
     "minimumGasLimit(uint64)": FunctionFragment;
     "params()": FunctionFragment;
     "paused()": FunctionFragment;
-    "provePDAWithdrawalTransaction((uint256,bytes32,address,uint256,uint256,bytes),uint256,bytes32,(bytes32,bytes32,bytes32,bytes32),bytes[])": FunctionFragment;
-    "proveWithdrawalTransaction((uint256,address,address,uint256,uint256,bytes),uint256,(bytes32,bytes32,bytes32,bytes32),bytes[])": FunctionFragment;
+    "proveWithdrawalTransaction((uint256,bytes32,address,uint256,uint256,bytes),uint256,bytes32,(bytes32,bytes32,bytes32,bytes32),bytes[])": FunctionFragment;
     "provenWithdrawals(bytes32)": FunctionFragment;
     "superchainConfig()": FunctionFragment;
     "systemConfig()": FunctionFragment;
@@ -122,12 +94,11 @@ export interface OptimismPortalInterface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "GUARDIAN"
-      | "L2_ORACLE"
-      | "SYSTEM_CONFIG"
+      | "MIN_BRIDGE_VALUE"
+      | "balance"
+      | "depositERC20Transaction"
       | "depositTransaction"
       | "donateETH"
-      | "finalizePDAWithdrawalTransaction"
       | "finalizeWithdrawalTransaction"
       | "finalizedWithdrawals"
       | "guardian"
@@ -138,7 +109,6 @@ export interface OptimismPortalInterface extends utils.Interface {
       | "minimumGasLimit"
       | "params"
       | "paused"
-      | "provePDAWithdrawalTransaction"
       | "proveWithdrawalTransaction"
       | "provenWithdrawals"
       | "superchainConfig"
@@ -146,74 +116,65 @@ export interface OptimismPortalInterface extends utils.Interface {
       | "version"
   ): FunctionFragment;
 
-  encodeFunctionData(functionFragment: "GUARDIAN", values?: undefined): string;
-  encodeFunctionData(functionFragment: "L2_ORACLE", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "SYSTEM_CONFIG",
+    functionFragment: "MIN_BRIDGE_VALUE",
     values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "balance", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "depositERC20Transaction",
+    values: [
+      BytesLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      boolean,
+      BytesLike
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "depositTransaction",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<boolean>,
-      PromiseOrValue<BytesLike>
-    ]
+    values: [BytesLike, BigNumberish, BigNumberish, boolean, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "donateETH", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "finalizePDAWithdrawalTransaction",
-    values: [Types.PdaWithdrawalTransactionStruct]
-  ): string;
   encodeFunctionData(
     functionFragment: "finalizeWithdrawalTransaction",
     values: [Types.WithdrawalTransactionStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "finalizedWithdrawals",
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "guardian", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [PromiseOrValue<string>]
+    values: [string, string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isOutputFinalized",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "l2Oracle", values?: undefined): string;
   encodeFunctionData(functionFragment: "l2Sender", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "minimumGasLimit",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "params", values?: undefined): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "provePDAWithdrawalTransaction",
-    values: [
-      Types.PdaWithdrawalTransactionStruct,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      Types.OutputRootProofStruct,
-      PromiseOrValue<BytesLike>[]
-    ]
-  ): string;
-  encodeFunctionData(
     functionFragment: "proveWithdrawalTransaction",
     values: [
       Types.WithdrawalTransactionStruct,
-      PromiseOrValue<BigNumberish>,
+      BigNumberish,
+      BytesLike,
       Types.OutputRootProofStruct,
-      PromiseOrValue<BytesLike>[]
+      BytesLike[]
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "provenWithdrawals",
-    values: [PromiseOrValue<BytesLike>]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "superchainConfig",
@@ -225,10 +186,13 @@ export interface OptimismPortalInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
-  decodeFunctionResult(functionFragment: "GUARDIAN", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "L2_ORACLE", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "SYSTEM_CONFIG",
+    functionFragment: "MIN_BRIDGE_VALUE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "balance", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "depositERC20Transaction",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -236,10 +200,6 @@ export interface OptimismPortalInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "donateETH", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "finalizePDAWithdrawalTransaction",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "finalizeWithdrawalTransaction",
     data: BytesLike
@@ -263,10 +223,6 @@ export interface OptimismPortalInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "params", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "provePDAWithdrawalTransaction",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "proveWithdrawalTransaction",
     data: BytesLike
   ): Result;
@@ -286,9 +242,9 @@ export interface OptimismPortalInterface extends utils.Interface {
 
   events: {
     "Initialized(uint8)": EventFragment;
-    "TransactionDeposited(address,address,uint256,bytes)": EventFragment;
+    "TransactionDeposited(address,bytes32,uint256,bytes)": EventFragment;
     "WithdrawalFinalized(bytes32,bool)": EventFragment;
-    "WithdrawalProven(bytes32,address,address)": EventFragment;
+    "WithdrawalProven(bytes32,bytes32,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
@@ -371,19 +327,27 @@ export interface OptimismPortal extends BaseContract {
 
   functions: {
     /**
-     * Getter function for the address of the guardian. This will be removed in the future, use `SuperchainConfig.guardian()` instead.Address of the guardian.
+     * Minimal deposit value
      */
-    GUARDIAN(overrides?: CallOverrides): Promise<[string]>;
+    MIN_BRIDGE_VALUE(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
-     * Address of the L2OutputOracle contract. This will be removed in the         future, use `l2Oracle` instead.
+     * Getter for the balance of the contract.
      */
-    L2_ORACLE(overrides?: CallOverrides): Promise<[string]>;
+    balance(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
-     * Address of the SystemConfig contract. This will be removed in the         future, use `systemConfig` instead.
+     * Entrypoint to depositing an ERC20 token as a custom gas token.         This function depends on a well formed ERC20 token. There are only         so many checks that can be done on chain for this so it is assumed         that chain operators will deploy chains with well formed ERC20 tokens.
      */
-    SYSTEM_CONFIG(overrides?: CallOverrides): Promise<[string]>;
+    depositERC20Transaction(
+      arg0: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: boolean,
+      arg5: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
 
     /**
      * Accepts deposits of ETH and data, and emits a TransactionDeposited event for use in         deriving deposit transactions. Note that if a deposit is made by a contract, its         address will be aliased when retrieved using `tx.origin` or `msg.sender`. Consider         using the CrossDomainMessenger contracts for a simpler developer experience.
@@ -394,64 +358,63 @@ export interface OptimismPortal extends BaseContract {
      * @param _value ETH value to send to the recipient.
      */
     depositTransaction(
-      _to: PromiseOrValue<string>,
-      _value: PromiseOrValue<BigNumberish>,
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      _isCreation: PromiseOrValue<boolean>,
-      _data: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _to: BytesLike,
+      _value: BigNumberish,
+      _gasLimit: BigNumberish,
+      _isCreation: boolean,
+      _data: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * Accepts ETH value without triggering a deposit to L2.         This function mainly exists for the sake of the migration between the legacy         Optimism system and Bedrock.
      */
     donateETH(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    finalizePDAWithdrawalTransaction(
-      _tx: Types.PdaWithdrawalTransactionStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     finalizeWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * A list of withdrawal hashes which have been successfully finalized.
      */
     finalizedWithdrawals(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     /**
-     * Getter function for the address of the guardian. This will be removed in the future, use `SuperchainConfig.guardian()` instead.Address of the guardian.
+     * Getter function for the address of the guardian.         Public getter is legacy and will be removed in the future. Use `SuperchainConfig.guardian()` instead.
      */
     guardian(overrides?: CallOverrides): Promise<[string]>;
 
     /**
      * Initializer.
-     * @param _superchainConfig Address of the SuperchainConfig contract.
+     * @param _l2Oracle Contract of the L2OutputOracle.
+     * @param _superchainConfig Contract of the SuperchainConfig.
+     * @param _systemConfig Contract of the SystemConfig.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l2Oracle: string,
+      _systemConfig: string,
+      _superchainConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
-     * Determine if a given output is finalized.         Reverts if the call to L2_ORACLE.getL2Output reverts.         Returns a boolean otherwise.
+     * Determine if a given output is finalized.         Reverts if the call to l2Oracle.getL2Output reverts.         Returns a boolean otherwise.
      * @param _l2OutputIndex Index of the L2 output to check.
      */
     isOutputFinalized(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     /**
-     * Getter function for the address of the L2OutputOracle on this chain.Address of the L2OutputOracle on this chain.
+     * Contract of the L2OutputOracle.
      */
     l2Oracle(overrides?: CallOverrides): Promise<[string]>;
 
@@ -465,7 +428,7 @@ export interface OptimismPortal extends BaseContract {
      * @param _byteCount Number of bytes in the calldata.
      */
     minimumGasLimit(
-      _byteCount: PromiseOrValue<BigNumberish>,
+      _byteCount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -489,28 +452,20 @@ export interface OptimismPortal extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean] & { paused_: boolean }>;
 
-    provePDAWithdrawalTransaction(
-      _tx: Types.PdaWithdrawalTransactionStruct,
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
-      _pdaPubkey: PromiseOrValue<BytesLike>,
-      _outputRootProof: Types.OutputRootProofStruct,
-      _withdrawalProof: PromiseOrValue<BytesLike>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     proveWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
+      _pdaPubkey: BytesLike,
       _outputRootProof: Types.OutputRootProofStruct,
-      _withdrawalProof: PromiseOrValue<BytesLike>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _withdrawalProof: BytesLike[],
+      overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
     /**
      * A mapping of withdrawal hashes to `ProvenWithdrawal` data.
      */
     provenWithdrawals(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<
       [string, BigNumber, BigNumber] & {
@@ -521,12 +476,12 @@ export interface OptimismPortal extends BaseContract {
     >;
 
     /**
-     * The address of the Superchain Config contract.
+     * Contract of the Superchain Config.
      */
     superchainConfig(overrides?: CallOverrides): Promise<[string]>;
 
     /**
-     * Getter function for the address of the SystemConfig on this chain.Address of the SystemConfig on this chain.
+     * Contract of the SystemConfig.
      */
     systemConfig(overrides?: CallOverrides): Promise<[string]>;
 
@@ -537,19 +492,27 @@ export interface OptimismPortal extends BaseContract {
   };
 
   /**
-   * Getter function for the address of the guardian. This will be removed in the future, use `SuperchainConfig.guardian()` instead.Address of the guardian.
+   * Minimal deposit value
    */
-  GUARDIAN(overrides?: CallOverrides): Promise<string>;
+  MIN_BRIDGE_VALUE(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
-   * Address of the L2OutputOracle contract. This will be removed in the         future, use `l2Oracle` instead.
+   * Getter for the balance of the contract.
    */
-  L2_ORACLE(overrides?: CallOverrides): Promise<string>;
+  balance(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
-   * Address of the SystemConfig contract. This will be removed in the         future, use `systemConfig` instead.
+   * Entrypoint to depositing an ERC20 token as a custom gas token.         This function depends on a well formed ERC20 token. There are only         so many checks that can be done on chain for this so it is assumed         that chain operators will deploy chains with well formed ERC20 tokens.
    */
-  SYSTEM_CONFIG(overrides?: CallOverrides): Promise<string>;
+  depositERC20Transaction(
+    arg0: BytesLike,
+    arg1: BigNumberish,
+    arg2: BigNumberish,
+    arg3: BigNumberish,
+    arg4: boolean,
+    arg5: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
 
   /**
    * Accepts deposits of ETH and data, and emits a TransactionDeposited event for use in         deriving deposit transactions. Note that if a deposit is made by a contract, its         address will be aliased when retrieved using `tx.origin` or `msg.sender`. Consider         using the CrossDomainMessenger contracts for a simpler developer experience.
@@ -560,64 +523,63 @@ export interface OptimismPortal extends BaseContract {
    * @param _value ETH value to send to the recipient.
    */
   depositTransaction(
-    _to: PromiseOrValue<string>,
-    _value: PromiseOrValue<BigNumberish>,
-    _gasLimit: PromiseOrValue<BigNumberish>,
-    _isCreation: PromiseOrValue<boolean>,
-    _data: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    _to: BytesLike,
+    _value: BigNumberish,
+    _gasLimit: BigNumberish,
+    _isCreation: boolean,
+    _data: BytesLike,
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * Accepts ETH value without triggering a deposit to L2.         This function mainly exists for the sake of the migration between the legacy         Optimism system and Bedrock.
    */
   donateETH(
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  finalizePDAWithdrawalTransaction(
-    _tx: Types.PdaWithdrawalTransactionStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: PayableOverrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   finalizeWithdrawalTransaction(
     _tx: Types.WithdrawalTransactionStruct,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * A list of withdrawal hashes which have been successfully finalized.
    */
   finalizedWithdrawals(
-    arg0: PromiseOrValue<BytesLike>,
+    arg0: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   /**
-   * Getter function for the address of the guardian. This will be removed in the future, use `SuperchainConfig.guardian()` instead.Address of the guardian.
+   * Getter function for the address of the guardian.         Public getter is legacy and will be removed in the future. Use `SuperchainConfig.guardian()` instead.
    */
   guardian(overrides?: CallOverrides): Promise<string>;
 
   /**
    * Initializer.
-   * @param _superchainConfig Address of the SuperchainConfig contract.
+   * @param _l2Oracle Contract of the L2OutputOracle.
+   * @param _superchainConfig Contract of the SuperchainConfig.
+   * @param _systemConfig Contract of the SystemConfig.
    */
   initialize(
-    _superchainConfig: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _l2Oracle: string,
+    _systemConfig: string,
+    _superchainConfig: string,
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
-   * Determine if a given output is finalized.         Reverts if the call to L2_ORACLE.getL2Output reverts.         Returns a boolean otherwise.
+   * Determine if a given output is finalized.         Reverts if the call to l2Oracle.getL2Output reverts.         Returns a boolean otherwise.
    * @param _l2OutputIndex Index of the L2 output to check.
    */
   isOutputFinalized(
-    _l2OutputIndex: PromiseOrValue<BigNumberish>,
+    _l2OutputIndex: BigNumberish,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   /**
-   * Getter function for the address of the L2OutputOracle on this chain.Address of the L2OutputOracle on this chain.
+   * Contract of the L2OutputOracle.
    */
   l2Oracle(overrides?: CallOverrides): Promise<string>;
 
@@ -631,7 +593,7 @@ export interface OptimismPortal extends BaseContract {
    * @param _byteCount Number of bytes in the calldata.
    */
   minimumGasLimit(
-    _byteCount: PromiseOrValue<BigNumberish>,
+    _byteCount: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -653,28 +615,20 @@ export interface OptimismPortal extends BaseContract {
    */
   paused(overrides?: CallOverrides): Promise<boolean>;
 
-  provePDAWithdrawalTransaction(
-    _tx: Types.PdaWithdrawalTransactionStruct,
-    _l2OutputIndex: PromiseOrValue<BigNumberish>,
-    _pdaPubkey: PromiseOrValue<BytesLike>,
-    _outputRootProof: Types.OutputRootProofStruct,
-    _withdrawalProof: PromiseOrValue<BytesLike>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   proveWithdrawalTransaction(
     _tx: Types.WithdrawalTransactionStruct,
-    _l2OutputIndex: PromiseOrValue<BigNumberish>,
+    _l2OutputIndex: BigNumberish,
+    _pdaPubkey: BytesLike,
     _outputRootProof: Types.OutputRootProofStruct,
-    _withdrawalProof: PromiseOrValue<BytesLike>[],
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
+    _withdrawalProof: BytesLike[],
+    overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
   /**
    * A mapping of withdrawal hashes to `ProvenWithdrawal` data.
    */
   provenWithdrawals(
-    arg0: PromiseOrValue<BytesLike>,
+    arg0: BytesLike,
     overrides?: CallOverrides
   ): Promise<
     [string, BigNumber, BigNumber] & {
@@ -685,12 +639,12 @@ export interface OptimismPortal extends BaseContract {
   >;
 
   /**
-   * The address of the Superchain Config contract.
+   * Contract of the Superchain Config.
    */
   superchainConfig(overrides?: CallOverrides): Promise<string>;
 
   /**
-   * Getter function for the address of the SystemConfig on this chain.Address of the SystemConfig on this chain.
+   * Contract of the SystemConfig.
    */
   systemConfig(overrides?: CallOverrides): Promise<string>;
 
@@ -701,19 +655,27 @@ export interface OptimismPortal extends BaseContract {
 
   callStatic: {
     /**
-     * Getter function for the address of the guardian. This will be removed in the future, use `SuperchainConfig.guardian()` instead.Address of the guardian.
+     * Minimal deposit value
      */
-    GUARDIAN(overrides?: CallOverrides): Promise<string>;
+    MIN_BRIDGE_VALUE(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Address of the L2OutputOracle contract. This will be removed in the         future, use `l2Oracle` instead.
+     * Getter for the balance of the contract.
      */
-    L2_ORACLE(overrides?: CallOverrides): Promise<string>;
+    balance(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Address of the SystemConfig contract. This will be removed in the         future, use `systemConfig` instead.
+     * Entrypoint to depositing an ERC20 token as a custom gas token.         This function depends on a well formed ERC20 token. There are only         so many checks that can be done on chain for this so it is assumed         that chain operators will deploy chains with well formed ERC20 tokens.
      */
-    SYSTEM_CONFIG(overrides?: CallOverrides): Promise<string>;
+    depositERC20Transaction(
+      arg0: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: boolean,
+      arg5: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     /**
      * Accepts deposits of ETH and data, and emits a TransactionDeposited event for use in         deriving deposit transactions. Note that if a deposit is made by a contract, its         address will be aliased when retrieved using `tx.origin` or `msg.sender`. Consider         using the CrossDomainMessenger contracts for a simpler developer experience.
@@ -724,11 +686,11 @@ export interface OptimismPortal extends BaseContract {
      * @param _value ETH value to send to the recipient.
      */
     depositTransaction(
-      _to: PromiseOrValue<string>,
-      _value: PromiseOrValue<BigNumberish>,
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      _isCreation: PromiseOrValue<boolean>,
-      _data: PromiseOrValue<BytesLike>,
+      _to: BytesLike,
+      _value: BigNumberish,
+      _gasLimit: BigNumberish,
+      _isCreation: boolean,
+      _data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -736,11 +698,6 @@ export interface OptimismPortal extends BaseContract {
      * Accepts ETH value without triggering a deposit to L2.         This function mainly exists for the sake of the migration between the legacy         Optimism system and Bedrock.
      */
     donateETH(overrides?: CallOverrides): Promise<void>;
-
-    finalizePDAWithdrawalTransaction(
-      _tx: Types.PdaWithdrawalTransactionStruct,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     finalizeWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
@@ -751,35 +708,39 @@ export interface OptimismPortal extends BaseContract {
      * A list of withdrawal hashes which have been successfully finalized.
      */
     finalizedWithdrawals(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     /**
-     * Getter function for the address of the guardian. This will be removed in the future, use `SuperchainConfig.guardian()` instead.Address of the guardian.
+     * Getter function for the address of the guardian.         Public getter is legacy and will be removed in the future. Use `SuperchainConfig.guardian()` instead.
      */
     guardian(overrides?: CallOverrides): Promise<string>;
 
     /**
      * Initializer.
-     * @param _superchainConfig Address of the SuperchainConfig contract.
+     * @param _l2Oracle Contract of the L2OutputOracle.
+     * @param _superchainConfig Contract of the SuperchainConfig.
+     * @param _systemConfig Contract of the SystemConfig.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
+      _l2Oracle: string,
+      _systemConfig: string,
+      _superchainConfig: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
     /**
-     * Determine if a given output is finalized.         Reverts if the call to L2_ORACLE.getL2Output reverts.         Returns a boolean otherwise.
+     * Determine if a given output is finalized.         Reverts if the call to l2Oracle.getL2Output reverts.         Returns a boolean otherwise.
      * @param _l2OutputIndex Index of the L2 output to check.
      */
     isOutputFinalized(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     /**
-     * Getter function for the address of the L2OutputOracle on this chain.Address of the L2OutputOracle on this chain.
+     * Contract of the L2OutputOracle.
      */
     l2Oracle(overrides?: CallOverrides): Promise<string>;
 
@@ -793,7 +754,7 @@ export interface OptimismPortal extends BaseContract {
      * @param _byteCount Number of bytes in the calldata.
      */
     minimumGasLimit(
-      _byteCount: PromiseOrValue<BigNumberish>,
+      _byteCount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -815,20 +776,12 @@ export interface OptimismPortal extends BaseContract {
      */
     paused(overrides?: CallOverrides): Promise<boolean>;
 
-    provePDAWithdrawalTransaction(
-      _tx: Types.PdaWithdrawalTransactionStruct,
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
-      _pdaPubkey: PromiseOrValue<BytesLike>,
-      _outputRootProof: Types.OutputRootProofStruct,
-      _withdrawalProof: PromiseOrValue<BytesLike>[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     proveWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
+      _pdaPubkey: BytesLike,
       _outputRootProof: Types.OutputRootProofStruct,
-      _withdrawalProof: PromiseOrValue<BytesLike>[],
+      _withdrawalProof: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -836,7 +789,7 @@ export interface OptimismPortal extends BaseContract {
      * A mapping of withdrawal hashes to `ProvenWithdrawal` data.
      */
     provenWithdrawals(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<
       [string, BigNumber, BigNumber] & {
@@ -847,12 +800,12 @@ export interface OptimismPortal extends BaseContract {
     >;
 
     /**
-     * The address of the Superchain Config contract.
+     * Contract of the Superchain Config.
      */
     superchainConfig(overrides?: CallOverrides): Promise<string>;
 
     /**
-     * Getter function for the address of the SystemConfig on this chain.Address of the SystemConfig on this chain.
+     * Contract of the SystemConfig.
      */
     systemConfig(overrides?: CallOverrides): Promise<string>;
 
@@ -866,55 +819,63 @@ export interface OptimismPortal extends BaseContract {
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 
-    "TransactionDeposited(address,address,uint256,bytes)"(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      version?: PromiseOrValue<BigNumberish> | null,
+    "TransactionDeposited(address,bytes32,uint256,bytes)"(
+      from?: string | null,
+      to?: BytesLike | null,
+      version?: BigNumberish | null,
       opaqueData?: null
     ): TransactionDepositedEventFilter;
     TransactionDeposited(
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null,
-      version?: PromiseOrValue<BigNumberish> | null,
+      from?: string | null,
+      to?: BytesLike | null,
+      version?: BigNumberish | null,
       opaqueData?: null
     ): TransactionDepositedEventFilter;
 
     "WithdrawalFinalized(bytes32,bool)"(
-      withdrawalHash?: PromiseOrValue<BytesLike> | null,
+      withdrawalHash?: BytesLike | null,
       success?: null
     ): WithdrawalFinalizedEventFilter;
     WithdrawalFinalized(
-      withdrawalHash?: PromiseOrValue<BytesLike> | null,
+      withdrawalHash?: BytesLike | null,
       success?: null
     ): WithdrawalFinalizedEventFilter;
 
-    "WithdrawalProven(bytes32,address,address)"(
-      withdrawalHash?: PromiseOrValue<BytesLike> | null,
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null
+    "WithdrawalProven(bytes32,bytes32,address)"(
+      withdrawalHash?: BytesLike | null,
+      from?: BytesLike | null,
+      to?: string | null
     ): WithdrawalProvenEventFilter;
     WithdrawalProven(
-      withdrawalHash?: PromiseOrValue<BytesLike> | null,
-      from?: PromiseOrValue<string> | null,
-      to?: PromiseOrValue<string> | null
+      withdrawalHash?: BytesLike | null,
+      from?: BytesLike | null,
+      to?: string | null
     ): WithdrawalProvenEventFilter;
   };
 
   estimateGas: {
     /**
-     * Getter function for the address of the guardian. This will be removed in the future, use `SuperchainConfig.guardian()` instead.Address of the guardian.
+     * Minimal deposit value
      */
-    GUARDIAN(overrides?: CallOverrides): Promise<BigNumber>;
+    MIN_BRIDGE_VALUE(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Address of the L2OutputOracle contract. This will be removed in the         future, use `l2Oracle` instead.
+     * Getter for the balance of the contract.
      */
-    L2_ORACLE(overrides?: CallOverrides): Promise<BigNumber>;
+    balance(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Address of the SystemConfig contract. This will be removed in the         future, use `systemConfig` instead.
+     * Entrypoint to depositing an ERC20 token as a custom gas token.         This function depends on a well formed ERC20 token. There are only         so many checks that can be done on chain for this so it is assumed         that chain operators will deploy chains with well formed ERC20 tokens.
      */
-    SYSTEM_CONFIG(overrides?: CallOverrides): Promise<BigNumber>;
+    depositERC20Transaction(
+      arg0: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: boolean,
+      arg5: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     /**
      * Accepts deposits of ETH and data, and emits a TransactionDeposited event for use in         deriving deposit transactions. Note that if a deposit is made by a contract, its         address will be aliased when retrieved using `tx.origin` or `msg.sender`. Consider         using the CrossDomainMessenger contracts for a simpler developer experience.
@@ -925,64 +886,63 @@ export interface OptimismPortal extends BaseContract {
      * @param _value ETH value to send to the recipient.
      */
     depositTransaction(
-      _to: PromiseOrValue<string>,
-      _value: PromiseOrValue<BigNumberish>,
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      _isCreation: PromiseOrValue<boolean>,
-      _data: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _to: BytesLike,
+      _value: BigNumberish,
+      _gasLimit: BigNumberish,
+      _isCreation: boolean,
+      _data: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * Accepts ETH value without triggering a deposit to L2.         This function mainly exists for the sake of the migration between the legacy         Optimism system and Bedrock.
      */
     donateETH(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    finalizePDAWithdrawalTransaction(
-      _tx: Types.PdaWithdrawalTransactionStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<BigNumber>;
 
     finalizeWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * A list of withdrawal hashes which have been successfully finalized.
      */
     finalizedWithdrawals(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
-     * Getter function for the address of the guardian. This will be removed in the future, use `SuperchainConfig.guardian()` instead.Address of the guardian.
+     * Getter function for the address of the guardian.         Public getter is legacy and will be removed in the future. Use `SuperchainConfig.guardian()` instead.
      */
     guardian(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
      * Initializer.
-     * @param _superchainConfig Address of the SuperchainConfig contract.
+     * @param _l2Oracle Contract of the L2OutputOracle.
+     * @param _superchainConfig Contract of the SuperchainConfig.
+     * @param _systemConfig Contract of the SystemConfig.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l2Oracle: string,
+      _systemConfig: string,
+      _superchainConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
-     * Determine if a given output is finalized.         Reverts if the call to L2_ORACLE.getL2Output reverts.         Returns a boolean otherwise.
+     * Determine if a given output is finalized.         Reverts if the call to l2Oracle.getL2Output reverts.         Returns a boolean otherwise.
      * @param _l2OutputIndex Index of the L2 output to check.
      */
     isOutputFinalized(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
-     * Getter function for the address of the L2OutputOracle on this chain.Address of the L2OutputOracle on this chain.
+     * Contract of the L2OutputOracle.
      */
     l2Oracle(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -996,7 +956,7 @@ export interface OptimismPortal extends BaseContract {
      * @param _byteCount Number of bytes in the calldata.
      */
     minimumGasLimit(
-      _byteCount: PromiseOrValue<BigNumberish>,
+      _byteCount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1010,38 +970,30 @@ export interface OptimismPortal extends BaseContract {
      */
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
-    provePDAWithdrawalTransaction(
-      _tx: Types.PdaWithdrawalTransactionStruct,
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
-      _pdaPubkey: PromiseOrValue<BytesLike>,
-      _outputRootProof: Types.OutputRootProofStruct,
-      _withdrawalProof: PromiseOrValue<BytesLike>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     proveWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
+      _pdaPubkey: BytesLike,
       _outputRootProof: Types.OutputRootProofStruct,
-      _withdrawalProof: PromiseOrValue<BytesLike>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _withdrawalProof: BytesLike[],
+      overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
     /**
      * A mapping of withdrawal hashes to `ProvenWithdrawal` data.
      */
     provenWithdrawals(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     /**
-     * The address of the Superchain Config contract.
+     * Contract of the Superchain Config.
      */
     superchainConfig(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Getter function for the address of the SystemConfig on this chain.Address of the SystemConfig on this chain.
+     * Contract of the SystemConfig.
      */
     systemConfig(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1053,19 +1005,27 @@ export interface OptimismPortal extends BaseContract {
 
   populateTransaction: {
     /**
-     * Getter function for the address of the guardian. This will be removed in the future, use `SuperchainConfig.guardian()` instead.Address of the guardian.
+     * Minimal deposit value
      */
-    GUARDIAN(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    MIN_BRIDGE_VALUE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Address of the L2OutputOracle contract. This will be removed in the         future, use `l2Oracle` instead.
+     * Getter for the balance of the contract.
      */
-    L2_ORACLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    balance(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Address of the SystemConfig contract. This will be removed in the         future, use `systemConfig` instead.
+     * Entrypoint to depositing an ERC20 token as a custom gas token.         This function depends on a well formed ERC20 token. There are only         so many checks that can be done on chain for this so it is assumed         that chain operators will deploy chains with well formed ERC20 tokens.
      */
-    SYSTEM_CONFIG(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    depositERC20Transaction(
+      arg0: BytesLike,
+      arg1: BigNumberish,
+      arg2: BigNumberish,
+      arg3: BigNumberish,
+      arg4: boolean,
+      arg5: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     /**
      * Accepts deposits of ETH and data, and emits a TransactionDeposited event for use in         deriving deposit transactions. Note that if a deposit is made by a contract, its         address will be aliased when retrieved using `tx.origin` or `msg.sender`. Consider         using the CrossDomainMessenger contracts for a simpler developer experience.
@@ -1076,64 +1036,63 @@ export interface OptimismPortal extends BaseContract {
      * @param _value ETH value to send to the recipient.
      */
     depositTransaction(
-      _to: PromiseOrValue<string>,
-      _value: PromiseOrValue<BigNumberish>,
-      _gasLimit: PromiseOrValue<BigNumberish>,
-      _isCreation: PromiseOrValue<boolean>,
-      _data: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+      _to: BytesLike,
+      _value: BigNumberish,
+      _gasLimit: BigNumberish,
+      _isCreation: boolean,
+      _data: BytesLike,
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * Accepts ETH value without triggering a deposit to L2.         This function mainly exists for the sake of the migration between the legacy         Optimism system and Bedrock.
      */
     donateETH(
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    finalizePDAWithdrawalTransaction(
-      _tx: Types.PdaWithdrawalTransactionStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: PayableOverrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     finalizeWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * A list of withdrawal hashes which have been successfully finalized.
      */
     finalizedWithdrawals(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Getter function for the address of the guardian. This will be removed in the future, use `SuperchainConfig.guardian()` instead.Address of the guardian.
+     * Getter function for the address of the guardian.         Public getter is legacy and will be removed in the future. Use `SuperchainConfig.guardian()` instead.
      */
     guardian(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
      * Initializer.
-     * @param _superchainConfig Address of the SuperchainConfig contract.
+     * @param _l2Oracle Contract of the L2OutputOracle.
+     * @param _superchainConfig Contract of the SuperchainConfig.
+     * @param _systemConfig Contract of the SystemConfig.
      */
     initialize(
-      _superchainConfig: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _l2Oracle: string,
+      _systemConfig: string,
+      _superchainConfig: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Determine if a given output is finalized.         Reverts if the call to L2_ORACLE.getL2Output reverts.         Returns a boolean otherwise.
+     * Determine if a given output is finalized.         Reverts if the call to l2Oracle.getL2Output reverts.         Returns a boolean otherwise.
      * @param _l2OutputIndex Index of the L2 output to check.
      */
     isOutputFinalized(
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Getter function for the address of the L2OutputOracle on this chain.Address of the L2OutputOracle on this chain.
+     * Contract of the L2OutputOracle.
      */
     l2Oracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1147,7 +1106,7 @@ export interface OptimismPortal extends BaseContract {
      * @param _byteCount Number of bytes in the calldata.
      */
     minimumGasLimit(
-      _byteCount: PromiseOrValue<BigNumberish>,
+      _byteCount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1161,38 +1120,30 @@ export interface OptimismPortal extends BaseContract {
      */
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    provePDAWithdrawalTransaction(
-      _tx: Types.PdaWithdrawalTransactionStruct,
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
-      _pdaPubkey: PromiseOrValue<BytesLike>,
-      _outputRootProof: Types.OutputRootProofStruct,
-      _withdrawalProof: PromiseOrValue<BytesLike>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     proveWithdrawalTransaction(
       _tx: Types.WithdrawalTransactionStruct,
-      _l2OutputIndex: PromiseOrValue<BigNumberish>,
+      _l2OutputIndex: BigNumberish,
+      _pdaPubkey: BytesLike,
       _outputRootProof: Types.OutputRootProofStruct,
-      _withdrawalProof: PromiseOrValue<BytesLike>[],
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+      _withdrawalProof: BytesLike[],
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**
      * A mapping of withdrawal hashes to `ProvenWithdrawal` data.
      */
     provenWithdrawals(
-      arg0: PromiseOrValue<BytesLike>,
+      arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     /**
-     * The address of the Superchain Config contract.
+     * Contract of the Superchain Config.
      */
     superchainConfig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Getter function for the address of the SystemConfig on this chain.Address of the SystemConfig on this chain.
+     * Contract of the SystemConfig.
      */
     systemConfig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

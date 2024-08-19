@@ -1,9 +1,11 @@
 import {
+  BridgeInstructionIndex,
+  createBridgeConfigAccount,
   createSVMContext,
   genDepositInfoAccount,
   genProgramDataAccountKey,
   initProgramDataAccount,
-  InstructionIndex,
+  L1BlockInfoInstructionIndex,
   sendTransaction,
   SVM_CONTEXT,
   SYSTEM_PROGRAM,
@@ -16,6 +18,8 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import { sleep } from './helper/tool';
+import { createEVMContext } from './helper/evm_context';
+import { L1StandardBridge__factory } from '../typechain-types';
 
 async function createL1BlockInfo(svmContext: SVM_CONTEXT) {
   console.log('start createL1BlockInfo');
@@ -23,39 +27,8 @@ async function createL1BlockInfo(svmContext: SVM_CONTEXT) {
     svmContext,
     'l1-block-info',
     svmContext.SVM_L1_BLOCK_INFO_PROGRAM_ID,
+    L1BlockInfoInstructionIndex.CreateL1BlockInfoAccount,
   );
-}
-
-async function createDeposit(svmContext: SVM_CONTEXT) {
-  console.log('start createDeposit');
-  const depositAccount = genDepositInfoAccount(
-    svmContext.SVM_DEPOSITOR.publicKey,
-    svmContext.SVM_DEPOSIT_PROGRAM_ID,
-  );
-  const instructionIndex = Buffer.from(
-    Int8Array.from([InstructionIndex.RedeemAllAssetsFromBot]),
-  );
-  const instruction = new TransactionInstruction({
-    data: Buffer.concat([instructionIndex]),
-    keys: [
-      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
-      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-      { pubkey: depositAccount, isSigner: false, isWritable: true },
-      {
-        pubkey: svmContext.SVM_DEPOSITOR.publicKey,
-        isSigner: false,
-        isWritable: false,
-      },
-      {
-        pubkey: svmContext.SVM_USER.publicKey,
-        isSigner: true,
-        isWritable: true,
-      },
-    ],
-    programId: svmContext.SVM_DEPOSIT_PROGRAM_ID,
-  });
-
-  await sendTransaction(svmContext, [instruction]);
 }
 
 async function createVault(svmContext: SVM_CONTEXT) {
@@ -63,7 +36,23 @@ async function createVault(svmContext: SVM_CONTEXT) {
   return initProgramDataAccount(
     svmContext,
     'vault',
-    svmContext.SVM_DEPOSIT_PROGRAM_ID,
+    svmContext.SVM_BRIDGE_PROGRAM_ID,
+    BridgeInstructionIndex.CreateVaultAccount,
+  );
+}
+
+async function createBridgeConfig(
+  svmContext: SVM_CONTEXT,
+  l1CrossDomainMessenger: string,
+  l1StandardBridge: string,
+) {
+  console.log('start createBridgeConfig');
+  return createBridgeConfigAccount(
+    svmContext,
+    'bridge-config',
+    svmContext.SVM_BRIDGE_PROGRAM_ID,
+    l1CrossDomainMessenger,
+    l1StandardBridge,
   );
 }
 
@@ -72,7 +61,8 @@ async function createWithdrawCounter(svmContext: SVM_CONTEXT) {
   return initProgramDataAccount(
     svmContext,
     'svm-withdraw-counter',
-    svmContext.SVM_WITHDRAW_PROGRAM_ID,
+    svmContext.SVM_BRIDGE_PROGRAM_ID,
+    BridgeInstructionIndex.CreateWithdrawalCounterAccount,
   );
 }
 
@@ -93,7 +83,7 @@ async function waitVaultAccountInfo(svmContext: SVM_CONTEXT, vault: PublicKey) {
 async function transferForVault(svmContext: SVM_CONTEXT) {
   const vault = genProgramDataAccountKey(
     'vault',
-    svmContext.SVM_DEPOSIT_PROGRAM_ID,
+    svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
 
   await waitVaultAccountInfo(svmContext, vault);
@@ -105,9 +95,20 @@ async function transferForVault(svmContext: SVM_CONTEXT) {
 async function main() {
   let svmContext = await createSVMContext();
 
-  await createL1BlockInfo(svmContext);
+  let evmContext = await createEVMContext(false);
+  const StandardBridge = L1StandardBridge__factory.connect(
+    evmContext.EVM_STANDARD_BRIDGE,
+    evmContext.EVM_USER,
+  );
+  const l1CrossDomainMessenger = await StandardBridge.messenger();
 
-  await createDeposit(svmContext);
+  await createBridgeConfig(
+    svmContext,
+    l1CrossDomainMessenger,
+    evmContext.EVM_STANDARD_BRIDGE,
+  );
+
+  await createL1BlockInfo(svmContext);
 
   await createVault(svmContext);
 

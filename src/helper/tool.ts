@@ -20,10 +20,6 @@ export function isValidSolanaSignature(signature: string): boolean {
 }
 
 export function isValidSolanaPublicKey(publicKey: string): boolean {
-  if (publicKey.length !== 44) {
-    return false;
-  }
-
   try {
     const decoded = bs58.decode(publicKey);
     return decoded.length === 32;
@@ -42,7 +38,7 @@ export function base58PublicKeyToHex(publicKey: string): string {
 
 export function parseWithdrawTxInfo(
   withdrawInfoData: Buffer,
-): Types.PdaWithdrawalTransactionStruct {
+): Types.WithdrawalTransactionStruct {
   const nonce = '0x' + withdrawInfoData.slice(0, 32).toString('hex');
   const sender = '0x' + withdrawInfoData.slice(32, 64).toString('hex');
   const target = '0x' + withdrawInfoData.slice(64, 84).toString('hex');
