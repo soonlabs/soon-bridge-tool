@@ -4,7 +4,7 @@ import {
   DEFAULT_BRIDGE_PROGRAM,
   genProgramDataAccountKey,
   sendTransaction,
-  SYSTEM_PROGRAM
+  SYSTEM_PROGRAM,
 } from './helper/svm_context';
 import {
   PublicKey,
@@ -54,7 +54,10 @@ async function main() {
   console.log(`vaultKey key: ${vaultKey.toString()}`);
 
   //get bridge config key
-  const bridgeConfigKey = genProgramDataAccountKey('bridge-config', DEFAULT_BRIDGE_PROGRAM);
+  const bridgeConfigKey = genProgramDataAccountKey(
+    'bridge-config',
+    DEFAULT_BRIDGE_PROGRAM,
+  );
   console.log(`bridgeConfigKey key: ${bridgeConfigKey.toString()}`);
 
   const instructionIndex = Buffer.from(

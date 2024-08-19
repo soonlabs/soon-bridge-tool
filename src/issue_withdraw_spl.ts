@@ -4,7 +4,7 @@ import {
   DEFAULT_BRIDGE_PROGRAM,
   genProgramDataAccountKey,
   sendTransaction,
-  SYSTEM_PROGRAM
+  SYSTEM_PROGRAM,
 } from './helper/svm_context';
 import {
   PublicKey,
@@ -15,7 +15,10 @@ import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
 import { isValidEthereumAddress } from './helper/tool';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token';
 
 const options = {
   string: ['l1Token', 'l1Target', 'amount', 'gasLimit'],
@@ -47,7 +50,10 @@ async function main() {
   console.log(`counter: ${counter}`);
 
   //get bridge config key
-  const bridgeConfigKey = genProgramDataAccountKey('bridge-config', DEFAULT_BRIDGE_PROGRAM);
+  const bridgeConfigKey = genProgramDataAccountKey(
+    'bridge-config',
+    DEFAULT_BRIDGE_PROGRAM,
+  );
   console.log(`bridgeConfigKey key: ${bridgeConfigKey.toString()}`);
 
   //get withdraw tx key
@@ -56,20 +62,24 @@ async function main() {
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
 
-  const [splTokenInfoKey, ] = PublicKey.findProgramAddressSync(
+  const [splTokenInfoKey] = PublicKey.findProgramAddressSync(
     [ethers.utils.arrayify(args.l1Token)],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
   console.log(`splTokenInfoKey: ${splTokenInfoKey.toString()}`);
 
-  const [splTokenMintKey, ] = PublicKey.findProgramAddressSync(
-    [Buffer.from("spl"), ethers.utils.arrayify(args.l1Token)],
+  const [splTokenMintKey] = PublicKey.findProgramAddressSync(
+    [Buffer.from('spl'), ethers.utils.arrayify(args.l1Token)],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
   console.log(`splTokenMintKey: ${splTokenMintKey.toString()}`);
 
-  const [userATAKey, ] = PublicKey.findProgramAddressSync(
-    [svmContext.SVM_USER.publicKey.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), splTokenMintKey.toBuffer()],
+  const [userATAKey] = PublicKey.findProgramAddressSync(
+    [
+      svmContext.SVM_USER.publicKey.toBuffer(),
+      TOKEN_PROGRAM_ID.toBuffer(),
+      splTokenMintKey.toBuffer(),
+    ],
     ASSOCIATED_TOKEN_PROGRAM_ID,
   );
   console.log(`userATAKey: ${userATAKey.toString()}`);

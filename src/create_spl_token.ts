@@ -2,7 +2,7 @@ import {
   BridgeInstructionIndex,
   createSVMContext,
   sendTransaction,
-  SYSTEM_PROGRAM
+  SYSTEM_PROGRAM,
 } from './helper/svm_context';
 import {
   PublicKey,
@@ -27,14 +27,14 @@ async function main() {
 
   let svmContext = await createSVMContext();
 
-  const [splTokenInfoKey, ] = PublicKey.findProgramAddressSync(
+  const [splTokenInfoKey] = PublicKey.findProgramAddressSync(
     [ethers.utils.arrayify(args.l1Token)],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
   console.log(`splTokenInfoKey: ${splTokenInfoKey.toString()}`);
 
-  const [splTokenMintKey, ] = PublicKey.findProgramAddressSync(
-    [Buffer.from("spl"), ethers.utils.arrayify(args.l1Token)],
+  const [splTokenMintKey] = PublicKey.findProgramAddressSync(
+    [Buffer.from('spl'), ethers.utils.arrayify(args.l1Token)],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
   console.log(`splTokenMintKey: ${splTokenMintKey.toString()}`);

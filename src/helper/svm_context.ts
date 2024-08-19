@@ -134,9 +134,7 @@ export async function initProgramDataAccount(
   const accountKey = genProgramDataAccountKey(seed, programId);
   console.log(`accountKey: ${accountKey}`);
 
-  const instructionIndex = Buffer.from(
-    Int8Array.from([ixIndex]),
-  );
+  const instructionIndex = Buffer.from(Int8Array.from([ixIndex]));
   const instruction = new TransactionInstruction({
     data: Buffer.concat([instructionIndex]),
     keys: [
