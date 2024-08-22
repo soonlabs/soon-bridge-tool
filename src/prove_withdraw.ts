@@ -48,7 +48,7 @@ async function main() {
   );
   const proposeL2Height = (await L2OutputOracle.getL2Output(l2OutputIndex))
     .l2BlockNumber;
-  console.log(`proposeL2Height: ${proposeL2Height}`);
+  console.log(`l2OutputIndex;${l2OutputIndex} proposeL2Height: ${proposeL2Height}`);
 
   //get output root proof
   const response0 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
@@ -58,6 +58,14 @@ async function main() {
     params: [proposeL2Height.toNumber()],
   });
   console.log('outputAtBlock response data:', response0.data);
+
+  let rootCal = ethers.utils.keccak256([
+    0x0000000000000000000000000000000000000000000000000000000000000000,
+    response0.data.result.stateRoot,
+    response0.data.result.withdrawalRoot,
+    response0.data.result.blockHash,
+  ]);
+  console.log(`ourputRoot res: ${rootCal}`);
 
   //get withdraw proof
   const response1 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
@@ -69,6 +77,7 @@ async function main() {
   console.log('getSoonWithdrawalProof response data:', response1.data);
 
   const hexPubkey = ethers.utils.hexlify(bs58.decode(args.withdrawId));
+  console.log(`hexPubkey: ${hexPubkey}`);
   const receipt = await (
     await OptimismPortal.connect(
       EVMContext.EVM_USER,
