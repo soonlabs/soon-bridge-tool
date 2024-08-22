@@ -34,8 +34,19 @@ async function main() {
     "0x1d9a622503154e82235f13df67592b7b09984aa586d293ce0091a0cff6d0e55b",
     "0xf081aa64a6bff952f58cbc28df4e22bf644c4b8bc00140e872c75d06aa311e88",
   ]);
+
+  let cal2 = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(["bytes32","bytes32","bytes32","bytes32"],[
+    "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "0x23386c82f6e2d73d9a9f38e6a0c8447913d5d91508ba282add8b19a15bf78016",
+    "0x1d9a622503154e82235f13df67592b7b09984aa586d293ce0091a0cff6d0e55b",
+    "0xf081aa64a6bff952f58cbc28df4e22bf644c4b8bc00140e872c75d06aa311e88",
+  ]));
+
+  let root256 = ethers.utils.keccak256(rootCal);
   console.log(`resp root: ${response0.result.outputRoot}`);
   console.log(`root--cal: ${rootCal}`);
+  console.log(`root--256: ${root256}`);
+  console.log(`root256/2: ${cal2}`);
 }
 
 main().catch((error) => {
