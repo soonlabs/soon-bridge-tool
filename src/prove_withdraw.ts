@@ -65,6 +65,7 @@ async function main() {
     ethers.utils.hexlify(response0.data.result.withdrawalRoot),
     ethers.utils.hexlify(response0.data.result.blockHash),
   ]);
+  console.log(`state:${ethers.utils.hexlify(response0.data.result.stateRoot)}`);
   console.log(`ourputRoot res: ${rootCal}`);
 
   //get withdraw proof
