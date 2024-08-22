@@ -12,6 +12,7 @@
     "propose_withdraw": "npx ts-node --project tsconfig.json src/propose_withdraw.ts",
     "fetch_proposed_height": "npx ts-node --project tsconfig.json src/fetch_proposed_height.ts",
     "prove_withdraw": "npx ts-node --project tsconfig.json src/prove_withdraw.ts",
+    "root_cal": "npx ts-node --project tsconfig.json src/cal_root.ts",
     "fetch_withdraw_finalize_status": "npx ts-node --project tsconfig.json src/fetch_withdraw_finalize_status.ts",
     "finalize_withdraw": "npx ts-node --project tsconfig.json src/finalize_withdraw.ts",
     "deposit_eth": "npx ts-node --project tsconfig.json src/deposit_eth.ts",
