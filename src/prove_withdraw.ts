@@ -60,10 +60,10 @@ async function main() {
   console.log('outputAtBlock response data:', response0.data);
 
   let rootCal = ethers.utils.keccak256([
-    ethers.utils.hexlify("0x0000000000000000000000000000000000000000000000000000000000000000"),
-    ethers.utils.hexlify("" + response0.data.result.stateRoot),
-    ethers.utils.hexlify("" + response0.data.result.withdrawalRoot),
-    ethers.utils.hexlify("" + response0.data.result.blockHash),
+    ethers.utils.hexlify(ethers.utils.toUtf8Bytes("0x0000000000000000000000000000000000000000000000000000000000000000")),
+    ethers.utils.hexlify(ethers.utils.toUtf8Bytes(response0.data.result.stateRoot)),
+    ethers.utils.hexlify(ethers.utils.toUtf8Bytes(response0.data.result.withdrawalRoot)),
+    ethers.utils.hexlify(ethers.utils.toUtf8Bytes(response0.data.result.blockHash)),
   ]);
   console.log(`state:${ethers.utils.hexlify(response0.data.result.stateRoot)}`);
   console.log(`ourputRoot res: ${rootCal}`);
