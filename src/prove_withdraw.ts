@@ -59,6 +59,15 @@ async function main() {
   });
   console.log('outputAtBlock response data:', response0.data);
 
+  let cal2 = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(["bytes32","bytes32","bytes32","bytes32"],[
+    "0x0000000000000000000000000000000000000000000000000000000000000000",
+    response0.data.result.stateRoot,
+    response0.data.result.withdrawalRoot,
+    response0.data.result.blockHash,
+  ]));
+  console.log(`response.outputRoot: ${response0.data.result.outputRoot}`);
+  console.log(`contractCalRoot is : ${cal2}`);
+
   //get withdraw proof
   const response1 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
     jsonrpc: '2.0',
