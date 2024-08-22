@@ -81,9 +81,7 @@ async function main() {
           '0x0000000000000000000000000000000000000000000000000000000000000000',
         stateRoot: response0.data.result.stateRoot,
         messagePasserStorageRoot: response0.data.result.withdrawalRoot,
-        latestBlockhash: ethers.utils.hexlify(
-          bs58.decode(response0.data.result.blockHash),
-        ),
+        latestBlockhash: response0.data.result.blockHash,
       },
       response1.data.result.withdrawalProof,
       {
