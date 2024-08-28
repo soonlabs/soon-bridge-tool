@@ -33,7 +33,9 @@ async function main() {
   );
 
   const receipt = await (
-    await ERC20.connect(EVMContext.EVM_USER).mint(args.l1Receiver, args.amount)
+    await ERC20.connect(EVMContext.EVM_USER).mint(args.l1Receiver, args.amount, {
+      gasLimit: 1000000,
+    })
   ).wait(1);
 
   console.log(`Mint ERC20 success. txHash: ${receipt.transactionHash}`);
