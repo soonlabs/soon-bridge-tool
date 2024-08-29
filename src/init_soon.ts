@@ -2,21 +2,13 @@ import {
   BridgeInstructionIndex,
   createBridgeConfigAccount,
   createSVMContext,
-  genDepositInfoAccount,
   genProgramDataAccountKey,
   initProgramDataAccount,
   L1BlockInfoInstructionIndex,
-  sendTransaction,
   SVM_CONTEXT,
-  SYSTEM_PROGRAM,
   transferSOL,
 } from './helper/svm_context';
-import {
-  LAMPORTS_PER_SOL,
-  PublicKey,
-  SYSVAR_RENT_PUBKEY,
-  TransactionInstruction,
-} from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { sleep } from './helper/tool';
 import { createEVMContext } from './helper/evm_context';
 import { L1StandardBridge__factory } from '../typechain-types';

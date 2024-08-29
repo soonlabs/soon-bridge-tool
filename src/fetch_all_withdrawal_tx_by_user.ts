@@ -15,7 +15,7 @@ async function main() {
 
   // @ts-ignore
   const accounts = await svmContext.SVM_Connection.getParsedProgramAccounts(
-    svmContext.SVM_WITHDRAW_PROGRAM_ID,
+    svmContext.SVM_BRIDGE_PROGRAM_ID,
     {
       filters: [
         {

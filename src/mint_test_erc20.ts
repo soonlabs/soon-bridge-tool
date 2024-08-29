@@ -1,11 +1,6 @@
 import { createEVMContext } from './helper/evm_context';
 import minimist from 'minimist';
-import {
-  base58PublicKeyToHex,
-  isValidEthereumAddress,
-  isValidSolanaPublicKey,
-} from './helper/tool';
-import { ERC20__factory, L1StandardBridge__factory } from '../typechain-types';
+import { isValidEthereumAddress } from './helper/tool';
 import { ethers } from 'ethers';
 
 const options = {
@@ -33,9 +28,13 @@ async function main() {
   );
 
   const receipt = await (
-    await ERC20.connect(EVMContext.EVM_USER).mint(args.l1Receiver, args.amount, {
-      gasLimit: 1000000,
-    })
+    await ERC20.connect(EVMContext.EVM_USER).mint(
+      args.l1Receiver,
+      args.amount,
+      {
+        gasLimit: 1000000,
+      },
+    )
   ).wait(1);
 
   console.log(`Mint ERC20 success. txHash: ${receipt.transactionHash}`);
