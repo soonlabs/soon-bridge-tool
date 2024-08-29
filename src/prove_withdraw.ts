@@ -41,7 +41,7 @@ async function main() {
   const l2OutputOracleAddress = await OptimismPortal.l2Oracle();
   const L2OutputOracle = L2OutputOracle__factory.connect(
     l2OutputOracleAddress,
-    EVMContext.EVM_PROPOSER,
+    EVMContext.EVM_PROVIDER,
   );
   const l2OutputIndex = await L2OutputOracle.getL2OutputIndexAfter(
     args.withdrawHeight,

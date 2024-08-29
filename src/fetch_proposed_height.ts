@@ -13,7 +13,7 @@ async function main() {
   const l2OutputOracleAddress = await OptimismPortal.l2Oracle();
   const L2OutputOracle = L2OutputOracle__factory.connect(
     l2OutputOracleAddress,
-    EVMContext.EVM_PROPOSER,
+    EVMContext.EVM_PROVIDER,
   );
 
   const proposedHeight = await L2OutputOracle.latestBlockNumber();
