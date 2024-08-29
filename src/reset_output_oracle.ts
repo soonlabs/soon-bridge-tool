@@ -16,7 +16,7 @@ async function main() {
     EVMContext.EVM_USER,
   );
   const receipt = await (
-    await L2Oracle.deleteL2Outputs('0', {
+    await L2Oracle.devClearL2Outputs({
       gasLimit: 1000000,
     })
   ).wait(1);
