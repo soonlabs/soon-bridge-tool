@@ -14,7 +14,7 @@ async function main() {
     throw new Error('invalid solana pubkey format.');
   }
 
-  let EVMContext = await createEVMContext(false);
+  let EVMContext = await createEVMContext();
   const L1Bridge = L1StandardBridge__factory.connect(
     EVMContext.EVM_STANDARD_BRIDGE,
     EVMContext.EVM_USER,

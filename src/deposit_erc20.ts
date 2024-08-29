@@ -24,7 +24,7 @@ async function main() {
     throw new Error('invalid l2 receiver pubkey.');
   }
 
-  let EVMContext = await createEVMContext(false);
+  let EVMContext = await createEVMContext();
 
   const ERC20 = ERC20__factory.connect(args.l1Token, EVMContext.EVM_USER);
   await (

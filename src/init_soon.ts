@@ -87,7 +87,7 @@ async function transferForVault(svmContext: SVM_CONTEXT) {
 async function main() {
   let svmContext = await createSVMContext();
 
-  let evmContext = await createEVMContext(false);
+  let evmContext = await createEVMContext();
   const StandardBridge = L1StandardBridge__factory.connect(
     evmContext.EVM_STANDARD_BRIDGE,
     evmContext.EVM_USER,

@@ -2,6 +2,10 @@ import { ethers, Wallet } from 'ethers';
 import { StaticJsonRpcProvider } from '@ethersproject/providers/src.ts/url-json-rpc-provider';
 import 'dotenv/config';
 import { formatEther } from 'ethers/lib/utils';
+import {
+  L1CrossDomainMessenger__factory,
+  L1StandardBridge__factory,
+} from '../../typechain-types';
 
 export interface EVM_CONTEXT {
   EVM_PROVIDER: StaticJsonRpcProvider;
@@ -11,21 +15,10 @@ export interface EVM_CONTEXT {
   EVM_STANDARD_BRIDGE: string;
 }
 
-export const createEVMContext = async (
-  isHappyPass: boolean,
-): Promise<EVM_CONTEXT> => {
-  const EVM_PROPOSER_KEY = isHappyPass
-    ? '0x103d65b622f9532a22aa59e70f54c4300ecdd778927477591f4fc459e6f8c093'
-    : process.env.EVM_PROPOSER_KEY;
-  const EVM_USER_KEY = isHappyPass
-    ? '0x103d65b622f9532a22aa59e70f54c4300ecdd778927477591f4fc459e6f8c093'
-    : process.env.EVM_USER_KEY;
-  const EVM_PROVIDER_URL = isHappyPass
-    ? 'http://localhost:8545'
-    : process.env.EVM_PROVIDER_URL;
-  const EVM_OP_PORTAL = isHappyPass
-    ? '0xAC79ce90e2654B64045351b08EE027C1E0C2df97'
-    : process.env.EVM_OP_PORTAL;
+export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
+  const EVM_PROPOSER_KEY = process.env.EVM_PROPOSER_KEY;
+  const EVM_USER_KEY = process.env.EVM_USER_KEY;
+  const EVM_PROVIDER_URL = process.env.EVM_PROVIDER_URL;
   const EVM_STANDARD_BRIDGE = process.env.EVM_STANDARD_BRIDGE;
 
   if (!EVM_PROPOSER_KEY) throw `missing required env EVM_PROPOSER_KEY for EVM`;
@@ -33,8 +26,6 @@ export const createEVMContext = async (
   if (!EVM_USER_KEY) throw `missing required env EVM_USER_KEY for EVM`;
 
   if (!EVM_PROVIDER_URL) throw `missing required env EVM_PROVIDER_URL for EVM`;
-
-  if (!EVM_OP_PORTAL) throw `missing required env EVM_PROVIDER_URL for EVM`;
 
   if (!EVM_STANDARD_BRIDGE)
     throw `missing required env EVM_STANDARD_BRIDGE for EVM`;
@@ -51,6 +42,17 @@ export const createEVMContext = async (
   balance = await EVM_USER.getBalance();
   console.log('evm proposer address:', await EVM_USER.getAddress());
   console.log('evm proposer balance: ', formatEther(balance));
+
+  const StandardBridge = L1StandardBridge__factory.connect(
+    EVM_STANDARD_BRIDGE,
+    EVM_PROVIDER,
+  );
+  const l1CrossDomainMessenger = await StandardBridge.messenger();
+  const L1CrossDomainMessenger = L1CrossDomainMessenger__factory.connect(
+    l1CrossDomainMessenger,
+    EVM_PROVIDER,
+  );
+  const EVM_OP_PORTAL = await L1CrossDomainMessenger.PORTAL();
 
   return {
     EVM_PROVIDER,

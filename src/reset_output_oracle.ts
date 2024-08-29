@@ -5,7 +5,7 @@ import {
 } from '../typechain-types';
 
 async function main() {
-  let EVMContext = await createEVMContext(false);
+  let EVMContext = await createEVMContext();
   const OpPortal = OptimismPortal__factory.connect(
     EVMContext.EVM_OP_PORTAL,
     EVMContext.EVM_USER,

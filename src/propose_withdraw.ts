@@ -26,7 +26,7 @@ async function main() {
   });
   console.log('response data:', response.data);
 
-  let EVMContext = await createEVMContext(false);
+  let EVMContext = await createEVMContext();
   const OptimismPortal = OptimismPortal__factory.connect(
     EVMContext.EVM_OP_PORTAL,
     EVMContext.EVM_USER,

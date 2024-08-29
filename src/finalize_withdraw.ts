@@ -27,7 +27,7 @@ async function main() {
   //get withdraw tx
   const withdrawTx = parseWithdrawTxInfo(withdrawInfo.data);
 
-  let EVMContext = await createEVMContext(false);
+  let EVMContext = await createEVMContext();
   const OptimismPortal = OptimismPortal__factory.connect(
     EVMContext.EVM_OP_PORTAL,
     EVMContext.EVM_USER,

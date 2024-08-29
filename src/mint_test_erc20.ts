@@ -17,7 +17,7 @@ async function main() {
     throw new Error('invalid l1Receiver address.');
   }
 
-  let EVMContext = await createEVMContext(false);
+  let EVMContext = await createEVMContext();
 
   const functionSignature = 'mint(address,uint256)';
   const iface = new ethers.utils.Interface([`function ${functionSignature}`]);
