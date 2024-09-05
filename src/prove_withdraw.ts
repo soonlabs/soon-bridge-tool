@@ -43,19 +43,18 @@ async function main() {
     l2OutputOracleAddress,
     EVMContext.EVM_PROVIDER,
   );
-  const l2OutputIndex = await L2OutputOracle.getL2OutputIndexAfter(
-    args.withdrawHeight,
-  );
-  const proposeL2Height = (await L2OutputOracle.getL2Output(l2OutputIndex))
-    .l2BlockNumber;
-  console.log(`proposeL2Height: ${proposeL2Height}`);
+  const proposedHeight = await L2OutputOracle.latestBlockNumber();
+  if (proposedHeight.lt(args.withdrawHeight)) {
+    console.log(`not proposed yet. current proposed l2 height: ${proposedHeight}`);
+    return;
+  }
 
   //get output root proof
   const response0 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
     jsonrpc: '2.0',
     id: 1,
     method: 'outputAtBlock',
-    params: [proposeL2Height.toNumber()],
+    params: [proposedHeight.toNumber()],
   });
   console.log('outputAtBlock response data:', response0.data);
 
@@ -64,10 +63,11 @@ async function main() {
     jsonrpc: '2.0',
     id: 1,
     method: 'getSoonWithdrawalProof',
-    params: [args.withdrawId, proposeL2Height.toNumber()],
+    params: [args.withdrawId, proposedHeight.toNumber()],
   });
   console.log('getSoonWithdrawalProof response data:', response1.data);
 
+  const l2OutputIndex = await L2OutputOracle.getL2OutputIndexAfter(proposedHeight)
   const hexPubkey = ethers.utils.hexlify(bs58.decode(args.withdrawId));
   const receipt = await (
     await OptimismPortal.connect(

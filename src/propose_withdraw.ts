@@ -35,7 +35,7 @@ async function main() {
   console.log(`l2OutputOracleAddress: ${l2OutputOracleAddress}`);
   const L2OutputOracle = L2OutputOracle__factory.connect(
     l2OutputOracleAddress,
-    EVMContext.EVM_PROPOSER,
+    EVMContext.EVM_PROPOSER!,
   );
   console.log(`response.data.outputRoot: ${response.data.result.outputRoot}`);
   console.log(`args.withdrawHeight: ${args.withdrawHeight}`);
