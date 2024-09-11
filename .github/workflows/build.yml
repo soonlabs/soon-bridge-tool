@@ -36,7 +36,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.SOON_GITHUB_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
@@ -44,7 +44,7 @@ jobs:
           file: "docker/Dockerfile"
           push: ${{ github.event.inputs.push }}
           tags: "ghcr.io/${{ github.repository }}:${{ github.sha }}"
-        if: github.event_name == 'workflow_dispatch' 
+        if: github.event_name == 'workflow_dispatch'
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
