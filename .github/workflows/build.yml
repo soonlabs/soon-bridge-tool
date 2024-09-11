@@ -1,0 +1,56 @@
+name: CI - Docker Tools Image Build
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch:
+    inputs:
+      push:
+        description: "push image?"
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  Build:
+    runs-on: soon-runtime-spot
+    permissions:
+      id-token: write # This is required for requesting the JWT
+      contents: read # This is required for actions/checkout
+      packages: write # This is required for pushing to github registry
+    if: always() && (github.event_name == 'workflow_dispatch' || github.ref_type == 'tag')
+    steps:
+      - name: Check Env
+        run: |
+          printenv
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.SOON_GITHUB_TOKEN }}
+      - name: Build Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: "."
+          file: "Dockerfile"
+          push: ${{ github.event.inputs.push }}
+          tags: "ghcr.io/${{ github.repository }}:${{ github.sha }}"
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: "{{ defaultContext }}:./"
+          file: "Dockerfile"
+          push: true
+          platforms: linux/amd64
+          build-args: |-
+            PROFILE=release
+          tags: "ghcr.io/${{ github.repository }}:${{ github.ref_name }}"
+        if: github.ref_type == 'tag'
