@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+"
   workflow_dispatch:
     inputs:
       push:
@@ -43,6 +44,7 @@ jobs:
           file: "docker/Dockerfile"
           push: ${{ github.event.inputs.push }}
           tags: "ghcr.io/${{ github.repository }}:${{ github.sha }}"
+        if: github.event_name == 'workflow_dispatch' 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
