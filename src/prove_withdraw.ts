@@ -8,7 +8,7 @@ import {
   OptimismPortal__factory,
 } from '../typechain-types';
 import axios from 'axios';
-import { ethers } from 'ethers';
+import {BigNumber, ethers} from 'ethers';
 import bs58 from 'bs58';
 
 const options = {
@@ -46,6 +46,11 @@ async function main() {
   const proposedHeight = await L2OutputOracle.latestBlockNumber();
   if (proposedHeight.lt(args.withdrawHeight)) {
     console.log(`not proposed yet. current proposed l2 height: ${proposedHeight}`);
+    return;
+  }
+  const l2Height = await svmContext.SVM_Connection.getBlockHeight('confirmed');
+  if (l2Height - proposedHeight.toNumber() <= 150) {
+    console.log(`we'll wait incase l1 rpc sync issue`);
     return;
   }
 
