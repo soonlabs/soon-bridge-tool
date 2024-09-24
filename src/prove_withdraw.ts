@@ -48,11 +48,6 @@ async function main() {
     console.log(`not proposed yet. current proposed l2 height: ${proposedHeight}`);
     return;
   }
-  const l2Height = await svmContext.SVM_Connection.getBlockHeight('confirmed');
-  if (l2Height - proposedHeight.toNumber() <= 150) {
-    console.log(`we'll wait incase l1 rpc sync issue`);
-    return;
-  }
 
   //get output root proof
   const response0 = await axios.post(svmContext.SVM_SOON_RPC_URL, {
