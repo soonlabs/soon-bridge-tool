@@ -9,6 +9,7 @@ RUN npm install --global yarn pkg typescript
 # Copy the source code into the container
 COPY . .
 
+RUN npm install
 RUN yarn pkg_init_soon
 
 
