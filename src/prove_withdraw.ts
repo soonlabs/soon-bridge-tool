@@ -8,7 +8,7 @@ import {
   OptimismPortal__factory,
 } from '../typechain-types';
 import axios from 'axios';
-import {BigNumber, ethers} from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import bs58 from 'bs58';
 
 const options = {
@@ -45,7 +45,9 @@ async function main() {
   );
   const proposedHeight = await L2OutputOracle.latestBlockNumber();
   if (proposedHeight.lt(args.withdrawHeight)) {
-    console.log(`not proposed yet. current proposed l2 height: ${proposedHeight}`);
+    console.log(
+      `not proposed yet. current proposed l2 height: ${proposedHeight}`,
+    );
     return;
   }
 
@@ -67,7 +69,8 @@ async function main() {
   });
   console.log('getSoonWithdrawalProof response data:', response1.data);
 
-  const l2OutputIndex = await L2OutputOracle.getL2OutputIndexAfter(proposedHeight)
+  const l2OutputIndex =
+    await L2OutputOracle.getL2OutputIndexAfter(proposedHeight);
   const hexPubkey = ethers.utils.hexlify(bs58.decode(args.withdrawId));
   const receipt = await (
     await OptimismPortal.connect(

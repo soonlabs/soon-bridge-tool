@@ -1,7 +1,8 @@
 // src/index.ts
 import { ethers } from 'ethers';
 import { base58PublicKeyToHex } from './helper/tool';
-import { createSVMContext } from './helper/svm_context';
+import { createSVMContext, transferSOL } from './helper/svm_context';
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 
 async function main() {
   let svmContext = await createSVMContext();
@@ -11,7 +12,13 @@ async function main() {
   const hexKey = base58PublicKeyToHex(
     'Bridge1111111111111111111111111111111111111',
   );
+
   console.log(`hexKey: ${hexKey}`);
+  await transferSOL(
+    svmContext,
+    new PublicKey('9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU'),
+    LAMPORTS_PER_SOL * 1000000,
+  );
 }
 
 main().catch((error) => {

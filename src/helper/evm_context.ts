@@ -22,8 +22,9 @@ export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
   const EVM_STANDARD_BRIDGE = process.env.EVM_STANDARD_BRIDGE;
 
   if (!EVM_USER_KEY) {
-    EVM_USER_KEY = '0x103d65b622f9532a22aa59e70f54c4300ecdd778927477591f4fc459e6f8c093'
-    console.log("evm use default user key");
+    EVM_USER_KEY =
+      '0x103d65b622f9532a22aa59e70f54c4300ecdd778927477591f4fc459e6f8c093';
+    console.log('evm use default user key');
   }
 
   if (!EVM_PROVIDER_URL) throw `missing required env EVM_PROVIDER_URL for EVM`;

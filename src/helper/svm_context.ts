@@ -1,7 +1,6 @@
 import {
   Connection,
   Keypair,
-  LAMPORTS_PER_SOL,
   PublicKey,
   sendAndConfirmTransaction,
   SystemProgram,
@@ -192,17 +191,26 @@ export async function createBridgeConfigAccount(
 export async function sendTransaction(
   svmContext: SVM_CONTEXT,
   instructions: TransactionInstruction[],
-  skipPreflight = false,
+  skipPreflight = true,
 ) {
   const tx = new Transaction({ feePayer: svmContext.SVM_USER.publicKey });
   tx.add(...instructions);
+  try {
+    const recentBlockHash =
+      await svmContext.SVM_Connection.getLatestBlockhash('processed');
+    tx.recentBlockhash = recentBlockHash.blockhash;
+    console.log(`get recentBlockhash: ${recentBlockHash.blockhash}`);
+  } catch (e) {
+    console.log(`fetch recent block hash failed. error: ${e}`);
+    return '';
+  }
 
   try {
     const signature = await sendAndConfirmTransaction(
       svmContext.SVM_Connection,
       tx,
       [svmContext.SVM_USER],
-      { skipPreflight, commitment: 'finalized' },
+      { skipPreflight, commitment: 'processed' },
     );
     console.log(`send transaction success. signature: ${signature}`);
     return signature;
