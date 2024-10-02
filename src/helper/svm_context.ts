@@ -7,6 +7,8 @@ import {
   SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
+  TransactionMessage,
+  VersionedTransaction,
 } from '@solana/web3.js';
 import 'dotenv/config';
 import { ethers } from 'ethers';
@@ -200,11 +202,27 @@ export async function sendTransaction(
       await svmContext.SVM_Connection.getLatestBlockhash('processed');
     tx.recentBlockhash = recentBlockHash.blockhash;
     console.log(`get recentBlockhash: ${recentBlockHash.blockhash}`);
+
+    const transaction = new TransactionMessage({
+      payerKey: svmContext.SVM_USER.publicKey,
+      recentBlockhash: recentBlockHash.blockhash,
+      instructions: instructions,
+    }).compileToLegacyMessage();
+    let versionedTx = new VersionedTransaction(transaction);
+    versionedTx.sign([svmContext.SVM_USER]);
+    const txId = await svmContext.SVM_Connection.sendTransaction(versionedTx, {
+      skipPreflight,
+      preflightCommitment: 'processed',
+    });
+    console.log(`send transaction success. signature: ${txId}`);
+    return txId;
   } catch (e) {
-    console.log(`fetch recent block hash failed. error: ${e}`);
+    console.log(`send transaction failed. error: ${e}`);
     return '';
   }
 
+  //sendAndConfirmTransaction may cause exceed block height error
+  /*
   try {
     const signature = await sendAndConfirmTransaction(
       svmContext.SVM_Connection,
@@ -217,7 +235,7 @@ export async function sendTransaction(
   } catch (e) {
     console.log(`send transaction failed. error: ${e}`);
     return '';
-  }
+  }*/
 }
 
 export async function transferSOL(
