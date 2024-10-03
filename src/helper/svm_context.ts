@@ -193,7 +193,7 @@ export async function createBridgeConfigAccount(
 export async function sendTransaction(
   svmContext: SVM_CONTEXT,
   instructions: TransactionInstruction[],
-  skipPreflight = true,
+  skipPreflight = false,
 ) {
   const tx = new Transaction({ feePayer: svmContext.SVM_USER.publicKey });
   tx.add(...instructions);
