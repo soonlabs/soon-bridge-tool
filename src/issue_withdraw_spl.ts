@@ -15,10 +15,7 @@ import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
 import { isValidEthereumAddress } from './helper/tool';
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
+import { getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 const options = {
   string: ['l1Token', 'l1Target', 'amount', 'gasLimit'],
@@ -62,26 +59,19 @@ async function main() {
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
 
-  const [splTokenInfoKey] = PublicKey.findProgramAddressSync(
-    [ethers.utils.arrayify(args.l1Token)],
+  const [splTokenOwnerKey] = PublicKey.findProgramAddressSync(
+    [Buffer.from('spl-owner'), ethers.utils.arrayify(args.l1Token)],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
-  console.log(`splTokenInfoKey: ${splTokenInfoKey.toString()}`);
+  console.log(`splTokenOwnerKey: ${splTokenOwnerKey.toString()}`);
 
   const [splTokenMintKey] = PublicKey.findProgramAddressSync(
-    [Buffer.from('spl'), ethers.utils.arrayify(args.l1Token)],
+    [Buffer.from('spl-mint'), ethers.utils.arrayify(args.l1Token)],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
   console.log(`splTokenMintKey: ${splTokenMintKey.toString()}`);
 
-  const [userATAKey] = PublicKey.findProgramAddressSync(
-    [
-      svmContext.SVM_USER.publicKey.toBuffer(),
-      TOKEN_PROGRAM_ID.toBuffer(),
-      splTokenMintKey.toBuffer(),
-    ],
-    ASSOCIATED_TOKEN_PROGRAM_ID,
-  );
+  const userATAKey = getAssociatedTokenAddressSync(splTokenMintKey, svmContext.SVM_USER.publicKey);
   console.log(`userATAKey: ${userATAKey.toString()}`);
 
   const instructionIndex = Buffer.from(
@@ -90,6 +80,7 @@ async function main() {
   const instruction = new TransactionInstruction({
     data: Buffer.concat([
       instructionIndex,
+      Buffer.concat([ethers.utils.arrayify(args.l1Token)]),
       Buffer.concat([ethers.utils.arrayify(args.l1Target)]),
       new Numberu128(args.amount).toBuffer(),
       new Numberu128(args.gasLimit).toBuffer(),
@@ -100,7 +91,7 @@ async function main() {
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
       { pubkey: counterKey, isSigner: false, isWritable: true },
       { pubkey: withdrawTxKey, isSigner: false, isWritable: true },
-      { pubkey: splTokenInfoKey, isSigner: false, isWritable: false },
+      { pubkey: splTokenOwnerKey, isSigner: false, isWritable: false },
       { pubkey: splTokenMintKey, isSigner: false, isWritable: true },
       { pubkey: userATAKey, isSigner: false, isWritable: true },
       { pubkey: bridgeConfigKey, isSigner: false, isWritable: false },
