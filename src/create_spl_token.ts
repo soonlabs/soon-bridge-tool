@@ -27,14 +27,14 @@ async function main() {
 
   let svmContext = await createSVMContext();
 
-  const [splTokenInfoKey] = PublicKey.findProgramAddressSync(
-    [ethers.utils.arrayify(args.l1Token)],
+  const [splTokenOwnerKey] = PublicKey.findProgramAddressSync(
+    [Buffer.from('spl-owner'), ethers.utils.arrayify(args.l1Token)],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
-  console.log(`splTokenInfoKey: ${splTokenInfoKey.toString()}`);
+  console.log(`splTokenOwnerKey: ${splTokenOwnerKey.toString()}`);
 
   const [splTokenMintKey] = PublicKey.findProgramAddressSync(
-    [Buffer.from('spl'), ethers.utils.arrayify(args.l1Token)],
+    [Buffer.from('spl-mint'), ethers.utils.arrayify(args.l1Token)],
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
   console.log(`splTokenMintKey: ${splTokenMintKey.toString()}`);
@@ -56,7 +56,7 @@ async function main() {
       { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-      { pubkey: splTokenInfoKey, isSigner: false, isWritable: true },
+      { pubkey: splTokenOwnerKey, isSigner: false, isWritable: true },
       { pubkey: splTokenMintKey, isSigner: false, isWritable: true },
       {
         pubkey: svmContext.SVM_USER.publicKey,
