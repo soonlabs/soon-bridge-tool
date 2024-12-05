@@ -43,8 +43,8 @@ export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
   let EVM_PROPOSER;
   if (EVM_PROPOSER_KEY) {
     EVM_PROPOSER = new ethers.Wallet(EVM_PROPOSER_KEY, EVM_PROVIDER);
-    balance = await EVM_USER.getBalance();
-    console.log('evm proposer address:', await EVM_USER.getAddress());
+    balance = await EVM_PROPOSER.getBalance();
+    console.log('evm proposer address:', await EVM_PROPOSER.getAddress());
     console.log('evm proposer balance: ', formatEther(balance));
   }
 
