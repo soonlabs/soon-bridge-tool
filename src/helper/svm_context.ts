@@ -12,6 +12,7 @@ import {
 } from '@solana/web3.js';
 import 'dotenv/config';
 import { ethers } from 'ethers';
+import { Buffer } from 'buffer';
 
 export const SYSTEM_PROGRAM = new PublicKey('11111111111111111111111111111111');
 export const DEFAULT_L1_BLOCK_INFO_PROGRAM = new PublicKey(
@@ -44,6 +45,7 @@ export enum BridgeInstructionIndex {
   //DepositERC20 = 5,
   WithdrawSPL = 6,
   CreateBridgeConfig = 7,
+  CreateUserWithdrawalCounterAccount = 9,
 }
 
 export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
@@ -123,6 +125,14 @@ export function genProgramDataAccountKey(
 ): PublicKey {
   const seedBuffer = Buffer.from(seed);
   const [key] = PublicKey.findProgramAddressSync([seedBuffer], programId);
+  return key;
+}
+
+export function genProgramDataAccountKeyWithBufferSeeds(
+  seeds: Array<Buffer | Uint8Array>,
+  programId: PublicKey,
+): PublicKey {
+  const [key] = PublicKey.findProgramAddressSync(seeds, programId);
   return key;
 }
 

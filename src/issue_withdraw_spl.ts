@@ -2,9 +2,9 @@ import {
   BridgeInstructionIndex,
   createSVMContext,
   DEFAULT_BRIDGE_PROGRAM,
-  genProgramDataAccountKey,
+  genProgramDataAccountKey, genProgramDataAccountKeyWithBufferSeeds,
   sendTransaction,
-  SYSTEM_PROGRAM,
+  SYSTEM_PROGRAM
 } from './helper/svm_context';
 import {
   PublicKey,
@@ -33,17 +33,45 @@ async function main() {
 
   let svmContext = await createSVMContext();
   //get counter key
-  const counterKey = genProgramDataAccountKey(
-    'svm-withdraw-counter',
+  const userWithdrawalCounterSeeds = [Buffer.from('svm-withdraw-counter'), svmContext.SVM_USER.publicKey.toBuffer()]
+  const userWithdrawalCounterKey = genProgramDataAccountKeyWithBufferSeeds(
+    userWithdrawalCounterSeeds,
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
-  console.log(`Counter key: ${counterKey.toString()}`);
+  console.log(`User withdrawal counter key: ${userWithdrawalCounterKey.toString()}`);
 
   //get counter
   const accountInfo =
-    await svmContext.SVM_Connection.getAccountInfo(counterKey);
-  const withdrawTxSeed = accountInfo!.data.slice(0, 8);
-  const counter = Numberu64.fromBuffer(withdrawTxSeed);
+    await svmContext.SVM_Connection.getAccountInfo(userWithdrawalCounterKey);
+  const instructions: TransactionInstruction[] = [];
+
+  if (!accountInfo) {
+    console.log('User withdrawal counter key not found. Creating...');
+    const createCounterInstructionIndex = Buffer.from(
+      Int8Array.from([BridgeInstructionIndex.CreateUserWithdrawalCounterAccount]),
+    );
+    const createUserWithdrawalCounterInstruction = new TransactionInstruction({
+      keys: [
+        { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
+        { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+        { pubkey: userWithdrawalCounterKey, isSigner: false, isWritable: true },
+        {
+          pubkey: svmContext.SVM_USER.publicKey,
+          isSigner: true,
+          isWritable: true,
+        },
+      ],
+      programId: svmContext.SVM_BRIDGE_PROGRAM_ID,
+      data: createCounterInstructionIndex,
+    });
+
+    instructions.push(createUserWithdrawalCounterInstruction);
+  } else {
+    console.log('User withdrawal counter key exists.');
+  }
+
+  const counterLe = accountInfo ? Numberu64.fromBuffer(accountInfo!.data.slice(0, 8)) : new Numberu64(0);
+  const counter = new Numberu64(counterLe.toNumber());
   console.log(`counter: ${counter}`);
 
   //get bridge config key
@@ -54,10 +82,11 @@ async function main() {
   console.log(`bridgeConfigKey key: ${bridgeConfigKey.toString()}`);
 
   //get withdraw tx key
-  const [withdrawTxKey] = PublicKey.findProgramAddressSync(
-    [withdrawTxSeed],
-    svmContext.SVM_BRIDGE_PROGRAM_ID,
+  const withdrawTxKey = genProgramDataAccountKeyWithBufferSeeds(
+    [svmContext.SVM_USER.publicKey.toBuffer(), counter.toBuffer()],
+    DEFAULT_BRIDGE_PROGRAM,
   );
+  console.log(`Withdraw ID: ${withdrawTxKey.toString()}`);
 
   const [splTokenOwnerKey] = PublicKey.findProgramAddressSync(
     [Buffer.from('spl-owner'), ethers.utils.arrayify(args.l1Token)],
@@ -74,12 +103,12 @@ async function main() {
   const userATAKey = getAssociatedTokenAddressSync(splTokenMintKey, svmContext.SVM_USER.publicKey);
   console.log(`userATAKey: ${userATAKey.toString()}`);
 
-  const instructionIndex = Buffer.from(
+  const withdrawSplInstructionIndex = Buffer.from(
     Int8Array.from([BridgeInstructionIndex.WithdrawSPL]),
   );
-  const instruction = new TransactionInstruction({
+  const withdrawSplInstruction = new TransactionInstruction({
     data: Buffer.concat([
-      instructionIndex,
+      withdrawSplInstructionIndex,
       Buffer.concat([ethers.utils.arrayify(args.l1Token)]),
       Buffer.concat([ethers.utils.arrayify(args.l1Target)]),
       new Numberu128(args.amount).toBuffer(),
@@ -89,7 +118,7 @@ async function main() {
       { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-      { pubkey: counterKey, isSigner: false, isWritable: true },
+      { pubkey: userWithdrawalCounterKey, isSigner: false, isWritable: true },
       { pubkey: withdrawTxKey, isSigner: false, isWritable: true },
       { pubkey: splTokenOwnerKey, isSigner: false, isWritable: false },
       { pubkey: splTokenMintKey, isSigner: false, isWritable: true },
@@ -105,7 +134,8 @@ async function main() {
   });
   console.log(`Withdraw ID: ${withdrawTxKey.toString()}`);
 
-  const signature = await sendTransaction(svmContext, [instruction]);
+  instructions.push(withdrawSplInstruction);
+  const signature = await sendTransaction(svmContext, instructions);
   const status = await svmContext.SVM_Connection.getSignatureStatus(signature);
   console.log(`Withdraw Height: ${status!.value?.slot}`);
 }
