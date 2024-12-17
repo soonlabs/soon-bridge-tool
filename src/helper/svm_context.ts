@@ -260,6 +260,38 @@ export async function sendTransaction(
   }*/
 }
 
+export async function sendTransactionByBridgeAdmin(
+  svmContext: SVM_CONTEXT,
+  instructions: TransactionInstruction[],
+  skipPreflight = false,
+) {
+  const tx = new Transaction({ feePayer: svmContext.SVM_USER.publicKey });
+  tx.add(...instructions);
+  try {
+    const recentBlockHash =
+      await svmContext.SVM_Connection.getLatestBlockhash('processed');
+    tx.recentBlockhash = recentBlockHash.blockhash;
+    console.log(`get recentBlockhash: ${recentBlockHash.blockhash}`);
+
+    const transaction = new TransactionMessage({
+      payerKey: svmContext.SVM_BRIDGE_ADMIN.publicKey,
+      recentBlockhash: recentBlockHash.blockhash,
+      instructions: instructions,
+    }).compileToLegacyMessage();
+    let versionedTx = new VersionedTransaction(transaction);
+    versionedTx.sign([svmContext.SVM_BRIDGE_ADMIN]);
+    const txId = await svmContext.SVM_Connection.sendTransaction(versionedTx, {
+      skipPreflight,
+      preflightCommitment: 'processed',
+    });
+    console.log(`send transaction success. signature: ${txId}`);
+    return txId;
+  } catch (e) {
+    console.log(`send transaction failed. error: ${e}`);
+    return '';
+  }
+}
+
 export async function transferSOL(
   svmContext: SVM_CONTEXT,
   to: PublicKey,

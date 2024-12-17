@@ -1,8 +1,8 @@
 import {
   BridgeInstructionIndex,
   createSVMContext,
-  sendTransaction,
-  SYSTEM_PROGRAM,
+  sendTransaction, sendTransactionByBridgeAdmin,
+  SYSTEM_PROGRAM
 } from './helper/svm_context';
 import {
   PublicKey,
@@ -81,7 +81,7 @@ async function main() {
     programId: svmContext.SVM_BRIDGE_PROGRAM_ID,
   });
 
-  const signature = await sendTransaction(svmContext, [instruction]);
+  const signature = await sendTransactionByBridgeAdmin(svmContext, [instruction]);
   console.log(`Tx signature: ${signature}`);
 }
 
