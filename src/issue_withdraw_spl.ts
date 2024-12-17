@@ -15,7 +15,10 @@ import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
 import { isValidEthereumAddress } from './helper/tool';
-import { getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import {
+  getAssociatedTokenAddressSync,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token';
 
 const options = {
   string: ['l1Token', 'l1Target', 'amount', 'gasLimit'],
@@ -71,7 +74,10 @@ async function main() {
   );
   console.log(`splTokenMintKey: ${splTokenMintKey.toString()}`);
 
-  const userATAKey = getAssociatedTokenAddressSync(splTokenMintKey, svmContext.SVM_USER.publicKey);
+  const userATAKey = getAssociatedTokenAddressSync(
+    splTokenMintKey,
+    svmContext.SVM_USER.publicKey,
+  );
   console.log(`userATAKey: ${userATAKey.toString()}`);
 
   const instructionIndex = Buffer.from(

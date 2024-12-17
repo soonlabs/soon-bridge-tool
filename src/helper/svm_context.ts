@@ -98,7 +98,10 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
     SVM_BRIDGE_ADMIN_KEYPAIR.slice(1, -1).split(',').map(Number),
   );
   const SVM_BRIDGE_ADMIN = Keypair.fromSecretKey(bridgeAdminKeyArray);
-  console.log('svm bridge admin address:', SVM_BRIDGE_ADMIN.publicKey.toBase58());
+  console.log(
+    'svm bridge admin address:',
+    SVM_BRIDGE_ADMIN.publicKey.toBase58(),
+  );
 
   const SVM_Connection = new Connection(SVM_CONNECTION_URL, 'confirmed');
 
@@ -205,6 +208,7 @@ export async function createBridgeConfigAccount(
 export async function sendTransaction(
   svmContext: SVM_CONTEXT,
   instructions: TransactionInstruction[],
+  signer?: Keypair,
   skipPreflight = false,
 ) {
   const tx = new Transaction({ feePayer: svmContext.SVM_USER.publicKey });
@@ -215,13 +219,15 @@ export async function sendTransaction(
     tx.recentBlockhash = recentBlockHash.blockhash;
     console.log(`get recentBlockhash: ${recentBlockHash.blockhash}`);
 
+    signer ??= svmContext.SVM_USER;
+
     const transaction = new TransactionMessage({
-      payerKey: svmContext.SVM_USER.publicKey,
+      payerKey: signer.publicKey,
       recentBlockhash: recentBlockHash.blockhash,
       instructions: instructions,
     }).compileToLegacyMessage();
     let versionedTx = new VersionedTransaction(transaction);
-    versionedTx.sign([svmContext.SVM_USER]);
+    versionedTx.sign([signer]);
     const txId = await svmContext.SVM_Connection.sendTransaction(versionedTx, {
       skipPreflight,
       preflightCommitment: 'processed',
