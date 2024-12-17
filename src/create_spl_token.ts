@@ -39,6 +39,18 @@ async function main() {
   );
   console.log(`splTokenMintKey: ${splTokenMintKey.toString()}`);
 
+  const [vaultKey] = PublicKey.findProgramAddressSync(
+    [Buffer.from('vault')],
+    svmContext.SVM_BRIDGE_PROGRAM_ID,
+  );
+  console.log(`vaultKey key: ${vaultKey.toString()}`);
+
+  const [bridgeOwnerKey] = PublicKey.findProgramAddressSync(
+    [Buffer.from('bridge-owner')],
+    svmContext.SVM_BRIDGE_PROGRAM_ID,
+  );
+  console.log(`bridgeOwnerKey: ${bridgeOwnerKey.toString()}`);
+
   const instructionIndex = Buffer.from(
     Int8Array.from([BridgeInstructionIndex.CreateSPL]),
   );
@@ -56,10 +68,12 @@ async function main() {
       { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-      { pubkey: splTokenOwnerKey, isSigner: false, isWritable: true },
+      { pubkey: splTokenOwnerKey, isSigner: false, isWritable: false },
       { pubkey: splTokenMintKey, isSigner: false, isWritable: true },
+      { pubkey: vaultKey, isSigner: false, isWritable: true },
+      { pubkey: bridgeOwnerKey, isSigner: false, isWritable: false },
       {
-        pubkey: svmContext.SVM_USER.publicKey,
+        pubkey: svmContext.SVM_BRIDGE_ADMIN.publicKey,
         isSigner: true,
         isWritable: false,
       },

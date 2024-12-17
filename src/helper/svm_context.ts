@@ -27,6 +27,7 @@ export interface SVM_CONTEXT {
   SVM_SOON_RPC_URL: string;
   SVM_USER: Keypair;
   SVM_DEPOSITOR: Keypair;
+  SVM_BRIDGE_ADMIN: Keypair;
   SVM_BRIDGE_PROGRAM_ID: PublicKey;
   SVM_L1_BLOCK_INFO_PROGRAM_ID: PublicKey;
 }
@@ -55,6 +56,10 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
   const SVM_DEPOSITOR_KEY = process.env.SVM_DEPOSITOR_KEY;
   if (!SVM_DEPOSITOR_KEY)
     throw `missing required env SVM_DEPOSITOR_KEY for SVM`;
+
+  const SVM_BRIDGE_ADMIN_KEYPAIR = process.env.SVM_BRIDGE_ADMIN_KEYPAIR;
+  if (!SVM_BRIDGE_ADMIN_KEYPAIR)
+    throw `missing required env SVM_BRIDGE_ADMIN_KEYPAIR for SVM`;
 
   const SVM_CONNECTION_URL = process.env.SVM_CONNECTION_URL;
   if (!SVM_CONNECTION_URL)
@@ -91,6 +96,12 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
   const SVM_DEPOSITOR = Keypair.fromSecretKey(depositorKeyArray);
   console.log('svm depositor address:', SVM_DEPOSITOR.publicKey.toBase58());
 
+  const bridgeAdminKeyArray = Uint8Array.from(
+    SVM_BRIDGE_ADMIN_KEYPAIR.slice(1, -1).split(',').map(Number),
+  );
+  const SVM_BRIDGE_ADMIN = Keypair.fromSecretKey(bridgeAdminKeyArray);
+  console.log('svm bridge admin address:', SVM_BRIDGE_ADMIN.publicKey.toBase58());
+
   const SVM_Connection = new Connection(SVM_CONNECTION_URL, 'confirmed');
 
   const balance = await SVM_Connection.getBalance(SVM_USER.publicKey);
@@ -100,6 +111,7 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
     SVM_Connection,
     SVM_USER,
     SVM_DEPOSITOR,
+    SVM_BRIDGE_ADMIN,
     SVM_BRIDGE_PROGRAM_ID,
     SVM_L1_BLOCK_INFO_PROGRAM_ID,
     SVM_SOON_RPC_URL,
