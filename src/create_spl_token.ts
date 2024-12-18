@@ -81,7 +81,7 @@ async function main() {
     programId: svmContext.SVM_BRIDGE_PROGRAM_ID,
   });
 
-  const signature = await sendTransactionByBridgeAdmin(svmContext, [instruction]);
+  const signature = await sendTransaction(svmContext, [instruction], true);
   console.log(`Tx signature: ${signature}`);
 }
 

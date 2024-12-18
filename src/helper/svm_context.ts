@@ -26,7 +26,7 @@ export interface SVM_CONTEXT {
   SVM_Connection: Connection;
   SVM_SOON_RPC_URL: string;
   SVM_USER: Keypair;
-  SVM_DEPOSITOR: Keypair;
+  // SVM_DEPOSITOR: Keypair;
   SVM_BRIDGE_ADMIN: Keypair;
   SVM_BRIDGE_PROGRAM_ID: PublicKey;
   SVM_L1_BLOCK_INFO_PROGRAM_ID: PublicKey;
@@ -53,9 +53,9 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
   const SVM_USER_KEY = process.env.SVM_USER_KEY;
   if (!SVM_USER_KEY) throw `missing required env SVM_USER_KEY for SVM`;
 
-  const SVM_DEPOSITOR_KEY = process.env.SVM_DEPOSITOR_KEY;
-  if (!SVM_DEPOSITOR_KEY)
-    throw `missing required env SVM_DEPOSITOR_KEY for SVM`;
+  // const SVM_DEPOSITOR_KEY = process.env.SVM_DEPOSITOR_KEY;
+  // if (!SVM_DEPOSITOR_KEY)
+  //   throw `missing required env SVM_DEPOSITOR_KEY for SVM`;
 
   const SVM_BRIDGE_ADMIN_KEYPAIR = process.env.SVM_BRIDGE_ADMIN_KEYPAIR;
   if (!SVM_BRIDGE_ADMIN_KEYPAIR)
@@ -90,17 +90,20 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
   const SVM_USER = Keypair.fromSecretKey(privateKeyArray);
   console.log('svm user address:', SVM_USER.publicKey.toBase58());
 
-  const depositorKeyArray = Uint8Array.from(
-    SVM_DEPOSITOR_KEY.slice(1, -1).split(',').map(Number),
-  );
-  const SVM_DEPOSITOR = Keypair.fromSecretKey(depositorKeyArray);
-  console.log('svm depositor address:', SVM_DEPOSITOR.publicKey.toBase58());
+  // const depositorKeyArray = Uint8Array.from(
+  //   SVM_DEPOSITOR_KEY.slice(1, -1).split(',').map(Number),
+  // );
+  // const SVM_DEPOSITOR = Keypair.fromSecretKey(depositorKeyArray);
+  // console.log('svm depositor address:', SVM_DEPOSITOR.publicKey.toBase58());
 
   const bridgeAdminKeyArray = Uint8Array.from(
     SVM_BRIDGE_ADMIN_KEYPAIR.slice(1, -1).split(',').map(Number),
   );
   const SVM_BRIDGE_ADMIN = Keypair.fromSecretKey(bridgeAdminKeyArray);
-  console.log('svm bridge admin address:', SVM_BRIDGE_ADMIN.publicKey.toBase58());
+  console.log(
+    'svm bridge admin address:',
+    SVM_BRIDGE_ADMIN.publicKey.toBase58(),
+  );
 
   const SVM_Connection = new Connection(SVM_CONNECTION_URL, 'confirmed');
 
@@ -110,7 +113,7 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
   return {
     SVM_Connection,
     SVM_USER,
-    SVM_DEPOSITOR,
+    // SVM_DEPOSITOR,
     SVM_BRIDGE_ADMIN,
     SVM_BRIDGE_PROGRAM_ID,
     SVM_L1_BLOCK_INFO_PROGRAM_ID,
@@ -215,14 +218,15 @@ export async function createBridgeConfigAccount(
 export async function sendTransaction(
   svmContext: SVM_CONTEXT,
   instructions: TransactionInstruction[],
+  requireAdminSig: boolean = false,
   skipPreflight = false,
 ) {
-  const tx = new Transaction({ feePayer: svmContext.SVM_USER.publicKey });
-  tx.add(...instructions);
+  // const tx = new Transaction({ feePayer: svmContext.SVM_USER.publicKey });
+  // tx.add(...instructions);
   try {
     const recentBlockHash =
       await svmContext.SVM_Connection.getLatestBlockhash('processed');
-    tx.recentBlockhash = recentBlockHash.blockhash;
+    // tx.recentBlockhash = recentBlockHash.blockhash;
     console.log(`get recentBlockhash: ${recentBlockHash.blockhash}`);
 
     const transaction = new TransactionMessage({
@@ -231,7 +235,11 @@ export async function sendTransaction(
       instructions: instructions,
     }).compileToLegacyMessage();
     let versionedTx = new VersionedTransaction(transaction);
-    versionedTx.sign([svmContext.SVM_USER]);
+    let signers = [svmContext.SVM_USER];
+    if (requireAdminSig) {
+      signers.push(svmContext.SVM_BRIDGE_ADMIN);
+    }
+    versionedTx.sign(signers);
     const txId = await svmContext.SVM_Connection.sendTransaction(versionedTx, {
       skipPreflight,
       preflightCommitment: 'processed',
@@ -258,38 +266,6 @@ export async function sendTransaction(
     console.log(`send transaction failed. error: ${e}`);
     return '';
   }*/
-}
-
-export async function sendTransactionByBridgeAdmin(
-  svmContext: SVM_CONTEXT,
-  instructions: TransactionInstruction[],
-  skipPreflight = false,
-) {
-  const tx = new Transaction({ feePayer: svmContext.SVM_USER.publicKey });
-  tx.add(...instructions);
-  try {
-    const recentBlockHash =
-      await svmContext.SVM_Connection.getLatestBlockhash('processed');
-    tx.recentBlockhash = recentBlockHash.blockhash;
-    console.log(`get recentBlockhash: ${recentBlockHash.blockhash}`);
-
-    const transaction = new TransactionMessage({
-      payerKey: svmContext.SVM_BRIDGE_ADMIN.publicKey,
-      recentBlockhash: recentBlockHash.blockhash,
-      instructions: instructions,
-    }).compileToLegacyMessage();
-    let versionedTx = new VersionedTransaction(transaction);
-    versionedTx.sign([svmContext.SVM_BRIDGE_ADMIN]);
-    const txId = await svmContext.SVM_Connection.sendTransaction(versionedTx, {
-      skipPreflight,
-      preflightCommitment: 'processed',
-    });
-    console.log(`send transaction success. signature: ${txId}`);
-    return txId;
-  } catch (e) {
-    console.log(`send transaction failed. error: ${e}`);
-    return '';
-  }
 }
 
 export async function transferSOL(
