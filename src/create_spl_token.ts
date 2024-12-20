@@ -1,7 +1,7 @@
 import {
   BridgeInstructionIndex,
   createSVMContext,
-  sendTransaction, sendTransactionByBridgeAdmin,
+  sendTransaction,
   SYSTEM_PROGRAM
 } from './helper/svm_context';
 import {
