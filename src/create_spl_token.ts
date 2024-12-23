@@ -25,7 +25,9 @@ async function main() {
     throw new Error('invalid ethereum address format.');
   }
 
-  let svmContext = await createSVMContext();
+  const svmContext = await createSVMContext().catch(error => {
+    console.error(`Failed to create SVM context`, error);
+  })
 
   const [splTokenOwnerKey] = PublicKey.findProgramAddressSync(
     [Buffer.from('spl-owner'), ethers.utils.arrayify(args.l1Token)],
@@ -81,7 +83,10 @@ async function main() {
     programId: svmContext.SVM_BRIDGE_PROGRAM_ID,
   });
 
-  const signature = await sendTransaction(svmContext, [instruction], true);
+  const signature = await sendTransaction(svmContext, [instruction], true)
+  .catch(error => {
+    console.error(`Failed to send transaction`, error);
+  });
   console.log(`Tx signature: ${signature}`);
 }
 
