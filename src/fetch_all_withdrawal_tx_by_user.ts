@@ -23,7 +23,7 @@ async function main() {
         },
         {
           memcmp: {
-            offset: 35,
+            offset: 380,
             bytes: sender.toBase58(),
           },
         },
