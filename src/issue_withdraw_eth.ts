@@ -40,9 +40,12 @@ async function main() {
   //get counter
   const accountInfo =
     await svmContext.SVM_Connection.getAccountInfo(userWithdrawalCounterKey);
+  // Some malicious user may transfer lamports to the counter accoutn before it has been created,
+  // In that case the counter account has AccountInfo and data is not null, but the accountInfo.data.length is null
+  const counterAccountDataLength = accountInfo?.data?.length;
   const instructions: TransactionInstruction[] = [];
 
-  if (!accountInfo) {
+  if (!counterAccountDataLength) {
     console.log('User withdrawal counter key not found. Creating...');
     const createCounterInstructionIndex = Buffer.from(
       Int8Array.from([BridgeInstructionIndex.CreateUserWithdrawalCounterAccount]),
@@ -67,7 +70,7 @@ async function main() {
     console.log('User withdrawal counter key exists.');
   }
 
-  const counterLe = accountInfo ? Numberu64.fromBuffer(accountInfo!.data.slice(0, 8)) : new Numberu64(0);
+  const counterLe = accountInfo?.data?.length ? Numberu64.fromBuffer(accountInfo!.data.slice(0, 8)) : new Numberu64(0);
   const counter = new Numberu64(counterLe.toNumber());
   console.log(`counter: ${counter}`);
 

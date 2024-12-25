@@ -73,7 +73,7 @@ async function main() {
     console.log('User withdrawal counter key exists.');
   }
 
-  const counterLe = accountInfo ? Numberu64.fromBuffer(accountInfo!.data.slice(0, 8)) : new Numberu64(0);
+  const counterLe = accountInfo?.data?.length ? Numberu64.fromBuffer(accountInfo!.data.slice(0, 8)) : new Numberu64(0);
   const counter = new Numberu64(counterLe.toNumber());
   console.log(`counter: ${counter}`);
 
