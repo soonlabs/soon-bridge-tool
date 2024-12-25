@@ -16,6 +16,12 @@ async function main() {
   if (!isValidEthereumAddress(args.l1Receiver)) {
     throw new Error('invalid l1Receiver address.');
   }
+  if (isNaN(Number(args.amount))) {
+    throw new Error('amount must be a valid number.');
+  }
+  if (isNaN(Number(args.gasLimit))) {
+    throw new Error('gasLimit must be a valid number.');
+  }
 
   let EVMContext = await createEVMContext();
 
