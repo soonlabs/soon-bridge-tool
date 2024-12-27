@@ -18,7 +18,7 @@ export interface EVM_CONTEXT {
 export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
   const EVM_PROPOSER_KEY = process.env.EVM_PROPOSER_KEY;
   let EVM_USER_KEY = process.env.EVM_USER_KEY;
-  const EVM_PROVIDER_URL = process.env.EVM_PROVIDER_URL;
+  const EVM_RPC_URL = process.env.EVM_RPC_URL;
   const EVM_STANDARD_BRIDGE = process.env.EVM_STANDARD_BRIDGE;
 
   if (!EVM_USER_KEY) {
@@ -27,13 +27,13 @@ export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
     console.log('evm use default user key');
   }
 
-  if (!EVM_PROVIDER_URL) throw `missing required env EVM_PROVIDER_URL for EVM`;
+  if (!EVM_RPC_URL) throw `missing required env EVM_RPC_URL for EVM`;
 
   if (!EVM_STANDARD_BRIDGE)
     throw `missing required env EVM_STANDARD_BRIDGE for EVM`;
 
   let EVM_PROVIDER = new ethers.providers.StaticJsonRpcProvider(
-    EVM_PROVIDER_URL,
+    EVM_RPC_URL,
   );
   let EVM_USER = new ethers.Wallet(EVM_USER_KEY, EVM_PROVIDER);
   let balance = await EVM_USER.getBalance();

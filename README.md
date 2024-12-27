@@ -15,23 +15,22 @@ yarn
 Create a `.env` file in the root directory with the following configuration:
 
 ```
-# Proposer Configuration (Optional)
-EVM_PROPOSER_KEY=                     # Proposer private key for EVM, only for propose_withdraw
-
 # User Configuration (Required)
-EVM_USER_KEY=                         # User private key for EVM
-SVM_USER_KEY=                         # User private key for SVM
+EVM_USER_KEY=                         # User private key for EVM side
+SVM_USER_KEY=                         # User private key for SVM side
 SVM_BRIDGE_ADMIN_KEYPAIR=             # Bridge admin keypair for bridge owner
 
 # Network Configuration (Required)
-EVM_PROVIDER_URL=                     # RPC URL for Sepolia
+EVM_RPC_URL=                          # RPC URL for Sepolia
+SVM_RPC_URL=                          # RPC URL for SOON
 EVM_STANDARD_BRIDGE=                  # Standard bridge address for EVM
-SVM_CONNECTION_URL=                   # RPC URL for SVM (can be same as SOON_RPC_URL)
-SVM_SOON_RPC_URL=                     # SOON RPC URL for SVM
 
 # Program IDs (Optional)
 SVM_BRIDGE_PROGRAM_KEY=               # Default: 'Bridge1111111111111111111111111111111111111'
 SVM_L1_BLOCK_INFO_PROGRAM_KEY=        # Default: 'L1BLockinfo11111111111111111111111111111111'
+
+# Proposer Configuration (Optional)
+EVM_PROPOSER_KEY=                     # Proposer private key for EVM, only for propose_withdraw
 ```
 
 ## Usage

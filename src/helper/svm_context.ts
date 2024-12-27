@@ -24,7 +24,7 @@ export const DEFAULT_BRIDGE_PROGRAM = new PublicKey(
 
 export interface SVM_CONTEXT {
   SVM_Connection: Connection;
-  SVM_SOON_RPC_URL: string;
+  SVM_RPC_URL: string;
   SVM_USER: Keypair;
   // SVM_DEPOSITOR: Keypair;
   SVM_BRIDGE_ADMIN: Keypair;
@@ -61,12 +61,9 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
   if (!SVM_BRIDGE_ADMIN_KEYPAIR)
     throw `missing required env SVM_BRIDGE_ADMIN_KEYPAIR for SVM`;
 
-  const SVM_CONNECTION_URL = process.env.SVM_CONNECTION_URL;
-  if (!SVM_CONNECTION_URL)
-    throw `missing required env SVM_CONNECTION_URL for SVM`;
-
-  const SVM_SOON_RPC_URL = process.env.SVM_SOON_RPC_URL;
-  if (!SVM_SOON_RPC_URL) throw `missing required env SVM_SOON_RPC_URL for SVM`;
+  const SVM_RPC_URL = process.env.SVM_RPC_URL;
+  if (!SVM_RPC_URL)
+    throw `missing required env SVM_RPC_URL for SVM`;
 
   let SVM_BRIDGE_PROGRAM_ID;
   let SVM_BRIDGE_PROGRAM_KEY = process.env.SVM_BRIDGE_PROGRAM_KEY;
@@ -105,7 +102,7 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
     SVM_BRIDGE_ADMIN.publicKey.toBase58(),
   );
 
-  const SVM_Connection = new Connection(SVM_CONNECTION_URL, 'confirmed');
+  const SVM_Connection = new Connection(SVM_RPC_URL, 'confirmed');
 
   const balance = await SVM_Connection.getBalance(SVM_USER.publicKey);
   console.log('svm user balance: ', balance);
@@ -117,7 +114,7 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
     SVM_BRIDGE_ADMIN,
     SVM_BRIDGE_PROGRAM_ID,
     SVM_L1_BLOCK_INFO_PROGRAM_ID,
-    SVM_SOON_RPC_URL,
+    SVM_RPC_URL,
   };
 };
 
