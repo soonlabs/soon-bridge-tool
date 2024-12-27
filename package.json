@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "index": "npx ts-node --project tsconfig.json src/index.ts",
-    "init_soon": "npx ts-node --project tsconfig.json src/init_soon.ts",
     "reset_output_oracle": "npx ts-node --project tsconfig.json src/reset_output_oracle.ts",
     "create_spl_token": "npx ts-node --project tsconfig.json src/create_spl_token.ts",
     "issue_withdraw_eth": "npx ts-node --project tsconfig.json src/issue_withdraw_eth.ts",
@@ -21,8 +20,6 @@
     "mint_test_erc20": "npx ts-node --project tsconfig.json src/mint_test_erc20.ts",
     "fetch_all_withdrawal_tx_by_user": "npx ts-node --project tsconfig.json src/fetch_all_withdrawal_tx_by_user.ts",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
-    "pkg": "yarn pkg_init_soon && yarn pkg_reset_output_oracle",
-    "pkg_init_soon": "tsc src/init_soon.ts || pkg -t node18-linux-x64 src/init_soon.js --out-path bin",
     "pkg_reset_output_oracle": "tsc src/reset_output_oracle.ts || pkg -t node18-linux-x64 src/reset_output_oracle.js --out-path bin"
   },
   "keywords": [],

@@ -35,40 +35,6 @@ EVM_PROPOSER_KEY=                     # Proposer private key for EVM, only for p
 
 ## Usage
 
-### Initial Setup
-
-1. Initialize SOON bridge:
-
-```bash
-yarn init_soon --l1CrossDomainMessenger='0xeAf0D514E0339dafd6Cf4f6e0d30a1068883204a' --l1StandardBridge='0x43D6C6D64D7a7D30E155C7C2F1bd2d385A592AD2'
-```
-
-2. Expand deposit account:
-
-```bash
-yarn expend_deposit --expandNum=10
-```
-
-### Token Operations
-
-1. Create SPL token on L2:
-
-```bash
-yarn create_spl_token --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --name='USD Coin' --symbol='USDC' --decimals=6
-```
-
-2. Mint test ERC20 token:
-
-```bash
-yarn mint_test_erc20 --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --l1Receiver='0xA96605EcF43E4e16e2255B0006b79a7781797b44' --amount=100000000000000000
-```
-
-3. Calculate Associated Token Account (ATA):
-
-```bash
-yarn calculate_ata --l2Pubkey='9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU' --splMintKey='Av7G6mUjHpRQtW1eAvKkmcm9NuuUkADmR1xR4F41sSfM'
-```
-
 ### Deposit Operations
 
 1. Deposit ETH:
@@ -83,7 +49,7 @@ yarn deposit_eth --l2Target=442GBBJoU23a92aA3bs9hVkQRxB3SsF3hzbgnjbYetFL --value
 yarn deposit_erc20 --l1Token=0x8fbd74E3927534fae382Bb586b37AD50a8F96631 --l2Token=5mShWfe7ZYkdeyLgcHxtHUNtCx2cMXkC8roCWdvmW95k --l2Receiver=9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU --amount=2000000000000000000 --gasLimit=100000
 ```
 
-### Withdrawal Operations
+### Issue Withdrawal Operations
 
 1. Issue ETH withdrawal:
 
@@ -97,9 +63,9 @@ yarn issue_withdraw_eth --l1Target='0x018281853eCC543Aa251732e8FDaa7323247eBeB' 
 yarn issue_withdraw_spl --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --l1Target='0x018281853eCC543Aa251732e8FDaa7323247eBeB' --amount=2000000 --gasLimit=100000
 ```
 
-### Withdrawal Management
+### Withdrawal Management Operations
 
-1. Propose withdrawal:
+1. Propose withdrawal(only needed without running proposer):
 
 ```bash
 yarn propose_withdraw --withdrawHeight=15020
@@ -127,6 +93,27 @@ yarn fetch_withdraw_finalize_status --withdrawId=5y4cigJregZVg7QzjXHPJCZwq1nGzjz
 
 ```bash
 yarn finalize_withdraw --withdrawId=5y4cigJregZVg7QzjXHPJCZwq1nGzjzqWkG7JjXiRHo7
+```
+
+
+### Token Operations
+
+1. Create SPL token on L2:
+
+```bash
+yarn create_spl_token --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --name='USD Coin' --symbol='USDC' --decimals=6
+```
+
+2. Mint test ERC20 token:
+
+```bash
+yarn mint_test_erc20 --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --l1Receiver='0xA96605EcF43E4e16e2255B0006b79a7781797b44' --amount=100000000000000000
+```
+
+3. Calculate Associated Token Account (ATA):
+
+```bash
+yarn calculate_ata --l2Pubkey='9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU' --splMintKey='Av7G6mUjHpRQtW1eAvKkmcm9NuuUkADmR1xR4F41sSfM'
 ```
 
 ### Query Operations
