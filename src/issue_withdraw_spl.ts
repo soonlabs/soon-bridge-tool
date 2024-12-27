@@ -2,9 +2,10 @@ import {
   BridgeInstructionIndex,
   createSVMContext,
   DEFAULT_BRIDGE_PROGRAM,
-  genProgramDataAccountKey, genProgramDataAccountKeyWithBufferSeeds,
+  genProgramDataAccountKey,
+  genProgramDataAccountKeyWithBufferSeeds,
   sendTransaction,
-  SYSTEM_PROGRAM
+  SYSTEM_PROGRAM,
 } from './helper/svm_context';
 import {
   PublicKey,
@@ -36,22 +37,30 @@ async function main() {
 
   let svmContext = await createSVMContext();
   //get counter key
-  const userWithdrawalCounterSeeds = [Buffer.from('svm-withdraw-counter'), svmContext.SVM_USER.publicKey.toBuffer()]
+  const userWithdrawalCounterSeeds = [
+    Buffer.from('svm-withdraw-counter'),
+    svmContext.SVM_USER.publicKey.toBuffer(),
+  ];
   const userWithdrawalCounterKey = genProgramDataAccountKeyWithBufferSeeds(
     userWithdrawalCounterSeeds,
     svmContext.SVM_BRIDGE_PROGRAM_ID,
   );
-  console.log(`User withdrawal counter key: ${userWithdrawalCounterKey.toString()}`);
+  console.log(
+    `User withdrawal counter key: ${userWithdrawalCounterKey.toString()}`,
+  );
 
   //get counter
-  const accountInfo =
-    await svmContext.SVM_Connection.getAccountInfo(userWithdrawalCounterKey);
+  const accountInfo = await svmContext.SVM_Connection.getAccountInfo(
+    userWithdrawalCounterKey,
+  );
   const instructions: TransactionInstruction[] = [];
 
   if (!accountInfo) {
     console.log('User withdrawal counter key not found. Creating...');
     const createCounterInstructionIndex = Buffer.from(
-      Int8Array.from([BridgeInstructionIndex.CreateUserWithdrawalCounterAccount]),
+      Int8Array.from([
+        BridgeInstructionIndex.CreateUserWithdrawalCounterAccount,
+      ]),
     );
     const createUserWithdrawalCounterInstruction = new TransactionInstruction({
       keys: [
@@ -73,7 +82,9 @@ async function main() {
     console.log('User withdrawal counter key exists.');
   }
 
-  const counterLe = accountInfo ? Numberu64.fromBuffer(accountInfo!.data.slice(0, 8)) : new Numberu64(0);
+  const counterLe = accountInfo
+    ? Numberu64.fromBuffer(accountInfo!.data.slice(0, 8))
+    : new Numberu64(0);
   const counter = new Numberu64(counterLe.toNumber());
   console.log(`counter: ${counter}`);
 

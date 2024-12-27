@@ -2,7 +2,7 @@ import {
   BridgeInstructionIndex,
   createSVMContext,
   sendTransaction,
-  SYSTEM_PROGRAM
+  SYSTEM_PROGRAM,
 } from './helper/svm_context';
 import {
   PublicKey,

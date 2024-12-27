@@ -32,9 +32,7 @@ export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
   if (!EVM_STANDARD_BRIDGE)
     throw `missing required env EVM_STANDARD_BRIDGE for EVM`;
 
-  let EVM_PROVIDER = new ethers.providers.StaticJsonRpcProvider(
-    EVM_RPC_URL,
-  );
+  let EVM_PROVIDER = new ethers.providers.StaticJsonRpcProvider(EVM_RPC_URL);
   let EVM_USER = new ethers.Wallet(EVM_USER_KEY, EVM_PROVIDER);
   let balance = await EVM_USER.getBalance();
   console.log('evm user address:', await EVM_USER.getAddress());

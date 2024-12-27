@@ -62,8 +62,7 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
     throw `missing required env SVM_BRIDGE_ADMIN_KEYPAIR for SVM`;
 
   const SVM_RPC_URL = process.env.SVM_RPC_URL;
-  if (!SVM_RPC_URL)
-    throw `missing required env SVM_RPC_URL for SVM`;
+  if (!SVM_RPC_URL) throw `missing required env SVM_RPC_URL for SVM`;
 
   let SVM_BRIDGE_PROGRAM_ID;
   let SVM_BRIDGE_PROGRAM_KEY = process.env.SVM_BRIDGE_PROGRAM_KEY;
