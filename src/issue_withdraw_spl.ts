@@ -53,9 +53,10 @@ async function main() {
   const accountInfo = await svmContext.SVM_Connection.getAccountInfo(
     userWithdrawalCounterKey,
   );
-  const instructions: TransactionInstruction[] = [];
+  let counterExists = accountInfo && accountInfo.owner.equals(svmContext.SVM_BRIDGE_PROGRAM_ID);
 
-  if (!accountInfo) {
+  const instructions: TransactionInstruction[] = [];
+  if (!counterExists) {
     console.log('User withdrawal counter key not found. Creating...');
     const createCounterInstructionIndex = Buffer.from(
       Int8Array.from([
@@ -82,7 +83,7 @@ async function main() {
     console.log('User withdrawal counter key exists.');
   }
 
-  const counterLe = accountInfo
+  const counterLe = counterExists
     ? Numberu64.fromBuffer(accountInfo!.data.slice(0, 8))
     : new Numberu64(0);
   const counter = new Numberu64(counterLe.toNumber());
