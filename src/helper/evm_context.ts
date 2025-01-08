@@ -13,6 +13,7 @@ export interface EVM_CONTEXT {
   EVM_PROPOSER: Wallet | undefined;
   EVM_OP_PORTAL: string;
   EVM_STANDARD_BRIDGE: string;
+  EVM_MESSENGER: string;
 }
 
 export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
@@ -55,6 +56,7 @@ export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
     l1CrossDomainMessenger,
     EVM_PROVIDER,
   );
+  const EVM_MESSENGER = l1CrossDomainMessenger;
   const EVM_OP_PORTAL = await L1CrossDomainMessenger.PORTAL();
 
   return {
@@ -63,5 +65,6 @@ export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
     EVM_PROPOSER,
     EVM_OP_PORTAL,
     EVM_STANDARD_BRIDGE,
+    EVM_MESSENGER,
   };
 };

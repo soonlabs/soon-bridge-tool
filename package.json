@@ -19,6 +19,7 @@
     "deposit_erc20": "npx ts-node --project tsconfig.json src/deposit_erc20.ts",
     "mint_test_erc20": "npx ts-node --project tsconfig.json src/mint_test_erc20.ts",
     "fetch_all_withdrawal_tx_by_user": "npx ts-node --project tsconfig.json src/fetch_all_withdrawal_tx_by_user.ts",
+    "watch_withdraw": "npx ts-node --project tsconfig.json src/withdraw_watcher.ts",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
     "pkg_reset_output_oracle": "tsc src/reset_output_oracle.ts || pkg -t node18-linux-x64 src/reset_output_oracle.js --out-path bin"
   },

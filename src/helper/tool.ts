@@ -1,6 +1,6 @@
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 import bs58 from 'bs58';
-import { Types } from '../../typechain-types/OptimismPortal';
+import {Types} from '../../typechain-types/OptimismPortal';
 
 export function isValidEthereumAddress(address: string): boolean {
   return ethers.utils.isAddress(address);
@@ -34,6 +34,11 @@ export function base58PublicKeyToHex(publicKey: string): string {
     throw 'invalid public key';
   }
   return ethers.utils.hexlify(decoded);
+}
+
+export function hexToBase58(hex: string): string {
+  const uint8Array = ethers.utils.arrayify(hex);
+  return bs58.encode(uint8Array);
 }
 
 export function parseWithdrawTxInfo(
