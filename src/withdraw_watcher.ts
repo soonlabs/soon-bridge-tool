@@ -33,7 +33,7 @@ async function main() {
         }
 
         // let withdraws = await OptimismPortal.queryFilter(filters, 21578120, 21578120);
-        let withdraws = await OptimismPortal.queryFilter(filters, scanStartHeight, latestHeight);
+        let withdraws = await OptimismPortal.queryFilter(filters, scanStartHeight, latestHeight - 1);
         for (let i=0; i<withdraws.length; i++) {
             await handleEvent(evmContext, withdraws[i]);
         }
