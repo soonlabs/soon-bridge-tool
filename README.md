@@ -123,3 +123,9 @@ yarn calculate_ata --l2Pubkey='9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU' --sp
 ```bash
 yarn fetch_all_withdrawal_tx_by_user --sender=9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU
 ```
+
+- Calculate L2 block info hash by l1 block hash:
+
+```bash
+ yarn calculate_l2_block_info_tx_signature --l1BlockHash 0xbdca34790fa5942964c587e624d46e94393fc3ce5a9a5ab3262aab8db3e4
+```
