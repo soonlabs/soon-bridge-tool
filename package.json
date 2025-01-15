@@ -21,6 +21,7 @@
     "fetch_all_withdrawal_tx_by_user": "npx ts-node --project tsconfig.json src/fetch_all_withdrawal_tx_by_user.ts",
     "watch_withdraw": "npx ts-node --project tsconfig.json src/withdraw_watcher.ts",
     "calculate_l2_block_info_tx_signature": "npx ts-node --project tsconfig.json src/calculate_l2_block_info_tx_signature.ts",
+    "scan_l1_deposit": "npx ts-node --project tsconfig.json src/scan_l1_deposit.ts",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
     "pkg_reset_output_oracle": "tsc src/reset_output_oracle.ts || pkg -t node18-linux-x64 src/reset_output_oracle.js --out-path bin"
   },
