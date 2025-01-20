@@ -43,6 +43,7 @@ export enum BridgeInstructionIndex {
   //DepositERC20 = 5,
   WithdrawSPL = 6,
   CreateBridgeConfig = 7,
+  ChangeBridgeAdmin = 8,
   CreateUserWithdrawalCounterAccount = 9,
 }
 

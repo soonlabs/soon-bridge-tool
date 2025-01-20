@@ -6,6 +6,7 @@
   "scripts": {
     "index": "npx ts-node --project tsconfig.json src/index.ts",
     "reset_output_oracle": "npx ts-node --project tsconfig.json src/reset_output_oracle.ts",
+    "change_bridge_admin": "npx ts-node --project tsconfig.json src/change_bridge_admin.ts",
     "create_spl_token": "npx ts-node --project tsconfig.json src/create_spl_token.ts",
     "issue_withdraw_eth": "npx ts-node --project tsconfig.json src/issue_withdraw_eth.ts",
     "issue_withdraw_spl": "npx ts-node --project tsconfig.json src/issue_withdraw_spl.ts",
