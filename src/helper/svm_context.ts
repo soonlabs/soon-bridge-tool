@@ -13,14 +13,11 @@ import {
 import 'dotenv/config';
 import { ethers } from 'ethers';
 import { Buffer } from 'buffer';
-
-export const SYSTEM_PROGRAM = new PublicKey('11111111111111111111111111111111');
-export const DEFAULT_L1_BLOCK_INFO_PROGRAM = new PublicKey(
-  'L1BLockinfo11111111111111111111111111111111',
-);
-export const DEFAULT_BRIDGE_PROGRAM = new PublicKey(
-  'Bridge1111111111111111111111111111111111111',
-);
+import {
+  DEFAULT_BRIDGE_PROGRAM,
+  DEFAULT_L1_BLOCK_INFO_PROGRAM,
+  SYSTEM_PROGRAM,
+} from './tool';
 
 export interface SVM_CONTEXT {
   SVM_Connection: Connection;
