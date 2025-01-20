@@ -1,11 +1,9 @@
 import {
   BridgeInstructionIndex,
   createSVMContext,
-  DEFAULT_BRIDGE_PROGRAM,
   genProgramDataAccountKey,
   genProgramDataAccountKeyWithBufferSeeds,
   sendTransaction,
-  SYSTEM_PROGRAM,
 } from './helper/svm_context';
 import {
   PublicKey,
@@ -15,7 +13,7 @@ import {
 import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
-import { isValidEthereumAddress } from './helper/tool';
+import {DEFAULT_BRIDGE_PROGRAM, isValidEthereumAddress, SYSTEM_PROGRAM} from './helper/tool';
 import {
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
