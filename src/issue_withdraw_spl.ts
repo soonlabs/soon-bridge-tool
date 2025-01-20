@@ -53,7 +53,8 @@ async function main() {
   const accountInfo = await svmContext.SVM_Connection.getAccountInfo(
     userWithdrawalCounterKey,
   );
-  let counterExists = accountInfo && accountInfo.owner.equals(svmContext.SVM_BRIDGE_PROGRAM_ID);
+  let counterExists =
+    accountInfo && accountInfo.owner.equals(svmContext.SVM_BRIDGE_PROGRAM_ID);
 
   const instructions: TransactionInstruction[] = [];
   if (!counterExists) {

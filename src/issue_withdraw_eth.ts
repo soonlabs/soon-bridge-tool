@@ -7,10 +7,7 @@ import {
   sendTransaction,
   SYSTEM_PROGRAM,
 } from './helper/svm_context';
-import {
-  SYSVAR_RENT_PUBKEY,
-  TransactionInstruction,
-} from '@solana/web3.js';
+import { SYSVAR_RENT_PUBKEY, TransactionInstruction } from '@solana/web3.js';
 import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
@@ -46,7 +43,8 @@ async function main() {
     userWithdrawalCounterKey,
   );
   const instructions: TransactionInstruction[] = [];
-  let counterExists = accountInfo && accountInfo.owner.equals(svmContext.SVM_BRIDGE_PROGRAM_ID);
+  let counterExists =
+    accountInfo && accountInfo.owner.equals(svmContext.SVM_BRIDGE_PROGRAM_ID);
 
   if (!counterExists) {
     console.log('User withdrawal counter key not found. Creating...');
