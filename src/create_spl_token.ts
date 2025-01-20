@@ -2,7 +2,6 @@ import {
   BridgeInstructionIndex,
   createSVMContext,
   sendTransaction,
-  SYSTEM_PROGRAM,
 } from './helper/svm_context';
 import {
   PublicKey,
@@ -11,7 +10,7 @@ import {
 } from '@solana/web3.js';
 import { ethers } from 'ethers';
 import minimist from 'minimist';
-import { isValidEthereumAddress } from './helper/tool';
+import {isValidEthereumAddress, SYSTEM_PROGRAM} from './helper/tool';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 const options = {
