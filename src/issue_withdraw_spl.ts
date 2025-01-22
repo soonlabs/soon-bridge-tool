@@ -13,7 +13,11 @@ import {
 import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
-import {DEFAULT_BRIDGE_PROGRAM, isValidEthereumAddress, SYSTEM_PROGRAM} from './helper/tool';
+import {
+  DEFAULT_BRIDGE_PROGRAM,
+  isValidEthereumAddress,
+  SYSTEM_PROGRAM,
+} from './helper/tool';
 import {
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,

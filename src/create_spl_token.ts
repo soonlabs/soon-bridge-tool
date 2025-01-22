@@ -10,7 +10,7 @@ import {
 } from '@solana/web3.js';
 import { ethers } from 'ethers';
 import minimist from 'minimist';
-import {isValidEthereumAddress, SYSTEM_PROGRAM} from './helper/tool';
+import { isValidEthereumAddress, SYSTEM_PROGRAM } from './helper/tool';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 const options = {
