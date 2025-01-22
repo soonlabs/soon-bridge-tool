@@ -9,7 +9,11 @@ import { SYSVAR_RENT_PUBKEY, TransactionInstruction } from '@solana/web3.js';
 import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
-import {DEFAULT_BRIDGE_PROGRAM, isValidEthereumAddress, SYSTEM_PROGRAM} from './helper/tool';
+import {
+  DEFAULT_BRIDGE_PROGRAM,
+  isValidEthereumAddress,
+  SYSTEM_PROGRAM,
+} from './helper/tool';
 
 const options = {
   string: ['l1Target', 'value', 'gasLimit'],

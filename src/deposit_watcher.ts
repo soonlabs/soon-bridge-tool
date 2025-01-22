@@ -1,14 +1,11 @@
 import { createEVMContext, EVM_CONTEXT } from './helper/evm_context';
 import {
   calculateDepositTxSignature,
-  hexToBase58,
   parseDepositTransactionEventData,
   sendSlackMessage,
   sleep,
 } from './helper/tool';
-import {
-  OptimismPortal__factory,
-} from '../typechain-types';
+import { OptimismPortal__factory } from '../typechain-types';
 import { TransactionDepositedEvent } from '../typechain-types/OptimismPortal';
 import { createSVMContext, SVM_CONTEXT } from './helper/svm_context';
 
@@ -21,6 +18,8 @@ async function main() {
   if (!SLACKHOOKURL) throw `missing env SLACKHOOKURL`;
   SlackHookURL = SLACKHOOKURL;
 
+  await sendSlackMessage(SlackHookURL, 'deposit watcher start.');
+
   let scanStartHeight = 0;
   const OptimismPortal = OptimismPortal__factory.connect(
     evmContext.EVM_OP_PORTAL,
@@ -29,23 +28,28 @@ async function main() {
   let filters = OptimismPortal.filters.TransactionDeposited();
 
   while (true) {
-    let latestBlock = await evmContext.EVM_PROVIDER.getBlock('latest');
-    let latestHeight = latestBlock.number - 5;
-    console.log(`latest block height: ${latestHeight}`);
-    if (scanStartHeight == 0) {
-      scanStartHeight = latestHeight - 20000;
+    try {
+      let latestBlock = await evmContext.EVM_PROVIDER.getBlock('latest');
+      let latestHeight = latestBlock.number - 5;
+      console.log(`latest block height: ${latestHeight}`);
+      if (scanStartHeight == 0) {
+        scanStartHeight = latestHeight - 300;
+      }
+
+      let deposits = await OptimismPortal.queryFilter(
+        filters,
+        scanStartHeight,
+        latestHeight - 1,
+      );
+      for (let i = 0; i < deposits.length; i++) {
+        await handleEvent(evmContext, svmContext, deposits[i]);
+      }
+
+      scanStartHeight = latestHeight;
+    } catch (e) {
+      await sendSlackMessage(SlackHookURL, `warn: ETH RPC error:${e}`);
     }
 
-    let deposits = await OptimismPortal.queryFilter(
-      filters,
-      scanStartHeight,
-      latestHeight - 1,
-    );
-    for (let i = 0; i < deposits.length; i++) {
-      await handleEvent(evmContext, svmContext, deposits[i]);
-    }
-
-    scanStartHeight = latestHeight;
     await sleep(60000);
   }
 }
@@ -71,15 +75,12 @@ async function handleEvent(
   let depositDesc;
   try {
     let opaqueData;
-    if (event.args.opaqueData.startsWith("0x")) {
+    if (event.args.opaqueData.startsWith('0x')) {
       opaqueData = event.args.opaqueData.slice(2);
     } else {
       opaqueData = event.args.opaqueData;
     }
-    depositDesc = await parseDepositTransactionEventData(
-      evm,
-        opaqueData,
-    );
+    depositDesc = await parseDepositTransactionEventData(evm, opaqueData);
   } catch (error) {
     const warnMessage = `warn: invalid deposit tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, error:${error}`;
     await sendSlackMessage(SlackHookURL, warnMessage);
@@ -90,7 +91,13 @@ async function handleEvent(
     event.blockHash,
     event.logIndex,
   );
-  const res = await svm.SVM_Connection.getTransaction(signature);
+
+  let res;
+  try {
+    res = await svm.SVM_Connection.getTransaction(signature);
+  } catch (e) {
+    await sendSlackMessage(SlackHookURL, `warn: Soon RPC error:${e}`);
+  }
   if (!res) {
     const warnMessage = `warn: deposit tx not processed. l1 tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, l2 tx: <https://explorer.soo.network/tx/${signature}|${signature}>`;
     await sendSlackMessage(SlackHookURL, warnMessage);

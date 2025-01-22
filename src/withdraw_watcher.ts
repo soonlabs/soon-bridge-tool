@@ -23,32 +23,38 @@ async function main() {
   if (!SLACKHOOKURL) throw `missing env SLACKHOOKURL`;
   SlackHookURL = SLACKHOOKURL;
 
+  await sendSlackMessage(SlackHookURL, 'withdraw watcher start.');
+
   let scanStartHeight = 0;
   const OptimismPortal = OptimismPortal__factory.connect(
     evmContext.EVM_OP_PORTAL,
     evmContext.EVM_USER,
   );
   let filters = OptimismPortal.filters.WithdrawalProven();
-
   while (true) {
-    let latestBlock = await evmContext.EVM_PROVIDER.getBlock('latest');
-    let latestHeight = latestBlock.number;
-    console.log(`latest block height: ${latestHeight}`);
-    if (scanStartHeight == 0) {
-      scanStartHeight = latestHeight - 10;
+    try {
+      let latestBlock = await evmContext.EVM_PROVIDER.getBlock('latest');
+      let latestHeight = latestBlock.number;
+      console.log(`latest block height: ${latestHeight}`);
+      if (scanStartHeight == 0) {
+        scanStartHeight = latestHeight - 300;
+      }
+
+      // let withdraws = await OptimismPortal.queryFilter(filters, 21578120, 21578120);
+      let withdraws = await OptimismPortal.queryFilter(
+        filters,
+        scanStartHeight,
+        latestHeight - 1,
+      );
+      for (let i = 0; i < withdraws.length; i++) {
+        await handleEvent(evmContext, withdraws[i]);
+      }
+
+      scanStartHeight = latestHeight;
+    } catch (e) {
+      await sendSlackMessage(SlackHookURL, `warn: ETH RPC error:${e}`);
     }
 
-    // let withdraws = await OptimismPortal.queryFilter(filters, 21578120, 21578120);
-    let withdraws = await OptimismPortal.queryFilter(
-      filters,
-      scanStartHeight,
-      latestHeight - 1,
-    );
-    for (let i = 0; i < withdraws.length; i++) {
-      await handleEvent(evmContext, withdraws[i]);
-    }
-
-    scanStartHeight = latestHeight;
     await sleep(60000);
   }
 }
