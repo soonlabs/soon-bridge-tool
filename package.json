@@ -8,6 +8,7 @@
     "reset_output_oracle": "npx ts-node --project tsconfig.json src/reset_output_oracle.ts",
     "change_bridge_admin": "npx ts-node --project tsconfig.json src/change_bridge_admin.ts",
     "create_spl_token": "npx ts-node --project tsconfig.json src/create_spl_token.ts",
+    "add_spl_metadata": "npx ts-node --project tsconfig.json src/add_spl_metadata.ts",
     "issue_withdraw_eth": "npx ts-node --project tsconfig.json src/issue_withdraw_eth.ts",
     "issue_withdraw_spl": "npx ts-node --project tsconfig.json src/issue_withdraw_spl.ts",
     "calculate_ata": "npx ts-node --project tsconfig.json src/calculate_ata.ts",
@@ -36,6 +37,7 @@
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.1",
     "@ethersproject/providers": "^5.7.2",
+    "@metaplex-foundation/js": "^0.20.1",
     "@solana/spl-token": "^0.4.8",
     "@solana/web3.js": "^1.93.1",
     "@types/bn.js": "^5.1.5",
