@@ -18,7 +18,10 @@ async function main() {
   if (!SLACKHOOKURL) throw `missing env SLACKHOOKURL`;
   SlackHookURL = SLACKHOOKURL;
 
-  await sendSlackMessage(SlackHookURL, 'deposit watcher start, replay transaction in the past an hour');
+  await sendSlackMessage(
+    SlackHookURL,
+    'deposit watcher start, replay transaction in the past an hour',
+  );
 
   let scanStartHeight = 0;
   const OptimismPortal = OptimismPortal__factory.connect(
