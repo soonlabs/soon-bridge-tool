@@ -20,7 +20,7 @@ async function main() {
 
   await sendSlackMessage(
     SlackHookURL,
-    'deposit watcher start, replay transaction in the past an hour',
+    'deposit watcher start, replay transaction in the past three hour',
   );
 
   let scanStartHeight = 0;
@@ -36,7 +36,7 @@ async function main() {
       let latestHeight = latestBlock.number - 5;
       console.log(`latest block height: ${latestHeight}`);
       if (scanStartHeight == 0) {
-        scanStartHeight = latestHeight - 300;
+        scanStartHeight = latestHeight - 900;
       }
 
       let deposits = await OptimismPortal.queryFilter(
@@ -63,15 +63,16 @@ async function handleEvent(
   event: TransactionDepositedEvent,
 ) {
   //check if deposit from domain messenger
+  let isBridgeSenderValid = true;
   if (
     event.args.from.toLowerCase() !=
       '0xCc248cE37870443D5B2B02a36619d3478738F207'.toLowerCase() ||
     event.args.to.toLowerCase() !=
       '0x02C806312CB859F1BC25448E39F87AA09857D83CCB4A837DF55648E000000000'.toLowerCase()
   ) {
+    isBridgeSenderValid = false;
     const warnMessage = `warn: invalid portal sender in deposit tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>`;
     await sendSlackMessage(SlackHookURL, warnMessage);
-    return;
   }
 
   //check if valid deposit transaction
@@ -85,9 +86,10 @@ async function handleEvent(
     }
     depositDesc = await parseDepositTransactionEventData(evm, opaqueData);
   } catch (error) {
-    const warnMessage = `warn: invalid deposit tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, error:${error}`;
-    await sendSlackMessage(SlackHookURL, warnMessage);
-    return;
+    if (isBridgeSenderValid) {
+      const warnMessage = `warn: invalid deposit tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, error:${error}`;
+      await sendSlackMessage(SlackHookURL, warnMessage);
+    }
   }
 
   const signature = calculateDepositTxSignature(
