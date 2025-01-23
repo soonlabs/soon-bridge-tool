@@ -10,8 +10,8 @@ import {
 } from '@solana/web3.js';
 import { ethers } from 'ethers';
 import minimist from 'minimist';
-import {isValidEthereumAddress, SYSTEM_PROGRAM} from './helper/tool';
-import {  PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
+import { isValidEthereumAddress, SYSTEM_PROGRAM } from './helper/tool';
+import { PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 
 const options = {
   string: ['l1Token', 'name', 'symbol', 'uri'],
@@ -52,13 +52,12 @@ async function main() {
 
   const [metadataKey] = PublicKey.findProgramAddressSync(
     [
-      Buffer.from("metadata"),
+      Buffer.from('metadata'),
       PROGRAM_ID.toBuffer(),
       splTokenMintKey.toBuffer(),
     ],
-    PROGRAM_ID
+    PROGRAM_ID,
   );
-
 
   const instructionIndex = Buffer.from(
     Int8Array.from([BridgeInstructionIndex.AddSPLMetadata]),

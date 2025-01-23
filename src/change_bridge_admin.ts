@@ -10,7 +10,7 @@ import {
 } from '@solana/web3.js';
 import { ethers } from 'ethers';
 import minimist from 'minimist';
-import {isValidEthereumAddress, SYSTEM_PROGRAM} from './helper/tool';
+import { isValidEthereumAddress, SYSTEM_PROGRAM } from './helper/tool';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 const options = {
@@ -22,7 +22,7 @@ async function main() {
   console.log('args:', args);
   let svmContext = await createSVMContext();
 
-  const newAdminKey = new PublicKey(args.newAdmin)
+  const newAdminKey = new PublicKey(args.newAdmin);
 
   const [bridgeOwnerKey] = PublicKey.findProgramAddressSync(
     [Buffer.from('bridge-owner')],
@@ -34,10 +34,7 @@ async function main() {
     Int8Array.from([BridgeInstructionIndex.ChangeBridgeAdmin]),
   );
   const instruction = new TransactionInstruction({
-    data: Buffer.concat([
-      instructionIndex,
-      newAdminKey.toBuffer(),
-    ]),
+    data: Buffer.concat([instructionIndex, newAdminKey.toBuffer()]),
     keys: [
       { pubkey: bridgeOwnerKey, isSigner: false, isWritable: true },
       {
