@@ -143,3 +143,11 @@ yarn fetch_all_withdrawal_tx_by_user --sender=9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9
 ```bash
 yarn change_bridge_admin --newAdmin=9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU
 ```
+
+### Squads Multisig Operations
+
+1. Create SPL token proposal:
+
+```bash
+yarn create_spl_proposal --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --name='USD Coin' --symbol='USDC' --uri='https://ipfs.io/ipfs/QmXRVXSRbH9nKYPgVfakXRhDhEaXWs6QYu3rToadXhtHPr' --decimals=6
+```
