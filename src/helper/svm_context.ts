@@ -228,7 +228,7 @@ export async function sendTransaction(
       payerKey: svmContext.SVM_USER.publicKey,
       recentBlockhash: recentBlockHash.blockhash,
       instructions: instructions,
-    }).compileToLegacyMessage();
+    }).compileToV0Message();
     let versionedTx = new VersionedTransaction(transaction);
     let signers = [svmContext.SVM_USER];
     if (requireAdminSig) {
