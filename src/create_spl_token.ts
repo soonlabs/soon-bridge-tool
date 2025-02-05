@@ -12,9 +12,10 @@ import { ethers } from 'ethers';
 import minimist from 'minimist';
 import { isValidEthereumAddress, SYSTEM_PROGRAM } from './helper/tool';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 
 const options = {
-  string: ['l1Token', 'name', 'symbol', 'decimals'],
+  string: ['l1Token', 'name', 'symbol', 'uri', 'decimals'],
 };
 
 async function main() {
@@ -50,6 +51,15 @@ async function main() {
   );
   console.log(`bridgeOwnerKey: ${bridgeOwnerKey.toString()}`);
 
+  const [metadataKey] = PublicKey.findProgramAddressSync(
+    [
+      Buffer.from('metadata'),
+      PROGRAM_ID.toBuffer(),
+      splTokenMintKey.toBuffer(),
+    ],
+    PROGRAM_ID,
+  );
+
   const instructionIndex = Buffer.from(
     Int8Array.from([BridgeInstructionIndex.CreateSPL]),
   );
@@ -61,6 +71,8 @@ async function main() {
       Buffer.from(args.name, 'utf8'),
       Buffer.from(Int8Array.from([args.symbol.length])),
       Buffer.from(args.symbol, 'utf8'),
+      Buffer.from(Int8Array.from([args.uri.length])),
+      Buffer.from(args.uri, 'utf8'),
       Buffer.from(Int8Array.from([args.decimals])),
     ]),
     keys: [
@@ -74,8 +86,10 @@ async function main() {
       {
         pubkey: svmContext.SVM_BRIDGE_ADMIN.publicKey,
         isSigner: true,
-        isWritable: false,
+        isWritable: true,
       },
+      { pubkey: PROGRAM_ID, isSigner: false, isWritable: false },
+      { pubkey: metadataKey, isSigner: false, isWritable: true },
     ],
     programId: svmContext.SVM_BRIDGE_PROGRAM_ID,
   });
