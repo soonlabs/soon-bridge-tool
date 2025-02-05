@@ -1,11 +1,9 @@
 import {
   BridgeInstructionIndex,
   createSVMContext,
-  DEFAULT_BRIDGE_PROGRAM,
   genProgramDataAccountKey,
   genProgramDataAccountKeyWithBufferSeeds,
   sendTransaction,
-  SYSTEM_PROGRAM,
 } from './helper/svm_context';
 import {
   PublicKey,
@@ -15,7 +13,11 @@ import {
 import { ethers } from 'ethers';
 import { Numberu128, Numberu64 } from './helper/number.utils';
 import minimist from 'minimist';
-import { isValidEthereumAddress } from './helper/tool';
+import {
+  DEFAULT_BRIDGE_PROGRAM,
+  isValidEthereumAddress,
+  SYSTEM_PROGRAM,
+} from './helper/tool';
 import {
   getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
@@ -53,7 +55,8 @@ async function main() {
   const accountInfo = await svmContext.SVM_Connection.getAccountInfo(
     userWithdrawalCounterKey,
   );
-  let counterExists = accountInfo && accountInfo.owner.equals(svmContext.SVM_BRIDGE_PROGRAM_ID);
+  let counterExists =
+    accountInfo && accountInfo.owner.equals(svmContext.SVM_BRIDGE_PROGRAM_ID);
 
   const instructions: TransactionInstruction[] = [];
   if (!counterExists) {

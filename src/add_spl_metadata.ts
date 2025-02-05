@@ -11,10 +11,10 @@ import {
 import { ethers } from 'ethers';
 import minimist from 'minimist';
 import { isValidEthereumAddress, SYSTEM_PROGRAM } from './helper/tool';
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 
 const options = {
-  string: ['l1Token', 'name', 'symbol', 'decimals'],
+  string: ['l1Token', 'name', 'symbol', 'uri'],
 };
 
 async function main() {
@@ -50,8 +50,17 @@ async function main() {
   );
   console.log(`bridgeOwnerKey: ${bridgeOwnerKey.toString()}`);
 
+  const [metadataKey] = PublicKey.findProgramAddressSync(
+    [
+      Buffer.from('metadata'),
+      PROGRAM_ID.toBuffer(),
+      splTokenMintKey.toBuffer(),
+    ],
+    PROGRAM_ID,
+  );
+
   const instructionIndex = Buffer.from(
-    Int8Array.from([BridgeInstructionIndex.CreateSPL]),
+    Int8Array.from([BridgeInstructionIndex.AddSPLMetadata]),
   );
   const instruction = new TransactionInstruction({
     data: Buffer.concat([
@@ -61,20 +70,21 @@ async function main() {
       Buffer.from(args.name, 'utf8'),
       Buffer.from(Int8Array.from([args.symbol.length])),
       Buffer.from(args.symbol, 'utf8'),
-      Buffer.from(Int8Array.from([args.decimals])),
+      Buffer.from(Int8Array.from([args.uri.length])),
+      Buffer.from(args.uri, 'utf8'),
     ]),
     keys: [
+      { pubkey: metadataKey, isSigner: false, isWritable: true },
+      { pubkey: splTokenMintKey, isSigner: false, isWritable: true },
+      { pubkey: splTokenOwnerKey, isSigner: false, isWritable: false },
       { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-      { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-      { pubkey: splTokenOwnerKey, isSigner: false, isWritable: false },
-      { pubkey: splTokenMintKey, isSigner: false, isWritable: true },
-      { pubkey: vaultKey, isSigner: false, isWritable: true },
+      { pubkey: PROGRAM_ID, isSigner: false, isWritable: false },
       { pubkey: bridgeOwnerKey, isSigner: false, isWritable: false },
       {
         pubkey: svmContext.SVM_BRIDGE_ADMIN.publicKey,
         isSigner: true,
-        isWritable: false,
+        isWritable: true,
       },
     ],
     programId: svmContext.SVM_BRIDGE_PROGRAM_ID,

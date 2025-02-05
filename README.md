@@ -116,10 +116,30 @@ yarn mint_test_erc20 --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --l1
 yarn calculate_ata --l2Pubkey='9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU' --splMintKey='Av7G6mUjHpRQtW1eAvKkmcm9NuuUkADmR1xR4F41sSfM'
 ```
 
+4. Add metadata for SPL token:
+
+```bash
+yarn add_spl_metadata --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --name='USD Coin' --symbol='USDC' --uri='https://ipfs.io/ipfs/QmXRVXSRbH9nKYPgVfakXRhDhEaXWs6QYu3rToadXhtHPr'
+```
+
 ### Query Operations
 
 - Fetch withdrawals by user:
 
 ```bash
 yarn fetch_all_withdrawal_tx_by_user --sender=9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU
+```
+
+- Calculate L2 block info hash by l1 block hash:
+
+```bash
+ yarn calculate_l2_block_info_tx_signature --l1BlockHash 0xbdca34790fa5942964c587e624d46e94393fc3ce5a9a5ab3262aab8db3e4
+```
+
+### Admin Operations
+
+- Change bridge admin:
+
+```bash
+yarn change_bridge_admin --newAdmin=9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU
 ```
