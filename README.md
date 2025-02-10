@@ -95,6 +95,11 @@ yarn fetch_withdraw_finalize_status --withdrawId=5y4cigJregZVg7QzjXHPJCZwq1nGzjz
 yarn finalize_withdraw --withdrawId=5y4cigJregZVg7QzjXHPJCZwq1nGzjzqWkG7JjXiRHo7
 ```
 
+6. Relay withdrawal:
+
+```bash
+yarn relay_withdraw --txHash=0x0f95580f185a2e7c6db077c559646cf6081059ca1fbaaff6df14f68201532a66
+```
 
 ### Token Operations
 
