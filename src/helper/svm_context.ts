@@ -27,6 +27,8 @@ export interface SVM_CONTEXT {
   SVM_BRIDGE_ADMIN: Keypair;
   SVM_BRIDGE_PROGRAM_ID: PublicKey;
   SVM_L1_BLOCK_INFO_PROGRAM_ID: PublicKey;
+  SQUADS_PROGRAM_KEY: PublicKey | undefined;
+  SQUADS_CREATE_KEY: PublicKey | undefined;
 }
 
 export enum L1BlockInfoInstructionIndex {
@@ -105,6 +107,12 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
   const balance = await SVM_Connection.getBalance(SVM_USER.publicKey);
   console.log('svm user balance: ', balance);
 
+  const squads_program_key = process.env.SQUADS_PROGRAM_KEY;
+  const SQUADS_PROGRAM_KEY = squads_program_key ? new PublicKey(squads_program_key) : undefined;
+
+  const squads_create_key = process.env.SQUADS_CREATE_KEY;
+  const SQUADS_CREATE_KEY = squads_create_key ? new PublicKey(squads_create_key) : undefined;
+
   return {
     SVM_Connection,
     SVM_USER,
@@ -113,6 +121,8 @@ export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
     SVM_BRIDGE_PROGRAM_ID,
     SVM_L1_BLOCK_INFO_PROGRAM_ID,
     SVM_RPC_URL,
+    SQUADS_CREATE_KEY,
+    SQUADS_PROGRAM_KEY,
   };
 };
 
