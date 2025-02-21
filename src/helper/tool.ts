@@ -104,14 +104,18 @@ export function sleep(ms: number) {
 
 export async function sendSlackMessage(slackUrl: string, message: string) {
   console.log(message);
-  const response = await axios.post(slackUrl, {
-    text: message,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  if (response.status != 200) {
-    console.error('send slack message failed, response data', response.data);
+  try {
+    const response = await axios.post(slackUrl, {
+      text: message,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (response.status != 200) {
+      console.error('send slack message failed, response data', response.data);
+    }
+  } catch (e) {
+    console.error('send slack message failed:', e);
   }
 }
 
