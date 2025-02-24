@@ -9,6 +9,8 @@ import {
 import { WithdrawalProvenEvent } from '../typechain-types/OptimismPortal';
 import { formatEther, formatUnits } from 'ethers/lib/utils';
 import axios from 'axios';
+import minimist from 'minimist';
+import { Numberu128 } from './helper/number.utils';
 
 const RelaySignature =
   'relayMessage(uint256,bytes32,address,uint256,uint256,bytes)';
@@ -17,19 +19,35 @@ const FinalizeERC20Signature =
   'finalizeBridgeERC20(address,bytes32,bytes32,address,uint256,bytes)';
 let SlackHookURL: string;
 
+const options = {
+  string: ['startHeight'],
+};
+
 async function main() {
+  const args = minimist(process.argv.slice(2), options);
+  console.log('args:', args);
+
   let evmContext = await createEVMContext();
 
   const SLACKHOOKURL = process.env.SLACKHOOKURL;
   if (!SLACKHOOKURL) throw `missing env SLACKHOOKURL`;
   SlackHookURL = SLACKHOOKURL;
 
-  await sendSlackMessage(
-    SlackHookURL,
-    'withdraw watcher start, replay transaction in the past an hour',
-  );
-
   let scanStartHeight = 0;
+  if (!args.startHeight) {
+    await sendSlackMessage(
+      SlackHookURL,
+      'withdraw watcher start, replay transaction in the past an hour',
+    );
+  } else {
+    scanStartHeight = args.startHeight.toNumber;
+    await sendSlackMessage(
+      SlackHookURL,
+      'withdraw watcher start, replay transaction from height:' +
+        args.startHeight,
+    );
+  }
+
   const OptimismPortal = OptimismPortal__factory.connect(
     evmContext.EVM_OP_PORTAL,
     evmContext.EVM_USER,
@@ -44,11 +62,6 @@ async function main() {
         scanStartHeight = latestHeight - 300;
       }
 
-      // let withdraws = await OptimismPortal.queryFilter(
-      //   filters,
-      //   21671664,
-      //   21671664,
-      // );
       let withdraws = await OptimismPortal.queryFilter(
         filters,
         scanStartHeight,

@@ -8,9 +8,17 @@ import {
 import { OptimismPortal__factory } from '../typechain-types';
 import { TransactionDepositedEvent } from '../typechain-types/OptimismPortal';
 import { createSVMContext, SVM_CONTEXT } from './helper/svm_context';
+import minimist from 'minimist';
+
+const options = {
+  string: ['startHeight'],
+};
 
 let SlackHookURL: string;
 async function main() {
+  const args = minimist(process.argv.slice(2), options);
+  console.log('args:', args);
+
   let evmContext = await createEVMContext();
   let svmContext = await createSVMContext();
 
@@ -18,12 +26,21 @@ async function main() {
   if (!SLACKHOOKURL) throw `missing env SLACKHOOKURL`;
   SlackHookURL = SLACKHOOKURL;
 
-  await sendSlackMessage(
-    SlackHookURL,
-    'deposit watcher start, replay transaction in the past three hour',
-  );
-
   let scanStartHeight = 0;
+  if (!args.startHeight) {
+    await sendSlackMessage(
+      SlackHookURL,
+      'deposit watcher start, replay transaction in the past an hour',
+    );
+  } else {
+    scanStartHeight = args.startHeight.toNumber;
+    await sendSlackMessage(
+      SlackHookURL,
+      'deposit watcher start, replay transaction from height:' +
+        args.startHeight,
+    );
+  }
+
   const OptimismPortal = OptimismPortal__factory.connect(
     evmContext.EVM_OP_PORTAL,
     evmContext.EVM_USER,
@@ -36,7 +53,7 @@ async function main() {
       let latestHeight = latestBlock.number - 5;
       console.log(`latest block height: ${latestHeight}`);
       if (scanStartHeight == 0) {
-        scanStartHeight = latestHeight - 900;
+        scanStartHeight = latestHeight - 300;
       }
 
       let deposits = await OptimismPortal.queryFilter(

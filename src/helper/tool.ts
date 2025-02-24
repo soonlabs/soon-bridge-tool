@@ -117,6 +117,8 @@ export async function sendSlackMessage(slackUrl: string, message: string) {
   } catch (e) {
     console.error('send slack message failed:', e);
   }
+
+  await sleep(100);
 }
 
 const ParseDepositABI = [
