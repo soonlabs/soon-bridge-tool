@@ -14,6 +14,7 @@ export interface EVM_CONTEXT {
   EVM_OP_PORTAL: string;
   EVM_STANDARD_BRIDGE: string;
   EVM_MESSENGER: string;
+  EVM_SYSTEM_CONFIG: string;
 }
 
 export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
@@ -51,13 +52,13 @@ export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
     EVM_STANDARD_BRIDGE,
     EVM_PROVIDER,
   );
-  const l1CrossDomainMessenger = await StandardBridge.messenger();
+  const EVM_MESSENGER = await StandardBridge.messenger();
   const L1CrossDomainMessenger = L1CrossDomainMessenger__factory.connect(
-    l1CrossDomainMessenger,
+    EVM_MESSENGER,
     EVM_PROVIDER,
   );
-  const EVM_MESSENGER = l1CrossDomainMessenger;
   const EVM_OP_PORTAL = await L1CrossDomainMessenger.PORTAL();
+  const EVM_SYSTEM_CONFIG = await StandardBridge.systemConfig();
 
   return {
     EVM_PROVIDER,
@@ -66,5 +67,6 @@ export const createEVMContext = async (): Promise<EVM_CONTEXT> => {
     EVM_OP_PORTAL,
     EVM_STANDARD_BRIDGE,
     EVM_MESSENGER,
+    EVM_SYSTEM_CONFIG,
   };
 };
