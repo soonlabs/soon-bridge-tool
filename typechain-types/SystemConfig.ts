@@ -104,7 +104,7 @@ export interface SystemConfigInterface extends utils.Interface {
     "gasPayingToken()": FunctionFragment;
     "gasPayingTokenName()": FunctionFragment;
     "gasPayingTokenSymbol()": FunctionFragment;
-    "initialize(address,uint32,uint32,bytes32,uint64,address,(uint32,uint8,uint8,uint32,uint32,uint128),address,(address,address,address,address,address,address,address))": FunctionFragment;
+    "initialize(address,uint32,uint32,bytes32,uint64,bytes32,(uint32,uint8,uint8,uint32,uint32,uint128),address,(address,address,address,address,address,address,address))": FunctionFragment;
     "isCustomGasToken()": FunctionFragment;
     "l1CrossDomainMessenger()": FunctionFragment;
     "l1ERC721Bridge()": FunctionFragment;
@@ -122,7 +122,7 @@ export interface SystemConfigInterface extends utils.Interface {
     "setGasConfig(uint256,uint256)": FunctionFragment;
     "setGasConfigEcotone(uint32,uint32)": FunctionFragment;
     "setGasLimit(uint64)": FunctionFragment;
-    "setUnsafeBlockSigner(address)": FunctionFragment;
+    "setUnsafeBlockSigner(bytes32)": FunctionFragment;
     "startBlock()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unsafeBlockSigner()": FunctionFragment;
@@ -253,7 +253,7 @@ export interface SystemConfigInterface extends utils.Interface {
       BigNumberish,
       BytesLike,
       BigNumberish,
-      string,
+      BytesLike,
       ResourceMetering.ResourceConfigStruct,
       string,
       SystemConfig.AddressesStruct
@@ -320,7 +320,7 @@ export interface SystemConfigInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "setUnsafeBlockSigner",
-    values: [string]
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "startBlock",
@@ -662,7 +662,7 @@ export interface SystemConfig extends BaseContract {
       _blobbasefeeScalar: BigNumberish,
       _batcherHash: BytesLike,
       _gasLimit: BigNumberish,
-      _unsafeBlockSigner: string,
+      _unsafeBlockSigner: BytesLike,
       _config: ResourceMetering.ResourceConfigStruct,
       _batchInbox: string,
       _addresses: SystemConfig.AddressesStruct,
@@ -793,7 +793,7 @@ export interface SystemConfig extends BaseContract {
      * @param _unsafeBlockSigner New unsafe block signer address.
      */
     setUnsafeBlockSigner(
-      _unsafeBlockSigner: string,
+      _unsafeBlockSigner: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -930,7 +930,7 @@ export interface SystemConfig extends BaseContract {
     _blobbasefeeScalar: BigNumberish,
     _batcherHash: BytesLike,
     _gasLimit: BigNumberish,
-    _unsafeBlockSigner: string,
+    _unsafeBlockSigner: BytesLike,
     _config: ResourceMetering.ResourceConfigStruct,
     _batchInbox: string,
     _addresses: SystemConfig.AddressesStruct,
@@ -1051,7 +1051,7 @@ export interface SystemConfig extends BaseContract {
    * @param _unsafeBlockSigner New unsafe block signer address.
    */
   setUnsafeBlockSigner(
-    _unsafeBlockSigner: string,
+    _unsafeBlockSigner: BytesLike,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1184,7 +1184,7 @@ export interface SystemConfig extends BaseContract {
       _blobbasefeeScalar: BigNumberish,
       _batcherHash: BytesLike,
       _gasLimit: BigNumberish,
-      _unsafeBlockSigner: string,
+      _unsafeBlockSigner: BytesLike,
       _config: ResourceMetering.ResourceConfigStruct,
       _batchInbox: string,
       _addresses: SystemConfig.AddressesStruct,
@@ -1303,7 +1303,7 @@ export interface SystemConfig extends BaseContract {
      * @param _unsafeBlockSigner New unsafe block signer address.
      */
     setUnsafeBlockSigner(
-      _unsafeBlockSigner: string,
+      _unsafeBlockSigner: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1462,7 +1462,7 @@ export interface SystemConfig extends BaseContract {
       _blobbasefeeScalar: BigNumberish,
       _batcherHash: BytesLike,
       _gasLimit: BigNumberish,
-      _unsafeBlockSigner: string,
+      _unsafeBlockSigner: BytesLike,
       _config: ResourceMetering.ResourceConfigStruct,
       _batchInbox: string,
       _addresses: SystemConfig.AddressesStruct,
@@ -1581,7 +1581,7 @@ export interface SystemConfig extends BaseContract {
      * @param _unsafeBlockSigner New unsafe block signer address.
      */
     setUnsafeBlockSigner(
-      _unsafeBlockSigner: string,
+      _unsafeBlockSigner: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -1731,7 +1731,7 @@ export interface SystemConfig extends BaseContract {
       _blobbasefeeScalar: BigNumberish,
       _batcherHash: BytesLike,
       _gasLimit: BigNumberish,
-      _unsafeBlockSigner: string,
+      _unsafeBlockSigner: BytesLike,
       _config: ResourceMetering.ResourceConfigStruct,
       _batchInbox: string,
       _addresses: SystemConfig.AddressesStruct,
@@ -1854,7 +1854,7 @@ export interface SystemConfig extends BaseContract {
      * @param _unsafeBlockSigner New unsafe block signer address.
      */
     setUnsafeBlockSigner(
-      _unsafeBlockSigner: string,
+      _unsafeBlockSigner: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
