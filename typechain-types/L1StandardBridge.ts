@@ -41,8 +41,6 @@ export interface L1StandardBridgeInterface extends utils.Interface {
     "depositETH(uint32,bytes)": FunctionFragment;
     "depositETHTo(bytes32,uint32,bytes)": FunctionFragment;
     "deposits(address,bytes32)": FunctionFragment;
-    "encodeBridgeERC20L2Message(address,bytes32,address,bytes32,uint256,bytes)": FunctionFragment;
-    "encodeBridgeETHL2Message(address,bytes32,uint256,bytes)": FunctionFragment;
     "finalizeBridgeERC20(address,bytes32,bytes32,address,uint256,bytes)": FunctionFragment;
     "finalizeBridgeETH(bytes32,address,uint256,bytes)": FunctionFragment;
     "finalizeERC20Withdrawal(address,bytes32,bytes32,address,uint256,bytes)": FunctionFragment;
@@ -71,8 +69,6 @@ export interface L1StandardBridgeInterface extends utils.Interface {
       | "depositETH"
       | "depositETHTo"
       | "deposits"
-      | "encodeBridgeERC20L2Message"
-      | "encodeBridgeETHL2Message"
       | "finalizeBridgeERC20"
       | "finalizeBridgeETH"
       | "finalizeERC20Withdrawal"
@@ -145,14 +141,6 @@ export interface L1StandardBridgeInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "deposits",
     values: [string, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "encodeBridgeERC20L2Message",
-    values: [string, BytesLike, string, BytesLike, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "encodeBridgeETHL2Message",
-    values: [string, BytesLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "finalizeBridgeERC20",
@@ -230,14 +218,6 @@ export interface L1StandardBridgeInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposits", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "encodeBridgeERC20L2Message",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "encodeBridgeETHL2Message",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "finalizeBridgeERC20",
     data: BytesLike
@@ -579,39 +559,6 @@ export interface L1StandardBridge extends BaseContract {
     ): Promise<[BigNumber]>;
 
     /**
-     * Encode L2 message for bridge ERC20 from L1 to L2.
-     * @param _amount Amount of local tokens to deposit.
-     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
-     * @param _localToken Address of the ERC20 on this chain.
-     * @param _remoteToken Address of the corresponding token on the remote chain.
-     * @param _to Address of the receiver.
-     */
-    encodeBridgeERC20L2Message(
-      _localToken: string,
-      _remoteToken: BytesLike,
-      _from: string,
-      _to: BytesLike,
-      _amount: BigNumberish,
-      _extraData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    /**
-     * Encode L2 message for bridge ETH from L1 to L2.
-     * @param _amount Amount of ETH being bridged.
-     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
-     * @param _from Address of the sender.
-     * @param _to Address of the receiver.
-     */
-    encodeBridgeETHL2Message(
-      _from: string,
-      _to: BytesLike,
-      _amount: BigNumberish,
-      _extraData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    /**
      * Finalizes an ERC20 bridge on this chain. Can only be triggered by the other         StandardBridge contract on the remote chain.
      * @param _amount Amount of the ERC20 being bridged.
      * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
@@ -851,39 +798,6 @@ export interface L1StandardBridge extends BaseContract {
   ): Promise<BigNumber>;
 
   /**
-   * Encode L2 message for bridge ERC20 from L1 to L2.
-   * @param _amount Amount of local tokens to deposit.
-   * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
-   * @param _localToken Address of the ERC20 on this chain.
-   * @param _remoteToken Address of the corresponding token on the remote chain.
-   * @param _to Address of the receiver.
-   */
-  encodeBridgeERC20L2Message(
-    _localToken: string,
-    _remoteToken: BytesLike,
-    _from: string,
-    _to: BytesLike,
-    _amount: BigNumberish,
-    _extraData: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  /**
-   * Encode L2 message for bridge ETH from L1 to L2.
-   * @param _amount Amount of ETH being bridged.
-   * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
-   * @param _from Address of the sender.
-   * @param _to Address of the receiver.
-   */
-  encodeBridgeETHL2Message(
-    _from: string,
-    _to: BytesLike,
-    _amount: BigNumberish,
-    _extraData: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  /**
    * Finalizes an ERC20 bridge on this chain. Can only be triggered by the other         StandardBridge contract on the remote chain.
    * @param _amount Amount of the ERC20 being bridged.
    * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
@@ -1121,39 +1035,6 @@ export interface L1StandardBridge extends BaseContract {
       arg1: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    /**
-     * Encode L2 message for bridge ERC20 from L1 to L2.
-     * @param _amount Amount of local tokens to deposit.
-     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
-     * @param _localToken Address of the ERC20 on this chain.
-     * @param _remoteToken Address of the corresponding token on the remote chain.
-     * @param _to Address of the receiver.
-     */
-    encodeBridgeERC20L2Message(
-      _localToken: string,
-      _remoteToken: BytesLike,
-      _from: string,
-      _to: BytesLike,
-      _amount: BigNumberish,
-      _extraData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    /**
-     * Encode L2 message for bridge ETH from L1 to L2.
-     * @param _amount Amount of ETH being bridged.
-     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
-     * @param _from Address of the sender.
-     * @param _to Address of the receiver.
-     */
-    encodeBridgeETHL2Message(
-      _from: string,
-      _to: BytesLike,
-      _amount: BigNumberish,
-      _extraData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     /**
      * Finalizes an ERC20 bridge on this chain. Can only be triggered by the other         StandardBridge contract on the remote chain.
@@ -1521,39 +1402,6 @@ export interface L1StandardBridge extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Encode L2 message for bridge ERC20 from L1 to L2.
-     * @param _amount Amount of local tokens to deposit.
-     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
-     * @param _localToken Address of the ERC20 on this chain.
-     * @param _remoteToken Address of the corresponding token on the remote chain.
-     * @param _to Address of the receiver.
-     */
-    encodeBridgeERC20L2Message(
-      _localToken: string,
-      _remoteToken: BytesLike,
-      _from: string,
-      _to: BytesLike,
-      _amount: BigNumberish,
-      _extraData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
-     * Encode L2 message for bridge ETH from L1 to L2.
-     * @param _amount Amount of ETH being bridged.
-     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
-     * @param _from Address of the sender.
-     * @param _to Address of the receiver.
-     */
-    encodeBridgeETHL2Message(
-      _from: string,
-      _to: BytesLike,
-      _amount: BigNumberish,
-      _extraData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
      * Finalizes an ERC20 bridge on this chain. Can only be triggered by the other         StandardBridge contract on the remote chain.
      * @param _amount Amount of the ERC20 being bridged.
      * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
@@ -1792,39 +1640,6 @@ export interface L1StandardBridge extends BaseContract {
     deposits(
       arg0: string,
       arg1: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Encode L2 message for bridge ERC20 from L1 to L2.
-     * @param _amount Amount of local tokens to deposit.
-     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
-     * @param _localToken Address of the ERC20 on this chain.
-     * @param _remoteToken Address of the corresponding token on the remote chain.
-     * @param _to Address of the receiver.
-     */
-    encodeBridgeERC20L2Message(
-      _localToken: string,
-      _remoteToken: BytesLike,
-      _from: string,
-      _to: BytesLike,
-      _amount: BigNumberish,
-      _extraData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Encode L2 message for bridge ETH from L1 to L2.
-     * @param _amount Amount of ETH being bridged.
-     * @param _extraData Extra data to be sent with the transaction. Note that the recipient will                     not be triggered with this data, but it will be emitted and can be used                     to identify the transaction.
-     * @param _from Address of the sender.
-     * @param _to Address of the receiver.
-     */
-    encodeBridgeETHL2Message(
-      _from: string,
-      _to: BytesLike,
-      _amount: BigNumberish,
-      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

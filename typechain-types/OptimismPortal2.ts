@@ -83,6 +83,7 @@ export interface OptimismPortal2Interface extends utils.Interface {
     "finalizeWithdrawalTransaction((uint256,bytes32,address,uint256,uint256,bytes))": FunctionFragment;
     "finalizeWithdrawalTransactionExternalProof((uint256,bytes32,address,uint256,uint256,bytes),address)": FunctionFragment;
     "finalizedWithdrawals(bytes32)": FunctionFragment;
+    "frozenWithdrawals(bytes32)": FunctionFragment;
     "guardian()": FunctionFragment;
     "initialize(address,address,address,uint32)": FunctionFragment;
     "l2Sender()": FunctionFragment;
@@ -99,6 +100,7 @@ export interface OptimismPortal2Interface extends utils.Interface {
     "setRespectedGameType(uint32)": FunctionFragment;
     "superchainConfig()": FunctionFragment;
     "systemConfig()": FunctionFragment;
+    "updateWithdrawalFrozenState(bytes32,bool)": FunctionFragment;
     "version()": FunctionFragment;
   };
 
@@ -117,6 +119,7 @@ export interface OptimismPortal2Interface extends utils.Interface {
       | "finalizeWithdrawalTransaction"
       | "finalizeWithdrawalTransactionExternalProof"
       | "finalizedWithdrawals"
+      | "frozenWithdrawals"
       | "guardian"
       | "initialize"
       | "l2Sender"
@@ -133,6 +136,7 @@ export interface OptimismPortal2Interface extends utils.Interface {
       | "setRespectedGameType"
       | "superchainConfig"
       | "systemConfig"
+      | "updateWithdrawalFrozenState"
       | "version"
   ): FunctionFragment;
 
@@ -187,6 +191,10 @@ export interface OptimismPortal2Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "finalizedWithdrawals",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "frozenWithdrawals",
     values: [BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "guardian", values?: undefined): string;
@@ -247,6 +255,10 @@ export interface OptimismPortal2Interface extends utils.Interface {
     functionFragment: "systemConfig",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateWithdrawalFrozenState",
+    values: [BytesLike, boolean]
+  ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
   decodeFunctionResult(
@@ -293,6 +305,10 @@ export interface OptimismPortal2Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "finalizedWithdrawals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "frozenWithdrawals",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "guardian", data: BytesLike): Result;
@@ -344,6 +360,10 @@ export interface OptimismPortal2Interface extends utils.Interface {
     functionFragment: "systemConfig",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateWithdrawalFrozenState",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
@@ -352,6 +372,7 @@ export interface OptimismPortal2Interface extends utils.Interface {
     "RespectedGameTypeSet(uint32,uint64)": EventFragment;
     "TransactionDeposited(address,bytes32,uint256,bytes)": EventFragment;
     "WithdrawalFinalized(bytes32,bool)": EventFragment;
+    "WithdrawalFrozenStateUpdated(bytes32,bool)": EventFragment;
     "WithdrawalProven(bytes32,bytes32,address)": EventFragment;
     "WithdrawalProvenExtension1(bytes32,address)": EventFragment;
   };
@@ -361,6 +382,9 @@ export interface OptimismPortal2Interface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "RespectedGameTypeSet"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "TransactionDeposited"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawalFinalized"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "WithdrawalFrozenStateUpdated"
+  ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawalProven"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "WithdrawalProvenExtension1"): EventFragment;
 }
@@ -420,6 +444,18 @@ export type WithdrawalFinalizedEvent = TypedEvent<
 
 export type WithdrawalFinalizedEventFilter =
   TypedEventFilter<WithdrawalFinalizedEvent>;
+
+export interface WithdrawalFrozenStateUpdatedEventObject {
+  withdrawalHash: string;
+  frozen: boolean;
+}
+export type WithdrawalFrozenStateUpdatedEvent = TypedEvent<
+  [string, boolean],
+  WithdrawalFrozenStateUpdatedEventObject
+>;
+
+export type WithdrawalFrozenStateUpdatedEventFilter =
+  TypedEventFilter<WithdrawalFrozenStateUpdatedEvent>;
 
 export interface WithdrawalProvenEventObject {
   withdrawalHash: string;
@@ -580,6 +616,14 @@ export interface OptimismPortal2 extends BaseContract {
     ): Promise<[boolean]>;
 
     /**
+     * A list of withdrawal hashes which have been frozen.
+     */
+    frozenWithdrawals(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    /**
      * Getter function for the address of the guardian.         Public getter is legacy and will be removed in the future. Use `SuperchainConfig.guardian()` instead.
      */
     guardian(overrides?: CallOverrides): Promise<[string]>;
@@ -703,6 +747,17 @@ export interface OptimismPortal2 extends BaseContract {
     systemConfig(overrides?: CallOverrides): Promise<[string]>;
 
     /**
+     * Update frozen state for withdrawal transaction.
+     * @param isFrozen new state to update
+     * @param withdrawalHash Withdrawal transaction to update for.
+     */
+    updateWithdrawalFrozenState(
+      withdrawalHash: BytesLike,
+      isFrozen: boolean,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
      * Semantic version.
      */
     version(overrides?: CallOverrides): Promise<[string]>;
@@ -810,6 +865,14 @@ export interface OptimismPortal2 extends BaseContract {
    * A list of withdrawal hashes which have been successfully finalized.
    */
   finalizedWithdrawals(
+    arg0: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  /**
+   * A list of withdrawal hashes which have been frozen.
+   */
+  frozenWithdrawals(
     arg0: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -938,6 +1001,17 @@ export interface OptimismPortal2 extends BaseContract {
   systemConfig(overrides?: CallOverrides): Promise<string>;
 
   /**
+   * Update frozen state for withdrawal transaction.
+   * @param isFrozen new state to update
+   * @param withdrawalHash Withdrawal transaction to update for.
+   */
+  updateWithdrawalFrozenState(
+    withdrawalHash: BytesLike,
+    isFrozen: boolean,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
    * Semantic version.
    */
   version(overrides?: CallOverrides): Promise<string>;
@@ -1043,6 +1117,14 @@ export interface OptimismPortal2 extends BaseContract {
      * A list of withdrawal hashes which have been successfully finalized.
      */
     finalizedWithdrawals(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    /**
+     * A list of withdrawal hashes which have been frozen.
+     */
+    frozenWithdrawals(
       arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -1171,6 +1253,17 @@ export interface OptimismPortal2 extends BaseContract {
     systemConfig(overrides?: CallOverrides): Promise<string>;
 
     /**
+     * Update frozen state for withdrawal transaction.
+     * @param isFrozen new state to update
+     * @param withdrawalHash Withdrawal transaction to update for.
+     */
+    updateWithdrawalFrozenState(
+      withdrawalHash: BytesLike,
+      isFrozen: boolean,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
      * Semantic version.
      */
     version(overrides?: CallOverrides): Promise<string>;
@@ -1217,6 +1310,15 @@ export interface OptimismPortal2 extends BaseContract {
       withdrawalHash?: BytesLike | null,
       success?: null
     ): WithdrawalFinalizedEventFilter;
+
+    "WithdrawalFrozenStateUpdated(bytes32,bool)"(
+      withdrawalHash?: BytesLike | null,
+      frozen?: null
+    ): WithdrawalFrozenStateUpdatedEventFilter;
+    WithdrawalFrozenStateUpdated(
+      withdrawalHash?: BytesLike | null,
+      frozen?: null
+    ): WithdrawalFrozenStateUpdatedEventFilter;
 
     "WithdrawalProven(bytes32,bytes32,address)"(
       withdrawalHash?: BytesLike | null,
@@ -1347,6 +1449,14 @@ export interface OptimismPortal2 extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
+     * A list of withdrawal hashes which have been frozen.
+     */
+    frozenWithdrawals(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    /**
      * Getter function for the address of the guardian.         Public getter is legacy and will be removed in the future. Use `SuperchainConfig.guardian()` instead.
      */
     guardian(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1460,6 +1570,17 @@ export interface OptimismPortal2 extends BaseContract {
     systemConfig(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Update frozen state for withdrawal transaction.
+     * @param isFrozen new state to update
+     * @param withdrawalHash Withdrawal transaction to update for.
+     */
+    updateWithdrawalFrozenState(
+      withdrawalHash: BytesLike,
+      isFrozen: boolean,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
      * Semantic version.
      */
     version(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1570,6 +1691,14 @@ export interface OptimismPortal2 extends BaseContract {
      * A list of withdrawal hashes which have been successfully finalized.
      */
     finalizedWithdrawals(
+      arg0: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * A list of withdrawal hashes which have been frozen.
+     */
+    frozenWithdrawals(
       arg0: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1690,6 +1819,17 @@ export interface OptimismPortal2 extends BaseContract {
      * Contract of the SystemConfig.
      */
     systemConfig(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Update frozen state for withdrawal transaction.
+     * @param isFrozen new state to update
+     * @param withdrawalHash Withdrawal transaction to update for.
+     */
+    updateWithdrawalFrozenState(
+      withdrawalHash: BytesLike,
+      isFrozen: boolean,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
 
     /**
      * Semantic version.

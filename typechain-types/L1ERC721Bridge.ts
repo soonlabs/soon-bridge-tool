@@ -33,7 +33,6 @@ export interface L1ERC721BridgeInterface extends utils.Interface {
     "bridgeERC721(address,bytes32,uint256,uint32,bytes)": FunctionFragment;
     "bridgeERC721To(address,bytes32,bytes32,uint256,uint32,bytes)": FunctionFragment;
     "deposits(address,bytes32,uint256)": FunctionFragment;
-    "encodeBridgeERC721L2Message(address,bytes32,address,bytes32,uint256,bytes)": FunctionFragment;
     "finalizeBridgeERC721(address,bytes32,bytes32,address,uint256,bytes)": FunctionFragment;
     "initialize(address,address)": FunctionFragment;
     "messenger()": FunctionFragment;
@@ -50,7 +49,6 @@ export interface L1ERC721BridgeInterface extends utils.Interface {
       | "bridgeERC721"
       | "bridgeERC721To"
       | "deposits"
-      | "encodeBridgeERC721L2Message"
       | "finalizeBridgeERC721"
       | "initialize"
       | "messenger"
@@ -83,10 +81,6 @@ export interface L1ERC721BridgeInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "deposits",
     values: [string, BytesLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "encodeBridgeERC721L2Message",
-    values: [string, BytesLike, string, BytesLike, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "finalizeBridgeERC721",
@@ -122,10 +116,6 @@ export interface L1ERC721BridgeInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "deposits", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "encodeBridgeERC721L2Message",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "finalizeBridgeERC721",
     data: BytesLike
@@ -272,25 +262,6 @@ export interface L1ERC721Bridge extends BaseContract {
     ): Promise<[boolean]>;
 
     /**
-     * Encode L2 message for bridge ERC721 from L1 to L2.
-     * @param _extraData Optional data to forward to the other domain. Data supplied here will                     not be used to execute any code on the other domain and is only emitted                     as extra data for the convenience of off-chain tooling.
-     * @param _from Address of the sender on this domain.
-     * @param _localToken Address of the ERC721 on this domain.
-     * @param _remoteToken Address of the ERC721 on the remote domain.
-     * @param _to Address to receive the token on the other domain.
-     * @param _tokenId Token ID to bridge.
-     */
-    encodeBridgeERC721L2Message(
-      _localToken: string,
-      _remoteToken: BytesLike,
-      _from: string,
-      _to: BytesLike,
-      _tokenId: BigNumberish,
-      _extraData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    /**
      * Completes an ERC721 bridge from the other domain and sends the ERC721 token to the         recipient on this domain.
      * @param _extraData Optional data to forward to L2.                     Data supplied here will not be used to execute any code on L2 and is                     only emitted as extra data for the convenience of off-chain tooling.
      * @param _from Address that triggered the bridge on the other domain.
@@ -398,25 +369,6 @@ export interface L1ERC721Bridge extends BaseContract {
   ): Promise<boolean>;
 
   /**
-   * Encode L2 message for bridge ERC721 from L1 to L2.
-   * @param _extraData Optional data to forward to the other domain. Data supplied here will                     not be used to execute any code on the other domain and is only emitted                     as extra data for the convenience of off-chain tooling.
-   * @param _from Address of the sender on this domain.
-   * @param _localToken Address of the ERC721 on this domain.
-   * @param _remoteToken Address of the ERC721 on the remote domain.
-   * @param _to Address to receive the token on the other domain.
-   * @param _tokenId Token ID to bridge.
-   */
-  encodeBridgeERC721L2Message(
-    _localToken: string,
-    _remoteToken: BytesLike,
-    _from: string,
-    _to: BytesLike,
-    _tokenId: BigNumberish,
-    _extraData: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  /**
    * Completes an ERC721 bridge from the other domain and sends the ERC721 token to the         recipient on this domain.
    * @param _extraData Optional data to forward to L2.                     Data supplied here will not be used to execute any code on L2 and is                     only emitted as extra data for the convenience of off-chain tooling.
    * @param _from Address that triggered the bridge on the other domain.
@@ -522,25 +474,6 @@ export interface L1ERC721Bridge extends BaseContract {
       arg2: BigNumberish,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    /**
-     * Encode L2 message for bridge ERC721 from L1 to L2.
-     * @param _extraData Optional data to forward to the other domain. Data supplied here will                     not be used to execute any code on the other domain and is only emitted                     as extra data for the convenience of off-chain tooling.
-     * @param _from Address of the sender on this domain.
-     * @param _localToken Address of the ERC721 on this domain.
-     * @param _remoteToken Address of the ERC721 on the remote domain.
-     * @param _to Address to receive the token on the other domain.
-     * @param _tokenId Token ID to bridge.
-     */
-    encodeBridgeERC721L2Message(
-      _localToken: string,
-      _remoteToken: BytesLike,
-      _from: string,
-      _to: BytesLike,
-      _tokenId: BigNumberish,
-      _extraData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     /**
      * Completes an ERC721 bridge from the other domain and sends the ERC721 token to the         recipient on this domain.
@@ -690,25 +623,6 @@ export interface L1ERC721Bridge extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Encode L2 message for bridge ERC721 from L1 to L2.
-     * @param _extraData Optional data to forward to the other domain. Data supplied here will                     not be used to execute any code on the other domain and is only emitted                     as extra data for the convenience of off-chain tooling.
-     * @param _from Address of the sender on this domain.
-     * @param _localToken Address of the ERC721 on this domain.
-     * @param _remoteToken Address of the ERC721 on the remote domain.
-     * @param _to Address to receive the token on the other domain.
-     * @param _tokenId Token ID to bridge.
-     */
-    encodeBridgeERC721L2Message(
-      _localToken: string,
-      _remoteToken: BytesLike,
-      _from: string,
-      _to: BytesLike,
-      _tokenId: BigNumberish,
-      _extraData: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    /**
      * Completes an ERC721 bridge from the other domain and sends the ERC721 token to the         recipient on this domain.
      * @param _extraData Optional data to forward to L2.                     Data supplied here will not be used to execute any code on L2 and is                     only emitted as extra data for the convenience of off-chain tooling.
      * @param _from Address that triggered the bridge on the other domain.
@@ -813,25 +727,6 @@ export interface L1ERC721Bridge extends BaseContract {
       arg0: string,
       arg1: BytesLike,
       arg2: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    /**
-     * Encode L2 message for bridge ERC721 from L1 to L2.
-     * @param _extraData Optional data to forward to the other domain. Data supplied here will                     not be used to execute any code on the other domain and is only emitted                     as extra data for the convenience of off-chain tooling.
-     * @param _from Address of the sender on this domain.
-     * @param _localToken Address of the ERC721 on this domain.
-     * @param _remoteToken Address of the ERC721 on the remote domain.
-     * @param _to Address to receive the token on the other domain.
-     * @param _tokenId Token ID to bridge.
-     */
-    encodeBridgeERC721L2Message(
-      _localToken: string,
-      _remoteToken: BytesLike,
-      _from: string,
-      _to: BytesLike,
-      _tokenId: BigNumberish,
-      _extraData: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

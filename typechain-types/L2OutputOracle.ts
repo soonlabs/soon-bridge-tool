@@ -51,7 +51,6 @@ export interface L2OutputOracleInterface extends utils.Interface {
     "challenger()": FunctionFragment;
     "computeL2Timestamp(uint256)": FunctionFragment;
     "deleteL2Outputs(uint256)": FunctionFragment;
-    "devClearL2Outputs()": FunctionFragment;
     "finalizationPeriodSeconds()": FunctionFragment;
     "getL2Output(uint256)": FunctionFragment;
     "getL2OutputAfter(uint256)": FunctionFragment;
@@ -67,6 +66,8 @@ export interface L2OutputOracleInterface extends utils.Interface {
     "startingBlockNumber()": FunctionFragment;
     "startingTimestamp()": FunctionFragment;
     "submissionInterval()": FunctionFragment;
+    "updateChallenger(address)": FunctionFragment;
+    "updateProposer(address)": FunctionFragment;
     "version()": FunctionFragment;
   };
 
@@ -80,7 +81,6 @@ export interface L2OutputOracleInterface extends utils.Interface {
       | "challenger"
       | "computeL2Timestamp"
       | "deleteL2Outputs"
-      | "devClearL2Outputs"
       | "finalizationPeriodSeconds"
       | "getL2Output"
       | "getL2OutputAfter"
@@ -96,6 +96,8 @@ export interface L2OutputOracleInterface extends utils.Interface {
       | "startingBlockNumber"
       | "startingTimestamp"
       | "submissionInterval"
+      | "updateChallenger"
+      | "updateProposer"
       | "version"
   ): FunctionFragment;
 
@@ -127,10 +129,6 @@ export interface L2OutputOracleInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "deleteL2Outputs",
     values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "devClearL2Outputs",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "finalizationPeriodSeconds",
@@ -197,6 +195,14 @@ export interface L2OutputOracleInterface extends utils.Interface {
     functionFragment: "submissionInterval",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateChallenger",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateProposer",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "CHALLENGER", data: BytesLike): Result;
@@ -220,10 +226,6 @@ export interface L2OutputOracleInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "deleteL2Outputs",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "devClearL2Outputs",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -280,18 +282,42 @@ export interface L2OutputOracleInterface extends utils.Interface {
     functionFragment: "submissionInterval",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateChallenger",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateProposer",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
+    "ChallengerUpdated(address,address)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "OutputProposed(bytes32,uint256,uint256,uint256)": EventFragment;
     "OutputsDeleted(uint256,uint256)": EventFragment;
+    "ProposerUpdated(address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "ChallengerUpdated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OutputProposed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OutputsDeleted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ProposerUpdated"): EventFragment;
 }
+
+export interface ChallengerUpdatedEventObject {
+  oldChallenger: string;
+  newChallenger: string;
+}
+export type ChallengerUpdatedEvent = TypedEvent<
+  [string, string],
+  ChallengerUpdatedEventObject
+>;
+
+export type ChallengerUpdatedEventFilter =
+  TypedEventFilter<ChallengerUpdatedEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -323,6 +349,17 @@ export type OutputsDeletedEvent = TypedEvent<
 >;
 
 export type OutputsDeletedEventFilter = TypedEventFilter<OutputsDeletedEvent>;
+
+export interface ProposerUpdatedEventObject {
+  oldProposer: string;
+  newProposer: string;
+}
+export type ProposerUpdatedEvent = TypedEvent<
+  [string, string],
+  ProposerUpdatedEventObject
+>;
+
+export type ProposerUpdatedEventFilter = TypedEventFilter<ProposerUpdatedEvent>;
 
 export interface L2OutputOracle extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -402,13 +439,6 @@ export interface L2OutputOracle extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Deletes all output proposals. Only for dev on sepolia
-     */
-    devClearL2Outputs(
-      overrides?: Overrides & { from?: string }
-    ): Promise<ContractTransaction>;
-
-    /**
      * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
      */
     finalizationPeriodSeconds(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -444,7 +474,7 @@ export interface L2OutputOracle extends BaseContract {
      * Initializer.
      * @param _challenger The address of the challenger.
      * @param _finalizationPeriodSeconds The minimum time (in seconds) that must elapse before a withdrawal                                   can be finalized.
-     * @param _l2BlockTime The time per L2 block, in seconds.
+     * @param _l2BlockTime The time per L2 block, in milli-seconds.
      * @param _proposer The address of the proposer.
      * @param _startingBlockNumber The number of the first L2 block.
      * @param _startingTimestamp The timestamp of the first L2 block.
@@ -522,6 +552,24 @@ export interface L2OutputOracle extends BaseContract {
     submissionInterval(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
+     * Update challenger address.
+     * @param newChallenger The new challenger address.
+     */
+    updateChallenger(
+      newChallenger: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Update proposer address.
+     * @param newProposer The new proposer address.
+     */
+    updateProposer(
+      newProposer: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
      * Semantic version.
      */
     version(overrides?: CallOverrides): Promise<[string]>;
@@ -576,13 +624,6 @@ export interface L2OutputOracle extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Deletes all output proposals. Only for dev on sepolia
-   */
-  devClearL2Outputs(
-    overrides?: Overrides & { from?: string }
-  ): Promise<ContractTransaction>;
-
-  /**
    * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
    */
   finalizationPeriodSeconds(overrides?: CallOverrides): Promise<BigNumber>;
@@ -618,7 +659,7 @@ export interface L2OutputOracle extends BaseContract {
    * Initializer.
    * @param _challenger The address of the challenger.
    * @param _finalizationPeriodSeconds The minimum time (in seconds) that must elapse before a withdrawal                                   can be finalized.
-   * @param _l2BlockTime The time per L2 block, in seconds.
+   * @param _l2BlockTime The time per L2 block, in milli-seconds.
    * @param _proposer The address of the proposer.
    * @param _startingBlockNumber The number of the first L2 block.
    * @param _startingTimestamp The timestamp of the first L2 block.
@@ -696,6 +737,24 @@ export interface L2OutputOracle extends BaseContract {
   submissionInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
+   * Update challenger address.
+   * @param newChallenger The new challenger address.
+   */
+  updateChallenger(
+    newChallenger: string,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Update proposer address.
+   * @param newProposer The new proposer address.
+   */
+  updateProposer(
+    newProposer: string,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
    * Semantic version.
    */
   version(overrides?: CallOverrides): Promise<string>;
@@ -750,11 +809,6 @@ export interface L2OutputOracle extends BaseContract {
     ): Promise<void>;
 
     /**
-     * Deletes all output proposals. Only for dev on sepolia
-     */
-    devClearL2Outputs(overrides?: CallOverrides): Promise<void>;
-
-    /**
      * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
      */
     finalizationPeriodSeconds(overrides?: CallOverrides): Promise<BigNumber>;
@@ -790,7 +844,7 @@ export interface L2OutputOracle extends BaseContract {
      * Initializer.
      * @param _challenger The address of the challenger.
      * @param _finalizationPeriodSeconds The minimum time (in seconds) that must elapse before a withdrawal                                   can be finalized.
-     * @param _l2BlockTime The time per L2 block, in seconds.
+     * @param _l2BlockTime The time per L2 block, in milli-seconds.
      * @param _proposer The address of the proposer.
      * @param _startingBlockNumber The number of the first L2 block.
      * @param _startingTimestamp The timestamp of the first L2 block.
@@ -868,12 +922,39 @@ export interface L2OutputOracle extends BaseContract {
     submissionInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Update challenger address.
+     * @param newChallenger The new challenger address.
+     */
+    updateChallenger(
+      newChallenger: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Update proposer address.
+     * @param newProposer The new proposer address.
+     */
+    updateProposer(
+      newProposer: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
      * Semantic version.
      */
     version(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
+    "ChallengerUpdated(address,address)"(
+      oldChallenger?: string | null,
+      newChallenger?: string | null
+    ): ChallengerUpdatedEventFilter;
+    ChallengerUpdated(
+      oldChallenger?: string | null,
+      newChallenger?: string | null
+    ): ChallengerUpdatedEventFilter;
+
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
 
@@ -898,6 +979,15 @@ export interface L2OutputOracle extends BaseContract {
       prevNextOutputIndex?: BigNumberish | null,
       newNextOutputIndex?: BigNumberish | null
     ): OutputsDeletedEventFilter;
+
+    "ProposerUpdated(address,address)"(
+      oldProposer?: string | null,
+      newProposer?: string | null
+    ): ProposerUpdatedEventFilter;
+    ProposerUpdated(
+      oldProposer?: string | null,
+      newProposer?: string | null
+    ): ProposerUpdatedEventFilter;
   };
 
   estimateGas: {
@@ -950,13 +1040,6 @@ export interface L2OutputOracle extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Deletes all output proposals. Only for dev on sepolia
-     */
-    devClearL2Outputs(
-      overrides?: Overrides & { from?: string }
-    ): Promise<BigNumber>;
-
-    /**
      * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
      */
     finalizationPeriodSeconds(overrides?: CallOverrides): Promise<BigNumber>;
@@ -992,7 +1075,7 @@ export interface L2OutputOracle extends BaseContract {
      * Initializer.
      * @param _challenger The address of the challenger.
      * @param _finalizationPeriodSeconds The minimum time (in seconds) that must elapse before a withdrawal                                   can be finalized.
-     * @param _l2BlockTime The time per L2 block, in seconds.
+     * @param _l2BlockTime The time per L2 block, in milli-seconds.
      * @param _proposer The address of the proposer.
      * @param _startingBlockNumber The number of the first L2 block.
      * @param _startingTimestamp The timestamp of the first L2 block.
@@ -1070,6 +1153,24 @@ export interface L2OutputOracle extends BaseContract {
     submissionInterval(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Update challenger address.
+     * @param newChallenger The new challenger address.
+     */
+    updateChallenger(
+      newChallenger: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Update proposer address.
+     * @param newProposer The new proposer address.
+     */
+    updateProposer(
+      newProposer: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
      * Semantic version.
      */
     version(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1129,13 +1230,6 @@ export interface L2OutputOracle extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Deletes all output proposals. Only for dev on sepolia
-     */
-    devClearL2Outputs(
-      overrides?: Overrides & { from?: string }
-    ): Promise<PopulatedTransaction>;
-
-    /**
      * The minimum time (in seconds) that must elapse before a withdrawal can be finalized.
      */
     finalizationPeriodSeconds(
@@ -1173,7 +1267,7 @@ export interface L2OutputOracle extends BaseContract {
      * Initializer.
      * @param _challenger The address of the challenger.
      * @param _finalizationPeriodSeconds The minimum time (in seconds) that must elapse before a withdrawal                                   can be finalized.
-     * @param _l2BlockTime The time per L2 block, in seconds.
+     * @param _l2BlockTime The time per L2 block, in milli-seconds.
      * @param _proposer The address of the proposer.
      * @param _startingBlockNumber The number of the first L2 block.
      * @param _startingTimestamp The timestamp of the first L2 block.
@@ -1252,6 +1346,24 @@ export interface L2OutputOracle extends BaseContract {
      */
     submissionInterval(
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Update challenger address.
+     * @param newChallenger The new challenger address.
+     */
+    updateChallenger(
+      newChallenger: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Update proposer address.
+     * @param newProposer The new proposer address.
+     */
+    updateProposer(
+      newProposer: string,
+      overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
     /**

@@ -26,34 +26,17 @@ import type {
   OnEvent,
 } from "./common";
 
-export declare namespace ResourceMetering {
-  export type ResourceConfigStruct = {
-    maxResourceLimit: BigNumberish;
-    elasticityMultiplier: BigNumberish;
-    baseFeeMaxChangeDenominator: BigNumberish;
-    minimumBaseFee: BigNumberish;
-    systemTxMaxGas: BigNumberish;
-    maximumBaseFee: BigNumberish;
-  };
-
-  export type ResourceConfigStructOutput = [
-    number,
-    number,
-    number,
-    number,
-    number,
-    BigNumber
-  ] & {
-    maxResourceLimit: number;
-    elasticityMultiplier: number;
-    baseFeeMaxChangeDenominator: number;
-    minimumBaseFee: number;
-    systemTxMaxGas: number;
-    maximumBaseFee: BigNumber;
-  };
-}
-
 export declare namespace SystemConfig {
+  export type SequencerPubkeyInfoStruct = {
+    l2Height: BigNumberish;
+    sequencerPubkey: BytesLike;
+  };
+
+  export type SequencerPubkeyInfoStructOutput = [BigNumber, string] & {
+    l2Height: BigNumber;
+    sequencerPubkey: string;
+  };
+
   export type AddressesStruct = {
     l1CrossDomainMessenger: string;
     l1ERC721Bridge: string;
@@ -83,6 +66,33 @@ export declare namespace SystemConfig {
   };
 }
 
+export declare namespace ResourceMetering {
+  export type ResourceConfigStruct = {
+    maxResourceLimit: BigNumberish;
+    elasticityMultiplier: BigNumberish;
+    baseFeeMaxChangeDenominator: BigNumberish;
+    minimumBaseFee: BigNumberish;
+    systemTxMaxGas: BigNumberish;
+    maximumBaseFee: BigNumberish;
+  };
+
+  export type ResourceConfigStructOutput = [
+    number,
+    number,
+    number,
+    number,
+    number,
+    BigNumber
+  ] & {
+    maxResourceLimit: number;
+    elasticityMultiplier: number;
+    baseFeeMaxChangeDenominator: number;
+    minimumBaseFee: number;
+    systemTxMaxGas: number;
+    maximumBaseFee: BigNumber;
+  };
+}
+
 export interface SystemConfigInterface extends utils.Interface {
   functions: {
     "BATCH_INBOX_SLOT()": FunctionFragment;
@@ -104,6 +114,7 @@ export interface SystemConfigInterface extends utils.Interface {
     "gasPayingToken()": FunctionFragment;
     "gasPayingTokenName()": FunctionFragment;
     "gasPayingTokenSymbol()": FunctionFragment;
+    "getSequencerPubkeyInfos()": FunctionFragment;
     "initialize(address,uint32,uint32,bytes32,uint64,bytes32,(uint32,uint8,uint8,uint32,uint32,uint128),address,(address,address,address,address,address,address,address))": FunctionFragment;
     "isCustomGasToken()": FunctionFragment;
     "l1CrossDomainMessenger()": FunctionFragment;
@@ -118,10 +129,12 @@ export interface SystemConfigInterface extends utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "resourceConfig()": FunctionFragment;
     "scalar()": FunctionFragment;
+    "sequencerPubkeyInfos(uint256)": FunctionFragment;
     "setBatcherHash(bytes32)": FunctionFragment;
     "setGasConfig(uint256,uint256)": FunctionFragment;
     "setGasConfigEcotone(uint32,uint32)": FunctionFragment;
     "setGasLimit(uint64)": FunctionFragment;
+    "setSequencerPubkey(uint256,bytes32)": FunctionFragment;
     "setUnsafeBlockSigner(bytes32)": FunctionFragment;
     "startBlock()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -150,6 +163,7 @@ export interface SystemConfigInterface extends utils.Interface {
       | "gasPayingToken"
       | "gasPayingTokenName"
       | "gasPayingTokenSymbol"
+      | "getSequencerPubkeyInfos"
       | "initialize"
       | "isCustomGasToken"
       | "l1CrossDomainMessenger"
@@ -164,10 +178,12 @@ export interface SystemConfigInterface extends utils.Interface {
       | "renounceOwnership"
       | "resourceConfig"
       | "scalar"
+      | "sequencerPubkeyInfos"
       | "setBatcherHash"
       | "setGasConfig"
       | "setGasConfigEcotone"
       | "setGasLimit"
+      | "setSequencerPubkey"
       | "setUnsafeBlockSigner"
       | "startBlock"
       | "transferOwnership"
@@ -246,6 +262,10 @@ export interface SystemConfigInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getSequencerPubkeyInfos",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "initialize",
     values: [
       string,
@@ -303,6 +323,10 @@ export interface SystemConfigInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "scalar", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "sequencerPubkeyInfos",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setBatcherHash",
     values: [BytesLike]
   ): string;
@@ -317,6 +341,10 @@ export interface SystemConfigInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setGasLimit",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setSequencerPubkey",
+    values: [BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "setUnsafeBlockSigner",
@@ -403,6 +431,10 @@ export interface SystemConfigInterface extends utils.Interface {
     functionFragment: "gasPayingTokenSymbol",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getSequencerPubkeyInfos",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isCustomGasToken",
@@ -448,6 +480,10 @@ export interface SystemConfigInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "scalar", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "sequencerPubkeyInfos",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setBatcherHash",
     data: BytesLike
   ): Result;
@@ -461,6 +497,10 @@ export interface SystemConfigInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "setGasLimit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setSequencerPubkey",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -482,11 +522,13 @@ export interface SystemConfigInterface extends utils.Interface {
     "ConfigUpdate(uint256,uint8,bytes)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "SequencerPubkeyInfoAdded(uint256,bytes32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ConfigUpdate"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SequencerPubkeyInfoAdded"): EventFragment;
 }
 
 export interface ConfigUpdateEventObject {
@@ -519,6 +561,18 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
+
+export interface SequencerPubkeyInfoAddedEventObject {
+  l2Height: BigNumber;
+  sequencerPubkey: string;
+}
+export type SequencerPubkeyInfoAddedEvent = TypedEvent<
+  [BigNumber, string],
+  SequencerPubkeyInfoAddedEventObject
+>;
+
+export type SequencerPubkeyInfoAddedEventFilter =
+  TypedEventFilter<SequencerPubkeyInfoAddedEvent>;
 
 export interface SystemConfig extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -656,6 +710,10 @@ export interface SystemConfig extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string] & { symbol_: string }>;
 
+    getSequencerPubkeyInfos(
+      overrides?: CallOverrides
+    ): Promise<[SystemConfig.SequencerPubkeyInfoStructOutput[]]>;
+
     initialize(
       _owner: string,
       _basefeeScalar: BigNumberish,
@@ -748,6 +806,13 @@ export interface SystemConfig extends BaseContract {
      */
     scalar(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    sequencerPubkeyInfos(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, string] & { l2Height: BigNumber; sequencerPubkey: string }
+    >;
+
     /**
      * Updates the batcher hash. Can only be called by the owner.
      * @param _batcherHash New batcher hash.
@@ -785,6 +850,17 @@ export interface SystemConfig extends BaseContract {
      */
     setGasLimit(
       _gasLimit: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
+    /**
+     * Set the L2 sequencer pubkey on specified l2 height
+     * @param l2Height L2 block height.
+     * @param sequencerPubkey New sequencer pubkey.
+     */
+    setSequencerPubkey(
+      l2Height: BigNumberish,
+      sequencerPubkey: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
@@ -924,6 +1000,10 @@ export interface SystemConfig extends BaseContract {
    */
   gasPayingTokenSymbol(overrides?: CallOverrides): Promise<string>;
 
+  getSequencerPubkeyInfos(
+    overrides?: CallOverrides
+  ): Promise<SystemConfig.SequencerPubkeyInfoStructOutput[]>;
+
   initialize(
     _owner: string,
     _basefeeScalar: BigNumberish,
@@ -1006,6 +1086,13 @@ export interface SystemConfig extends BaseContract {
    */
   scalar(overrides?: CallOverrides): Promise<BigNumber>;
 
+  sequencerPubkeyInfos(
+    arg0: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, string] & { l2Height: BigNumber; sequencerPubkey: string }
+  >;
+
   /**
    * Updates the batcher hash. Can only be called by the owner.
    * @param _batcherHash New batcher hash.
@@ -1043,6 +1130,17 @@ export interface SystemConfig extends BaseContract {
    */
   setGasLimit(
     _gasLimit: BigNumberish,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
+  /**
+   * Set the L2 sequencer pubkey on specified l2 height
+   * @param l2Height L2 block height.
+   * @param sequencerPubkey New sequencer pubkey.
+   */
+  setSequencerPubkey(
+    l2Height: BigNumberish,
+    sequencerPubkey: BytesLike,
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
@@ -1178,6 +1276,10 @@ export interface SystemConfig extends BaseContract {
      */
     gasPayingTokenSymbol(overrides?: CallOverrides): Promise<string>;
 
+    getSequencerPubkeyInfos(
+      overrides?: CallOverrides
+    ): Promise<SystemConfig.SequencerPubkeyInfoStructOutput[]>;
+
     initialize(
       _owner: string,
       _basefeeScalar: BigNumberish,
@@ -1258,6 +1360,13 @@ export interface SystemConfig extends BaseContract {
      */
     scalar(overrides?: CallOverrides): Promise<BigNumber>;
 
+    sequencerPubkeyInfos(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, string] & { l2Height: BigNumber; sequencerPubkey: string }
+    >;
+
     /**
      * Updates the batcher hash. Can only be called by the owner.
      * @param _batcherHash New batcher hash.
@@ -1295,6 +1404,17 @@ export interface SystemConfig extends BaseContract {
      */
     setGasLimit(
       _gasLimit: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    /**
+     * Set the L2 sequencer pubkey on specified l2 height
+     * @param l2Height L2 block height.
+     * @param sequencerPubkey New sequencer pubkey.
+     */
+    setSequencerPubkey(
+      l2Height: BigNumberish,
+      sequencerPubkey: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1354,6 +1474,15 @@ export interface SystemConfig extends BaseContract {
       previousOwner?: string | null,
       newOwner?: string | null
     ): OwnershipTransferredEventFilter;
+
+    "SequencerPubkeyInfoAdded(uint256,bytes32)"(
+      l2Height?: BigNumberish | null,
+      sequencerPubkey?: null
+    ): SequencerPubkeyInfoAddedEventFilter;
+    SequencerPubkeyInfoAdded(
+      l2Height?: BigNumberish | null,
+      sequencerPubkey?: null
+    ): SequencerPubkeyInfoAddedEventFilter;
   };
 
   estimateGas: {
@@ -1456,6 +1585,8 @@ export interface SystemConfig extends BaseContract {
      */
     gasPayingTokenSymbol(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getSequencerPubkeyInfos(overrides?: CallOverrides): Promise<BigNumber>;
+
     initialize(
       _owner: string,
       _basefeeScalar: BigNumberish,
@@ -1536,6 +1667,11 @@ export interface SystemConfig extends BaseContract {
      */
     scalar(overrides?: CallOverrides): Promise<BigNumber>;
 
+    sequencerPubkeyInfos(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     /**
      * Updates the batcher hash. Can only be called by the owner.
      * @param _batcherHash New batcher hash.
@@ -1573,6 +1709,17 @@ export interface SystemConfig extends BaseContract {
      */
     setGasLimit(
       _gasLimit: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
+    /**
+     * Set the L2 sequencer pubkey on specified l2 height
+     * @param l2Height L2 block height.
+     * @param sequencerPubkey New sequencer pubkey.
+     */
+    setSequencerPubkey(
+      l2Height: BigNumberish,
+      sequencerPubkey: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<BigNumber>;
 
@@ -1725,6 +1872,10 @@ export interface SystemConfig extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getSequencerPubkeyInfos(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     initialize(
       _owner: string,
       _basefeeScalar: BigNumberish,
@@ -1809,6 +1960,11 @@ export interface SystemConfig extends BaseContract {
      */
     scalar(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    sequencerPubkeyInfos(
+      arg0: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     /**
      * Updates the batcher hash. Can only be called by the owner.
      * @param _batcherHash New batcher hash.
@@ -1846,6 +2002,17 @@ export interface SystemConfig extends BaseContract {
      */
     setGasLimit(
       _gasLimit: BigNumberish,
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    /**
+     * Set the L2 sequencer pubkey on specified l2 height
+     * @param l2Height L2 block height.
+     * @param sequencerPubkey New sequencer pubkey.
+     */
+    setSequencerPubkey(
+      l2Height: BigNumberish,
+      sequencerPubkey: BytesLike,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 
