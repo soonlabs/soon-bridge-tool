@@ -35,6 +35,7 @@ export interface SuperchainConfigInterface extends utils.Interface {
     "pause(string)": FunctionFragment;
     "paused()": FunctionFragment;
     "unpause()": FunctionFragment;
+    "updateGuardian(address)": FunctionFragment;
     "version()": FunctionFragment;
   };
 
@@ -47,6 +48,7 @@ export interface SuperchainConfigInterface extends utils.Interface {
       | "pause"
       | "paused"
       | "unpause"
+      | "updateGuardian"
       | "version"
   ): FunctionFragment;
 
@@ -66,6 +68,10 @@ export interface SuperchainConfigInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "pause", values: [string]): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "updateGuardian",
+    values: [string]
+  ): string;
   encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
   decodeFunctionResult(
@@ -81,6 +87,10 @@ export interface SuperchainConfigInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "updateGuardian",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
@@ -204,6 +214,11 @@ export interface SuperchainConfig extends BaseContract {
       overrides?: Overrides & { from?: string }
     ): Promise<ContractTransaction>;
 
+    updateGuardian(
+      _guardian: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<ContractTransaction>;
+
     /**
      * Semantic version.
      */
@@ -257,6 +272,11 @@ export interface SuperchainConfig extends BaseContract {
     overrides?: Overrides & { from?: string }
   ): Promise<ContractTransaction>;
 
+  updateGuardian(
+    _guardian: string,
+    overrides?: Overrides & { from?: string }
+  ): Promise<ContractTransaction>;
+
   /**
    * Semantic version.
    */
@@ -304,6 +324,8 @@ export interface SuperchainConfig extends BaseContract {
      * Unpauses withdrawals.
      */
     unpause(overrides?: CallOverrides): Promise<void>;
+
+    updateGuardian(_guardian: string, overrides?: CallOverrides): Promise<void>;
 
     /**
      * Semantic version.
@@ -377,6 +399,11 @@ export interface SuperchainConfig extends BaseContract {
      */
     unpause(overrides?: Overrides & { from?: string }): Promise<BigNumber>;
 
+    updateGuardian(
+      _guardian: string,
+      overrides?: Overrides & { from?: string }
+    ): Promise<BigNumber>;
+
     /**
      * Semantic version.
      */
@@ -428,6 +455,11 @@ export interface SuperchainConfig extends BaseContract {
      * Unpauses withdrawals.
      */
     unpause(
+      overrides?: Overrides & { from?: string }
+    ): Promise<PopulatedTransaction>;
+
+    updateGuardian(
+      _guardian: string,
       overrides?: Overrides & { from?: string }
     ): Promise<PopulatedTransaction>;
 

@@ -31,6 +31,9 @@ export interface IERC20Interface extends utils.Interface {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "decimals()": FunctionFragment;
+    "name()": FunctionFragment;
+    "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
@@ -41,6 +44,9 @@ export interface IERC20Interface extends utils.Interface {
       | "allowance"
       | "approve"
       | "balanceOf"
+      | "decimals"
+      | "name"
+      | "symbol"
       | "totalSupply"
       | "transfer"
       | "transferFrom"
@@ -55,6 +61,9 @@ export interface IERC20Interface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(functionFragment: "decimals", values?: undefined): string;
+  encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
@@ -71,6 +80,9 @@ export interface IERC20Interface extends utils.Interface {
   decodeFunctionResult(functionFragment: "allowance", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -142,7 +154,7 @@ export interface IERC20 extends BaseContract {
 
   functions: {
     /**
-     * Returns the remaining number of tokens that `spender` will be allowed to spend on behalf of `owner` through {transferFrom}. This is zero by default. This value changes when {approve} or {transferFrom} are called.
+     * Returns the remaining number of tokens that `spender` is allowed to spend on behalf of `owner`
      */
     allowance(
       owner: string,
@@ -151,7 +163,8 @@ export interface IERC20 extends BaseContract {
     ): Promise<[BigNumber]>;
 
     /**
-     * Sets `amount` as the allowance of `spender` over the caller's tokens. Returns a boolean value indicating whether the operation succeeded. IMPORTANT: Beware that changing an allowance with this method brings the risk that someone may use both the old and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729 Emits an {Approval} event.
+     * Be aware of front-running risks: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     * Sets `amount` as the allowance of `spender` over the caller's tokens.
      */
     approve(
       spender: string,
@@ -165,12 +178,27 @@ export interface IERC20 extends BaseContract {
     balanceOf(account: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
+     * Returns the decimals places of the token.
+     */
+    decimals(overrides?: CallOverrides): Promise<[number]>;
+
+    /**
+     * Returns the name of the token.
+     */
+    name(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
+     * Returns the symbol of the token.
+     */
+    symbol(overrides?: CallOverrides): Promise<[string]>;
+
+    /**
      * Returns the amount of tokens in existence.
      */
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     /**
-     * Moves `amount` tokens from the caller's account to `to`. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.
+     * Moves `amount` tokens from the caller's account to `to`.
      */
     transfer(
       to: string,
@@ -179,7 +207,7 @@ export interface IERC20 extends BaseContract {
     ): Promise<ContractTransaction>;
 
     /**
-     * Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.
+     * Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance.
      */
     transferFrom(
       from: string,
@@ -190,7 +218,7 @@ export interface IERC20 extends BaseContract {
   };
 
   /**
-   * Returns the remaining number of tokens that `spender` will be allowed to spend on behalf of `owner` through {transferFrom}. This is zero by default. This value changes when {approve} or {transferFrom} are called.
+   * Returns the remaining number of tokens that `spender` is allowed to spend on behalf of `owner`
    */
   allowance(
     owner: string,
@@ -199,7 +227,8 @@ export interface IERC20 extends BaseContract {
   ): Promise<BigNumber>;
 
   /**
-   * Sets `amount` as the allowance of `spender` over the caller's tokens. Returns a boolean value indicating whether the operation succeeded. IMPORTANT: Beware that changing an allowance with this method brings the risk that someone may use both the old and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729 Emits an {Approval} event.
+   * Be aware of front-running risks: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+   * Sets `amount` as the allowance of `spender` over the caller's tokens.
    */
   approve(
     spender: string,
@@ -213,12 +242,27 @@ export interface IERC20 extends BaseContract {
   balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
+   * Returns the decimals places of the token.
+   */
+  decimals(overrides?: CallOverrides): Promise<number>;
+
+  /**
+   * Returns the name of the token.
+   */
+  name(overrides?: CallOverrides): Promise<string>;
+
+  /**
+   * Returns the symbol of the token.
+   */
+  symbol(overrides?: CallOverrides): Promise<string>;
+
+  /**
    * Returns the amount of tokens in existence.
    */
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   /**
-   * Moves `amount` tokens from the caller's account to `to`. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.
+   * Moves `amount` tokens from the caller's account to `to`.
    */
   transfer(
     to: string,
@@ -227,7 +271,7 @@ export interface IERC20 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   /**
-   * Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.
+   * Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance.
    */
   transferFrom(
     from: string,
@@ -238,7 +282,7 @@ export interface IERC20 extends BaseContract {
 
   callStatic: {
     /**
-     * Returns the remaining number of tokens that `spender` will be allowed to spend on behalf of `owner` through {transferFrom}. This is zero by default. This value changes when {approve} or {transferFrom} are called.
+     * Returns the remaining number of tokens that `spender` is allowed to spend on behalf of `owner`
      */
     allowance(
       owner: string,
@@ -247,7 +291,8 @@ export interface IERC20 extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Sets `amount` as the allowance of `spender` over the caller's tokens. Returns a boolean value indicating whether the operation succeeded. IMPORTANT: Beware that changing an allowance with this method brings the risk that someone may use both the old and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729 Emits an {Approval} event.
+     * Be aware of front-running risks: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     * Sets `amount` as the allowance of `spender` over the caller's tokens.
      */
     approve(
       spender: string,
@@ -261,12 +306,27 @@ export interface IERC20 extends BaseContract {
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Returns the decimals places of the token.
+     */
+    decimals(overrides?: CallOverrides): Promise<number>;
+
+    /**
+     * Returns the name of the token.
+     */
+    name(overrides?: CallOverrides): Promise<string>;
+
+    /**
+     * Returns the symbol of the token.
+     */
+    symbol(overrides?: CallOverrides): Promise<string>;
+
+    /**
      * Returns the amount of tokens in existence.
      */
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Moves `amount` tokens from the caller's account to `to`. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.
+     * Moves `amount` tokens from the caller's account to `to`.
      */
     transfer(
       to: string,
@@ -275,7 +335,7 @@ export interface IERC20 extends BaseContract {
     ): Promise<boolean>;
 
     /**
-     * Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.
+     * Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance.
      */
     transferFrom(
       from: string,
@@ -311,7 +371,7 @@ export interface IERC20 extends BaseContract {
 
   estimateGas: {
     /**
-     * Returns the remaining number of tokens that `spender` will be allowed to spend on behalf of `owner` through {transferFrom}. This is zero by default. This value changes when {approve} or {transferFrom} are called.
+     * Returns the remaining number of tokens that `spender` is allowed to spend on behalf of `owner`
      */
     allowance(
       owner: string,
@@ -320,7 +380,8 @@ export interface IERC20 extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Sets `amount` as the allowance of `spender` over the caller's tokens. Returns a boolean value indicating whether the operation succeeded. IMPORTANT: Beware that changing an allowance with this method brings the risk that someone may use both the old and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729 Emits an {Approval} event.
+     * Be aware of front-running risks: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     * Sets `amount` as the allowance of `spender` over the caller's tokens.
      */
     approve(
       spender: string,
@@ -334,12 +395,27 @@ export interface IERC20 extends BaseContract {
     balanceOf(account: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
+     * Returns the decimals places of the token.
+     */
+    decimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Returns the name of the token.
+     */
+    name(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
+     * Returns the symbol of the token.
+     */
+    symbol(overrides?: CallOverrides): Promise<BigNumber>;
+
+    /**
      * Returns the amount of tokens in existence.
      */
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     /**
-     * Moves `amount` tokens from the caller's account to `to`. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.
+     * Moves `amount` tokens from the caller's account to `to`.
      */
     transfer(
       to: string,
@@ -348,7 +424,7 @@ export interface IERC20 extends BaseContract {
     ): Promise<BigNumber>;
 
     /**
-     * Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.
+     * Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance.
      */
     transferFrom(
       from: string,
@@ -360,7 +436,7 @@ export interface IERC20 extends BaseContract {
 
   populateTransaction: {
     /**
-     * Returns the remaining number of tokens that `spender` will be allowed to spend on behalf of `owner` through {transferFrom}. This is zero by default. This value changes when {approve} or {transferFrom} are called.
+     * Returns the remaining number of tokens that `spender` is allowed to spend on behalf of `owner`
      */
     allowance(
       owner: string,
@@ -369,7 +445,8 @@ export interface IERC20 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Sets `amount` as the allowance of `spender` over the caller's tokens. Returns a boolean value indicating whether the operation succeeded. IMPORTANT: Beware that changing an allowance with this method brings the risk that someone may use both the old and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729 Emits an {Approval} event.
+     * Be aware of front-running risks: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     * Sets `amount` as the allowance of `spender` over the caller's tokens.
      */
     approve(
       spender: string,
@@ -386,12 +463,27 @@ export interface IERC20 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
+     * Returns the decimals places of the token.
+     */
+    decimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Returns the name of the token.
+     */
+    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
+     * Returns the symbol of the token.
+     */
+    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    /**
      * Returns the amount of tokens in existence.
      */
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     /**
-     * Moves `amount` tokens from the caller's account to `to`. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.
+     * Moves `amount` tokens from the caller's account to `to`.
      */
     transfer(
       to: string,
@@ -400,7 +492,7 @@ export interface IERC20 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     /**
-     * Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance. Returns a boolean value indicating whether the operation succeeded. Emits a {Transfer} event.
+     * Moves `amount` tokens from `from` to `to` using the allowance mechanism. `amount` is then deducted from the caller's allowance.
      */
     transferFrom(
       from: string,
