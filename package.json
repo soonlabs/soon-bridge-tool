@@ -26,6 +26,8 @@
     "relay_withdraw": "npx ts-node --project tsconfig.json src/relay_failed_withdraw_tx.ts",
     "calculate_l2_block_info_tx_signature": "npx ts-node --project tsconfig.json src/calculate_l2_block_info_tx_signature.ts",
     "scan_l1_deposit": "npx ts-node --project tsconfig.json src/scan_l1_deposit.ts",
+    "generate_contract_upgrade_signature": "npx ts-node --project tsconfig.json src/generate_contract_upgrade_signature.ts",
+    "execute_safe_transaction": "npx ts-node --project tsconfig.json src/execute_safe_transaction.ts",
     "format": "prettier --write 'src/**/*.{ts,tsx}'",
     "pkg_reset_output_oracle": "tsc src/reset_output_oracle.ts || pkg -t node18-linux-x64 src/reset_output_oracle.js --out-path bin"
   },

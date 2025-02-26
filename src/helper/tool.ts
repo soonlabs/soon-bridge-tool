@@ -181,3 +181,11 @@ export async function parseDepositTransactionEventData(
     throw 'invalid cross domain messenger selector';
   }
 }
+
+export function concatHexStrings(hexArray: string[]): string {
+  const strippedHexParts = hexArray.map((hex) =>
+    hex.startsWith('0x') ? hex.slice(2) : hex,
+  );
+
+  return '0x' + strippedHexParts.join('');
+}
