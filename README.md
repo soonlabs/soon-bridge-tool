@@ -148,3 +148,17 @@ yarn fetch_all_withdrawal_tx_by_user --sender=9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9
 ```bash
 yarn change_bridge_admin --newAdmin=9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU
 ```
+
+### Safe Operations
+
+- Generate Contract Upgrade Signature:
+
+```bash
+yarn generate_contract_upgrade_signature --safe 0x5B72117cd20902A2f525D61c436a33eA55fCfdC5 --proxyAdmin 0x62d7F1Fd5Ba13121FcE6E6648c23a25FB43112F2 --proxy 0x8061A80A302C7AEad088194CfD50D9739534A201 --impl 0x5b73ba9d9b500fd770efb2d6b6351deaf6513a71 
+```
+
+- Execute Safe Transaction:
+
+```bash
+yarn execute_safe_transaction --safe 0x5B72117cd20902A2f525D61c436a33eA55fCfdC5 --target 0x62d7F1Fd5Ba13121FcE6E6648c23a25FB43112F2 --data 0x99a88ec40000000000000000000000008061a80a302c7aead088194cfd50d9739534a2010000000000000000000000005b73ba9d9b500fd770efb2d6b6351deaf6513a71 --signatures 0x09822f566368f4906651ba8aec8fa6f2f544fb0c94730679b7dc89ec6fc0ffd00d7151733cec45c747f1dcff2abda733ae83485cd7be93c2373f20456b2363711bb770b604360db7850d535ee3a0a8638392931df6af0414445697237029d2897d054569572d4aea3bf67a079b485673bb0cd4d9922586f0c0086ad03042fa763b1b 
+```
