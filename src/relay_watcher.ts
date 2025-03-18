@@ -121,8 +121,8 @@ async function handleEvent(evm: EVM_CONTEXT, event: FailedRelayedMessageEvent) {
                         relayData[4],
                         relayData[5],
                         {
-                            gasLimit: '600000',
-                            maxFeePerGas: '20000000000', //20G
+                            gasLimit: '800000',
+                            maxFeePerGas: '10000000000', //10G
                             maxPriorityFeePerGas: '400000000', //0.4G
                         },
                     )
