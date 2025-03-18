@@ -46,7 +46,7 @@ async function main() {
           relayData[4],
           relayData[5],
           {
-            gasLimit: '600000',
+            gasLimit: '800000',
             maxFeePerGas: '20000000000', //20G
             maxPriorityFeePerGas: '400000000', //0.4G
           },
