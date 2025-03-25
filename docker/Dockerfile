@@ -3,7 +3,7 @@ FROM ubuntu:24.04
 WORKDIR /app/soon-bridge-tool
 
 #install nodejs and npm
-RUN apt-get update -y && echo 1 | echo 1 |apt-get install -y nodejs npm 
+RUN apt-get update -y && echo 1 | echo 1 |apt-get install -y nodejs npm jq curl
 RUN npm install --global yarn pkg typescript
 
 #install solana tools
