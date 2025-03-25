@@ -1,19 +1,4 @@
-FROM ubuntu:24.04 AS builder
-
-WORKDIR /app/
-
-# Install necessary runtime dependencies (if any)
-RUN apt-get update -y && echo 1 | echo 1 |apt-get install -y nodejs npm 
-RUN npm install --global yarn pkg typescript
-
-# Copy the source code into the container
-COPY . .
-
-RUN npm install
-RUN yarn 
-
-
-FROM dubuntu:24.04
+FROM ubuntu:24.04
 
 WORKDIR /app/soon-bridge-tool
 
