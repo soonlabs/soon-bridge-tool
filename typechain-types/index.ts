@@ -325,8 +325,6 @@ export type { IEAS } from "./IEAS";
 export type { IERC165Upgradeable } from "./IERC165Upgradeable";
 export type { IERC20 } from "./IERC20";
 export type { IERC20Metadata } from "./IERC20Metadata";
-export type { IERC721Enumerable } from "./IERC721Enumerable";
-export type { IERC721Metadata } from "./IERC721Metadata";
 export type { IERC721MetadataUpgradeable } from "./IERC721MetadataUpgradeable";
 export type { IERC721Receiver } from "./IERC721Receiver";
 export type { IERC721ReceiverUpgradeable } from "./IERC721ReceiverUpgradeable";

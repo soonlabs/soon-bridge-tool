@@ -5,12 +5,11 @@ import {
 } from './helper/svm_context';
 import {
   PublicKey,
-  SYSVAR_RENT_PUBKEY,
   TransactionInstruction,
 } from '@solana/web3.js';
 import { ethers } from 'ethers';
 import minimist from 'minimist';
-import { isValidEthereumAddress, SYSTEM_PROGRAM } from './helper/tool';
+import { isValidEthereumAddress } from './helper/tool';
 import { PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
 
 const options = {
@@ -60,7 +59,7 @@ async function main() {
   );
 
   const instructionIndex = Buffer.from(
-    Int8Array.from([BridgeInstructionIndex.AddSPLMetadata]),
+    Int8Array.from([BridgeInstructionIndex.UpdateSPLMetadata]),
   );
   const instruction = new TransactionInstruction({
     data: Buffer.concat([
@@ -77,8 +76,6 @@ async function main() {
       { pubkey: metadataKey, isSigner: false, isWritable: true },
       { pubkey: splTokenMintKey, isSigner: false, isWritable: true },
       { pubkey: splTokenOwnerKey, isSigner: false, isWritable: false },
-      { pubkey: SYSTEM_PROGRAM, isSigner: false, isWritable: false },
-      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: PROGRAM_ID, isSigner: false, isWritable: false },
       { pubkey: bridgeOwnerKey, isSigner: false, isWritable: false },
       {

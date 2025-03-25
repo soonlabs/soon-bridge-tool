@@ -124,7 +124,7 @@ yarn calculate_ata --l2Pubkey='9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU' --sp
 4. Add metadata for SPL token:
 
 ```bash
-yarn add_spl_metadata --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --name='USD Coin' --symbol='USDC' --uri='https://ipfs.io/ipfs/QmXRVXSRbH9nKYPgVfakXRhDhEaXWs6QYu3rToadXhtHPr'
+yarn update_spl_metadata --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --name='USD Coin' --symbol='USDC' --uri='https://ipfs.io/ipfs/bafkreicesdbqvp3uhjdz2cucu7a2cj2dshoc2vgnmoadjhgrcrqhohpwqy'
 ```
 
 ### Query Operations

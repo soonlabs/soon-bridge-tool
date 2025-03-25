@@ -8,7 +8,7 @@
     "reset_output_oracle": "npx ts-node --project tsconfig.json src/reset_output_oracle.ts",
     "change_bridge_admin": "npx ts-node --project tsconfig.json src/change_bridge_admin.ts",
     "create_spl_token": "npx ts-node --project tsconfig.json src/create_spl_token.ts",
-    "add_spl_metadata": "npx ts-node --project tsconfig.json src/add_spl_metadata.ts",
+    "update_spl_metadata": "npx ts-node --project tsconfig.json src/update_spl_metadata.ts",
     "issue_withdraw_eth": "npx ts-node --project tsconfig.json src/issue_withdraw_eth.ts",
     "issue_withdraw_spl": "npx ts-node --project tsconfig.json src/issue_withdraw_spl.ts",
     "calculate_ata": "npx ts-node --project tsconfig.json src/calculate_ata.ts",
