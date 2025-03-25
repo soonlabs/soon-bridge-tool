@@ -121,7 +121,7 @@ yarn mint_test_erc20 --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --l1
 yarn calculate_ata --l2Pubkey='9AEqVwntF6tc6CHkZWbm2cj3HmiCNffcE9dRWMuCBmU' --splMintKey='Av7G6mUjHpRQtW1eAvKkmcm9NuuUkADmR1xR4F41sSfM'
 ```
 
-4. Add metadata for SPL token:
+4. Update metadata for SPL token:
 
 ```bash
 yarn update_spl_metadata --l1Token='0x8fbd74E3927534fae382Bb586b37AD50a8F96631' --name='USD Coin' --symbol='USDC' --uri='https://ipfs.io/ipfs/bafkreicesdbqvp3uhjdz2cucu7a2cj2dshoc2vgnmoadjhgrcrqhohpwqy'
