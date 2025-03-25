@@ -10,7 +10,7 @@ RUN npm install --global yarn pkg typescript
 COPY . .
 
 RUN npm install
-RUN yarn pkg_init_soon
+RUN yarn 
 
 
 FROM debian:bookworm-slim
