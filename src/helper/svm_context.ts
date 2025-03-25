@@ -45,7 +45,7 @@ export enum BridgeInstructionIndex {
   CreateBridgeConfig = 7,
   ChangeBridgeAdmin = 8,
   CreateUserWithdrawalCounterAccount = 9,
-  AddSPLMetadata = 10,
+  UpdateSPLMetadata = 10,
 }
 
 export const createSVMContext = async (): Promise<SVM_CONTEXT> => {
