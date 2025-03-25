@@ -18,10 +18,6 @@ RUN npm install
 RUN yarn 
 
 # Copy entrypoint 
-COPY --from=builder /app/bin/init_soon /app/soon/bin/init_soon
-COPY --from=builder /app/docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /app/soon/bin/init_soon
-RUN chmod +x /entrypoint.sh
 
 
 # Set the entry point to the binary
