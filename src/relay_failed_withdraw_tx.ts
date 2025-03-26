@@ -33,6 +33,9 @@ async function main() {
 
     console.log(`relayData:${relayData}`);
     if (relayData[2] === EVMContext.EVM_STANDARD_BRIDGE) {
+      let nonce = await EVMContext.EVM_PROVIDER.getTransactionCount(
+        await EVMContext.EVM_USER.getAddress(),
+      );
       let L1CrossDomainMessenger = L1CrossDomainMessenger__factory.connect(
         EVMContext.EVM_MESSENGER,
         EVMContext.EVM_USER,
@@ -46,9 +49,10 @@ async function main() {
           relayData[4],
           relayData[5],
           {
+            nonce: nonce,
             gasLimit: '800000',
-            maxFeePerGas: '20000000000', //20G
-            maxPriorityFeePerGas: '400000000', //0.4G
+            maxFeePerGas: '10000000000', //10G
+            maxPriorityFeePerGas: '1000000000', //1G
           },
         )
       ).wait(1);

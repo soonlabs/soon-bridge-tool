@@ -19,6 +19,12 @@ const FinalizeERC20Signature =
   'finalizeBridgeERC20(address,bytes32,bytes32,address,uint256,bytes)';
 let SlackHookURL: string;
 
+// const L1ExplorerURL = 'https://etherscan.io/';//eth mainnet
+const L1ExplorerURL = 'https://bscscan.com/'; //bsc mainnet
+
+// const L2ExplorerURL = 'https://explorer.soo.network/';//eth mainnet
+const L2ExplorerURL = 'https://explorer.svmbnbmainnet.soo.network/'; //bsc mainnet
+
 const options = {
   string: ['startHeight'],
 };
@@ -115,7 +121,7 @@ async function handleEvent(evm: EVM_CONTEXT, event: WithdrawalProvenEvent) {
         const to = finalizeData[1];
         const amount = `${finalizeData[2]}000000000`;
         const ethValue = formatEther(amount);
-        const message = `info: ETH withdraw proved in tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, from: <https://explorer.soo.network/address/${from}|${from}>, to: <https://etherscan.io/address/${to}|${to}>, amount: ${ethValue}ETH`;
+        const message = `info: Native Token withdraw proved in tx: <${L1ExplorerURL}tx/${event.transactionHash}|${event.transactionHash}>, from: <${L2ExplorerURL}address/${from}|${from}>, to: <${L1ExplorerURL}address/${to}|${to}>, amount: ${ethValue}ETH`;
         await sendSlackMessage(SlackHookURL, message);
       } else if (bridgeData.startsWith('0xf73fb39c')) {
         //ERC20 withdraw
@@ -132,15 +138,15 @@ async function handleEvent(evm: EVM_CONTEXT, event: WithdrawalProvenEvent) {
         const from = hexToBase58(finalizeData[2]);
         const to = finalizeData[3];
         const amount = formatUnits(finalizeData[4], 9);
-        const message = `info: ERC20 withdraw proved in tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, from: <https://explorer.soo.network/address/${from}|${from}>, to: <https://etherscan.io/address/${to}|${to}>, amount: ${amount} ${symbol}`;
+        const message = `info: ERC20/BRC20 withdraw proved in tx: <${L1ExplorerURL}tx/${event.transactionHash}|${event.transactionHash}>, from: <${L2ExplorerURL}address/${from}|${from}>, to: <${L1ExplorerURL}address/${to}|${to}>, amount: ${amount} ${symbol}`;
         await sendSlackMessage(SlackHookURL, message);
       } else {
-        const message = `info: withdraw proved in tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, invalid seletor for L1StandardBridge`;
+        const message = `info: withdraw proved in tx: <${L1ExplorerURL}tx/${event.transactionHash}|${event.transactionHash}>, invalid seletor for L1StandardBridge`;
         await sendSlackMessage(SlackHookURL, message);
       }
     }
   } else {
-    const warnMessage = `warn: withdraw proved in tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, relay target is:  <https://etherscan.io/address/${parsedTransaction.args._tx.target}|${parsedTransaction.args._tx.target}>, not native l1 messenger`;
+    const warnMessage = `warn: withdraw proved in tx: <${L1ExplorerURL}tx/${event.transactionHash}|${event.transactionHash}>, relay target is:  <${L1ExplorerURL}address/${parsedTransaction.args._tx.target}|${parsedTransaction.args._tx.target}>, not native l1 messenger`;
     await sendSlackMessage(SlackHookURL, warnMessage);
   }
 }

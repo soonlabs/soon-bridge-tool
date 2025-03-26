@@ -3,10 +3,7 @@ import {
   createSVMContext,
   sendTransaction,
 } from './helper/svm_context';
-import {
-  PublicKey,
-  TransactionInstruction,
-} from '@solana/web3.js';
+import { PublicKey, TransactionInstruction } from '@solana/web3.js';
 import { ethers } from 'ethers';
 import minimist from 'minimist';
 import { isValidEthereumAddress } from './helper/tool';
