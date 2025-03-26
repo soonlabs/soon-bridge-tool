@@ -10,6 +10,15 @@ import { TransactionDepositedEvent } from '../typechain-types/OptimismPortal';
 import { createSVMContext, SVM_CONTEXT } from './helper/svm_context';
 import minimist from 'minimist';
 
+//const CROSSDOMAINMESSENGERALIAS = "0xCc248cE37870443D5B2B02a36619d3478738F207";//eth mainnet
+const CROSSDOMAINMESSENGERALIAS = '0x3D5bE2360492863C4058e93aCbcE858084D5c611'; //bsc mainnet
+
+// const L1ExplorerURL = 'https://etherscan.io/tx/';//eth mainnet
+const L1ExplorerURL = 'https://bscscan.com/tx/'; //bsc mainnet
+
+// const L2ExplorerURL = 'https://explorer.soo.network/tx';//eth mainnet
+const L2ExplorerURL = 'https://explorer.svmbnbmainnet.soo.network/tx/'; //bsc mainnet
+
 const options = {
   string: ['startHeight'],
 };
@@ -67,7 +76,7 @@ async function main() {
 
       scanStartHeight = latestHeight;
     } catch (e) {
-      await sendSlackMessage(SlackHookURL, `warn: ETH RPC error:${e}`);
+      await sendSlackMessage(SlackHookURL, `warn: L1 RPC error:${e}`);
     }
 
     await sleep(60000);
@@ -79,16 +88,16 @@ async function handleEvent(
   svm: SVM_CONTEXT,
   event: TransactionDepositedEvent,
 ) {
+  console.log('tx hash:', event.transactionHash);
   //check if deposit from domain messenger
   let isBridgeSenderValid = true;
   if (
-    event.args.from.toLowerCase() !=
-      '0xCc248cE37870443D5B2B02a36619d3478738F207'.toLowerCase() ||
+    event.args.from.toLowerCase() != CROSSDOMAINMESSENGERALIAS.toLowerCase() ||
     event.args.to.toLowerCase() !=
       '0x02C806312CB859F1BC25448E39F87AA09857D83CCB4A837DF55648E000000000'.toLowerCase()
   ) {
     isBridgeSenderValid = false;
-    const warnMessage = `warn: invalid portal sender in deposit tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>`;
+    const warnMessage = `warn: invalid portal sender in deposit tx: <${L1ExplorerURL}${event.transactionHash}|${event.transactionHash}>`;
     await sendSlackMessage(SlackHookURL, warnMessage);
   }
 
@@ -104,7 +113,7 @@ async function handleEvent(
     depositDesc = await parseDepositTransactionEventData(evm, opaqueData);
   } catch (error) {
     if (isBridgeSenderValid) {
-      const warnMessage = `warn: invalid deposit tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, error:${error}`;
+      const warnMessage = `warn: invalid deposit tx: <${L1ExplorerURL}${event.transactionHash}|${event.transactionHash}>, error:${error}`;
       await sendSlackMessage(SlackHookURL, warnMessage);
     }
   }
@@ -121,12 +130,12 @@ async function handleEvent(
     await sendSlackMessage(SlackHookURL, `warn: Soon RPC error:${e}`);
   }
   if (!res) {
-    const warnMessage = `warn: deposit tx not processed. l1 tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, l2 tx: <https://explorer.soo.network/tx/${signature}|${signature}>`;
+    const warnMessage = `warn: deposit tx not processed. l1 tx: <${L1ExplorerURL}${event.transactionHash}|${event.transactionHash}>, l2 tx: <${L2ExplorerURL}${signature}|${signature}>`;
     await sendSlackMessage(SlackHookURL, warnMessage);
     return;
   }
 
-  let infoMessage = `info: ${depositDesc}, l1 tx: <https://etherscan.io/tx/${event.transactionHash}|${event.transactionHash}>, l2 tx: <https://explorer.soo.network/tx/${signature}|${signature}>`;
+  let infoMessage = `info: ${depositDesc}, l1 tx: <${L1ExplorerURL}${event.transactionHash}|${event.transactionHash}>, l2 tx: <${L2ExplorerURL}${signature}|${signature}>`;
   await sendSlackMessage(SlackHookURL, infoMessage);
 }
 

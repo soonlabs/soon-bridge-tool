@@ -118,7 +118,7 @@ export async function sendSlackMessage(slackUrl: string, message: string) {
     console.error('send slack message failed:', e);
   }
 
-  await sleep(100);
+  await sleep(500);
 }
 
 const ParseDepositABI = [
@@ -154,7 +154,7 @@ export async function parseDepositTransactionEventData(
         let ethAmount = ethers.BigNumber.from('0x' + amount);
 
         //share decimal is 9
-        return `ETH deposited, value: ${formatUnits(ethAmount, 9)}`;
+        return `Native Token deposited, value: ${formatUnits(ethAmount, 9)}`;
       } else if (bridgeData.startsWith('f73fb39c'.toUpperCase())) {
         let l2_token = bridgeData.slice(4 * 2, 36 * 2);
         let l1_token = bridgeData.slice(36 * 2, 68 * 2);
@@ -170,7 +170,7 @@ export async function parseDepositTransactionEventData(
         let decimal = await ERC20.decimals();
         let tokenAmount = ethers.BigNumber.from('0x' + amount);
         //share decimal is 9
-        return `ERC20 deposited, token: ${symbol}, amount: ${formatUnits(tokenAmount, 9)}`;
+        return `ERC20/BRC20 deposited, token: ${symbol}, amount: ${formatUnits(tokenAmount, 9)}`;
       } else {
         throw 'invalid L1StandardBridge selector';
       }
