@@ -1,33 +1,24 @@
-FROM ubuntu:24.04 AS builder
+FROM ubuntu:24.04
 
-WORKDIR /app/
+WORKDIR /app/soon-bridge-tool
 
-# Install necessary runtime dependencies (if any)
-RUN apt-get update -y && echo 1 | echo 1 |apt-get install -y nodejs npm 
+#install nodejs and npm
+RUN apt-get update -y && echo 1 | echo 1 |apt-get install -y nodejs npm jq curl
 RUN npm install --global yarn pkg typescript
 
-# Copy the source code into the container
+#install solana tools
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && . "$HOME/.cargo/env"
+RUN sh -c "$(curl -sSfL https://release.anza.xyz/v1.18.18/install)"
+ENV PATH="/root/.local/share/solana/install/active_release/bin:$PATH"
+
+
 COPY . .
 
 RUN npm install
-RUN yarn pkg_init_soon
-
-
-FROM debian:bookworm-slim
+RUN yarn 
 
 # Copy entrypoint 
-COPY --from=builder /app/bin/init_soon /app/soon/bin/init_soon
-COPY --from=builder /app/docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /app/soon/bin/init_soon
-RUN chmod +x /entrypoint.sh
-
-# Set the working directory
-WORKDIR /app/soon/
-
-
-# Set the environment variables
-ENV PATH="/app/soon/bin/:${PATH}"
 
 
 # Set the entry point to the binary
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/app/soon-bridge-tool/docker/entrypoint.sh"]
