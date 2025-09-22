@@ -1310,3 +1310,6 @@ export type { IERC1822ProxiableUpgradeable } from "./draft-IERC1822Upgradeable.s
 export { IERC1822ProxiableUpgradeable__factory } from "./factories/draft-IERC1822Upgradeable.sol/IERC1822ProxiableUpgradeable__factory";
 export type { IERC20Permit } from "./draft-IERC20Permit.sol/IERC20Permit";
 export { IERC20Permit__factory } from "./factories/draft-IERC20Permit.sol/IERC20Permit__factory";
+export { KailuaGame__factory } from "./KailuaGame__factory";
+export { KailuaTournament__factory } from "./KailuaTournament__factory";
+export { KailuaTreasury__factory } from "./KailuaTreasury__factory";
