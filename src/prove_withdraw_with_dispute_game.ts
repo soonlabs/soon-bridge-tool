@@ -75,9 +75,10 @@ async function main() {
     );
     return;
   }
+  console.log('proposedHeight:', proposedHeight);
 
   // get latest resolved game index
-  let gameIndex = gameCount.toNumber();
+  let gameIndex = gameCount.toNumber() - 1;
   for (; gameIndex >= 0; gameIndex--) {
     const gameInfo = await DisputeGameFactory.gameAtIndex(gameIndex);
     if (latestKailuaGameAddr == gameInfo.proxy_) {
