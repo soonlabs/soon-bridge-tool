@@ -1,5 +1,5 @@
 import minimist from 'minimist';
-import { isValidSolanaPublicKey, parseWithdrawTxInfo } from './helper/tool';
+import {isValidSolanaPublicKey, parseWithdrawTxInfo, sleep} from './helper/tool';
 import { createSVMContext } from './helper/svm_context';
 import { PublicKey } from '@solana/web3.js';
 import { createEVMContext } from './helper/evm_context';
@@ -94,6 +94,8 @@ async function main() {
     params: [proposedHeight.toNumber()],
   });
   console.log('outputAtBlock response data:', response0.data);
+
+  await sleep(1000);
 
   //get withdraw proof
   const response1 = await axios.post(svmContext.SVM_RPC_URL, {
