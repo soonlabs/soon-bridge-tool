@@ -53,11 +53,12 @@ async function main() {
     if (isFinalized) {
         console.log('Withdraw is already Finalised.');
     } else {
-            const submitter = await OptimismPortal.proofSubmitters(withdrawHash, 0);
-            const provenWithdrawals = await OptimismPortal.provenWithdrawals(withdrawHash, submitter);
-        if (provenWithdrawals.timestamp.toNumber() === 0) {
+        const submitterCount = await OptimismPortal.numProofSubmitters(withdrawHash);
+        if (submitterCount.toNumber() == 0) {
             console.log('Withdraw need prove first.');
         } else {
+            const submitter = await OptimismPortal.proofSubmitters(withdrawHash, 0);
+            const provenWithdrawals = await OptimismPortal.provenWithdrawals(withdrawHash, submitter);
             const finalizedPeriod =
                 await OptimismPortal.proofMaturityDelaySeconds();
             const finalizedTimestamp =
