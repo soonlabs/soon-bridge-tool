@@ -1,5 +1,9 @@
 import minimist from 'minimist';
-import {isValidSolanaPublicKey, parseWithdrawTxInfo, sleep} from './helper/tool';
+import {
+  isValidSolanaPublicKey,
+  parseWithdrawTxInfo,
+  sleep,
+} from './helper/tool';
 import { createSVMContext } from './helper/svm_context';
 import { PublicKey } from '@solana/web3.js';
 import { createEVMContext } from './helper/evm_context';
@@ -8,9 +12,7 @@ import {
   KailuaGame__factory,
   KailuaTournament__factory,
   KailuaTreasury__factory,
-  L2OutputOracle__factory,
   OptimismPortal2__factory,
-  OptimismPortal__factory,
 } from '../typechain-types';
 import axios from 'axios';
 import { BigNumber, ethers } from 'ethers';

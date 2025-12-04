@@ -71,7 +71,18 @@ async function main() {
           `Withdraw can't be finalised Yet. still need to wait: ${diff.toString()} seconds`,
         );
       } else {
-        console.log('Congratulation! withdraw can be finalised now.');
+        const receipt = await (
+          await OptimismPortal.finalizeWithdrawalTransactionExternalProof(
+            withdrawTx,
+            submitter,
+            {
+              gasLimit: 1500000,
+            },
+          )
+        ).wait(1);
+        console.log(
+          `Finalize withdraw success. txHash: ${receipt.transactionHash}`,
+        );
       }
     }
   }
