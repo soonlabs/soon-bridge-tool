@@ -3,7 +3,7 @@ import { isValidSolanaPublicKey, parseWithdrawTxInfo } from './helper/tool';
 import { createSVMContext } from './helper/svm_context';
 import { PublicKey } from '@solana/web3.js';
 import { createEVMContext } from './helper/evm_context';
-import { OptimismPortal2__factory } from '../typechain-types';
+import { KailuaGame__factory, OptimismPortal2__factory } from '../typechain-types';
 import { ethers } from 'ethers';
 
 const options = {
@@ -55,11 +55,26 @@ async function main() {
     if (submitterCount.toNumber() == 0) {
       console.log('Withdraw need prove first.');
     } else {
-      const submitter = await OptimismPortal.proofSubmitters(withdrawHash, 0);
-      const provenWithdrawals = await OptimismPortal.provenWithdrawals(
-        withdrawHash,
-        submitter,
-      );
+      const respectedGameType = await OptimismPortal.respectedGameType();
+      //遍历所有提交者，找到respectedGameType对应的提交者
+      let submitter = null;
+      let provenWithdrawals = null;
+      for (let i = 0; i < submitterCount.toNumber(); i++) {
+        submitter = await OptimismPortal.proofSubmitters(withdrawHash, i);
+        provenWithdrawals = await OptimismPortal.provenWithdrawals(withdrawHash, submitter);
+        const game = KailuaGame__factory.connect(
+            provenWithdrawals.disputeGameProxy,
+            EVMContext.EVM_PROVIDER
+        );
+        const gameType = await game.gameType();
+        if (gameType == respectedGameType) {
+          break;
+        }
+      }
+      if (submitter == null || provenWithdrawals == null) {
+        console.log('Withdraw not found in respected game, need to prove again.');
+        return;
+      }
       const finalizedPeriod = await OptimismPortal.proofMaturityDelaySeconds();
       const finalizedTimestamp =
         provenWithdrawals.timestamp.add(finalizedPeriod);
