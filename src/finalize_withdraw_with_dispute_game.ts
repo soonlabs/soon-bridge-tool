@@ -60,14 +60,16 @@ async function main() {
       let submitter = null;
       let provenWithdrawals = null;
       for (let i = 0; i < submitterCount.toNumber(); i++) {
-        submitter = await OptimismPortal.proofSubmitters(withdrawHash, i);
-        provenWithdrawals = await OptimismPortal.provenWithdrawals(withdrawHash, submitter);
+        const tempSubmitter = await OptimismPortal.proofSubmitters(withdrawHash, i);
+        const tempProvenWithdrawals = await OptimismPortal.provenWithdrawals(withdrawHash, tempSubmitter);
         const game = KailuaGame__factory.connect(
-            provenWithdrawals.disputeGameProxy,
+            tempProvenWithdrawals.disputeGameProxy,
             EVMContext.EVM_PROVIDER
         );
         const gameType = await game.gameType();
         if (gameType == respectedGameType) {
+          submitter = tempSubmitter;
+          provenWithdrawals = tempProvenWithdrawals;
           break;
         }
       }
