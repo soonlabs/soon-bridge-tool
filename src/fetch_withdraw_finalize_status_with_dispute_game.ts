@@ -56,7 +56,7 @@ async function main() {
       console.log('Withdraw need prove first.');
     } else {
       const respectedGameType = await OptimismPortal.respectedGameType();
-      //遍历所有提交者，找到respectedGameType对应的提交者
+      const gameTypeUpdatedAt = await OptimismPortal.respectedGameTypeUpdatedAt();
       let submitter = null;
       let provenWithdrawals = null;
       for (let i = 0; i < submitterCount.toNumber(); i++) {
@@ -67,7 +67,8 @@ async function main() {
             EVMContext.EVM_PROVIDER
         );
         const gameType = await game.gameType();
-        if (gameType == respectedGameType) {
+        const gameCreatedAt = await game.createdAt();
+        if (gameType == respectedGameType && gameCreatedAt.gt(gameTypeUpdatedAt)) {
           submitter = tempSubmitter;
           provenWithdrawals = tempProvenWithdrawals;
           break;
