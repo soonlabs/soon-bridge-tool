@@ -8,11 +8,14 @@ import { ethers } from 'ethers';
 
 const options = {
   string: ['withdrawId'],
+  boolean: ['dryRun'],
 };
 
 async function main() {
   const args = minimist(process.argv.slice(2), options);
+  const dryRun = args.dryRun || false;
   console.log('args:', args);
+  console.log(`Mode: ${dryRun ? 'DRY RUN (simulation)' : 'REAL TRANSACTION'}`);
   if (!isValidSolanaPublicKey(args.withdrawId)) {
     throw new Error('invalid solana pubkey format.');
   }
@@ -88,18 +91,41 @@ async function main() {
           `Withdraw can't be finalised Yet. still need to wait: ${diff.toString()} seconds`,
         );
       } else {
-        const receipt = await (
-          await OptimismPortal.finalizeWithdrawalTransactionExternalProof(
-            withdrawTx,
-            submitter,
-            {
-              gasLimit: 1500000,
-            },
-          )
-        ).wait(1);
-        console.log(
-          `Finalize withdraw success. txHash: ${receipt.transactionHash}`,
-        );
+        try {
+          if (dryRun) {
+            // 模拟执行交易，验证是否能成功
+            await OptimismPortal.callStatic.finalizeWithdrawalTransactionExternalProof(
+              withdrawTx,
+              submitter,
+              {
+                gasLimit: 1500000,
+              },
+            );
+            console.log('Transaction simulation successful. The transaction can be executed.');
+          } else {
+            // 发送真实交易
+            const receipt = await (
+              await OptimismPortal.finalizeWithdrawalTransactionExternalProof(
+                withdrawTx,
+                submitter,
+                {
+                  gasLimit: 1500000,
+                },
+              )
+            ).wait(1);
+            console.log(
+              `Finalize withdraw success. txHash: ${receipt.transactionHash}`,
+            );
+          }
+        } catch (error) {
+          console.error(
+            dryRun
+              ? 'Transaction simulation failed:'
+              : 'Transaction execution failed:',
+            error,
+          );
+          throw error;
+        }
       }
     }
   }

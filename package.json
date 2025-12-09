@@ -19,6 +19,7 @@
     "fetch_withdraw_finalize_status": "npx ts-node --project tsconfig.json src/fetch_withdraw_finalize_status.ts",
     "fetch_withdraw_finalize_status_with_dispute_game": "npx ts-node --project tsconfig.json src/fetch_withdraw_finalize_status_with_dispute_game.ts",
     "finalize_withdraw": "npx ts-node --project tsconfig.json src/finalize_withdraw.ts",
+    "finalize_withdraw_with_dispute_game": "npx ts-node --project tsconfig.json src/finalize_withdraw_with_dispute_game.ts",
     "deposit_eth": "npx ts-node --project tsconfig.json src/deposit_eth.ts",
     "deposit_erc20": "npx ts-node --project tsconfig.json src/deposit_erc20.ts",
     "mint_test_erc20": "npx ts-node --project tsconfig.json src/mint_test_erc20.ts",
